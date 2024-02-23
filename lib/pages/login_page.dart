@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
   // tap to go to register page
   void Function()? onTap;
 
-  LoginPage({super.key});
+  LoginPage({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

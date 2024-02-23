@@ -1,6 +1,7 @@
 import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/login_page.dart';
 import 'package:dine_connect/pages/register_page.dart';
+import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: RegisterPage(),
+      home: const AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }
