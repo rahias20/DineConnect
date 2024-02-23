@@ -69,9 +69,9 @@ class RegisterPage extends StatelessWidget {
 
               // register button
               const SizedBox(height: 25),
-              MyButton(text: "Register", onTap: (){}),
+              MyButton(text: "Register", onTap: () => register(context)),
 
-                            // register now
+              // login
               const SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -101,5 +101,10 @@ class RegisterPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // register method
+  register(BuildContext context) {
+
   }
 }

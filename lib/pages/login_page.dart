@@ -63,7 +63,7 @@ class LoginPage extends StatelessWidget {
 
               // login button
               const SizedBox(height: 25),
-              MyButton(text: "Login", onTap: () {}),
+              MyButton(text: "Login", onTap: () => login(context)),
 
               // register now
               const SizedBox(height: 25),
@@ -90,4 +90,7 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
+  // login method
+  login(BuildContext context) {}
 }
