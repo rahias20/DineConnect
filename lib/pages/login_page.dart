@@ -98,7 +98,7 @@ class LoginPage extends StatelessWidget {
     // get auth service
     final authService = AuthService();
     try {
-      await authService.signUpWithEmailPassword(
+      await authService.signInWithEmailPassword(
           _emailController.text, _passwordController.text);
     } catch (e) {
       showDialog(
