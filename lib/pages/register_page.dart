@@ -1,18 +1,18 @@
+import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 
 class RegisterPage extends StatelessWidget {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   void Function()? onTap;
 
   RegisterPage({super.key, required this.onTap});
-
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class RegisterPage extends StatelessWidget {
                 width: 500,
                 child: AspectRatio(
                   aspectRatio:
-                  3, // This is the aspect ratio of the container, change it as needed
+                      3, // This is the aspect ratio of the container, change it as needed
                   child: Image(
                     image: AssetImage('lib/images/logo.png'),
                     fit: BoxFit
@@ -41,10 +41,7 @@ class RegisterPage extends StatelessWidget {
               Text(
                 "Let's create an account for you",
                 style: TextStyle(
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .primary, fontSize: 16),
+                    color: Theme.of(context).colorScheme.primary, fontSize: 16),
               ),
               // email text field
               const SizedBox(height: 25),
@@ -78,20 +75,14 @@ class RegisterPage extends StatelessWidget {
                 children: [
                   Text("Already a member? ",
                       style: TextStyle(
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .primary)),
+                          color: Theme.of(context).colorScheme.primary)),
                   GestureDetector(
                     onTap: onTap,
                     child: Text(
                       "Login now",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .primary),
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ],
@@ -103,8 +94,22 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  // register method
-  register(BuildContext context) {
-
+  // register
+  void register(context) {
+    // get auth service
+    final _auth = AuthService();
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        _auth.signUpWithEmailPassword(
+            _emailController.text, _passwordController.text);
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(e.toString()),
+          ),
+        );
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dine_connect/components/my_textfield.dart';
+import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
@@ -41,9 +42,10 @@ class LoginPage extends StatelessWidget {
                 child: Text(
                   "Sign in to your account",
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,),
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
 
@@ -91,6 +93,20 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  // login method
-  login(BuildContext context) {}
+  // login
+  void login(BuildContext context) async {
+    // get auth service
+    final authService = AuthService();
+    try {
+      await authService.signUpWithEmailPassword(
+          _emailController.text, _passwordController.text);
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(e.toString()),
+        ),
+      );
+    }
+  }
 }
