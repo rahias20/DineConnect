@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SafeArea(child: Center(child: Text("Hello World!"))),
+      body: SafeArea(child: Center(child: Text(_authService.getCurrentUser()!.email as String))),
     );
   }
 }
