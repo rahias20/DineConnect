@@ -1,7 +1,10 @@
+import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:flutter/material.dart';
 
 class WelcomePage extends StatelessWidget {
-  const WelcomePage({super.key});
+  // tap to go to login or register page
+  void Function()? onTap;
+  WelcomePage({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +43,21 @@ class WelcomePage extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.02),
                   const Image(image: AssetImage("lib/images/logo.png")),
                   SizedBox(height: screenHeight * 0.09),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/loginOrRegister');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
+                  GestureDetector(
+                    onTap: onTap,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0), // Add some padding
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary, // Use the primary color from your color scheme
+                        borderRadius: BorderRadius.circular(20.0), // Rounded corners
+                      ),
+                      child: const Text(
+                        "Get Started",
+                        style: TextStyle(fontSize: 16.0, color: Colors.white), // Text style
+                      ),
                     ),
-                    child: const Text(
-                      "Get Started",
-                      style: TextStyle(fontSize: 16.0, color: Colors.white),
-                    ),
-                  )
+                  ),
+
                 ],
               ),
             ),

@@ -102,9 +102,6 @@ class LoginPage extends StatelessWidget {
     try {
       await authService.signInWithEmailPassword(
           _emailController.text, _passwordController.text);
-      // navigate to the home page after successful login
-      Navigator.pop(context);
-      Navigator.pushReplacementNamed(context, '/homepage');
     } catch (e) {
       showDialog(
         context: context,

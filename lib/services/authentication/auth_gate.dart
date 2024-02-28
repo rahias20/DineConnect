@@ -1,6 +1,7 @@
-import 'package:dine_connect/pages/welcome_page.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:dine_connect/services/authentication/welcome_or_login_or_register.dart';
 
 import '../../pages/home_page.dart';
 import 'login_or_register.dart';
@@ -18,7 +19,7 @@ class AuthGate extends StatelessWidget {
           if (snapshot.hasData){
             return HomePage();
           }else{
-            return WelcomePage();
+            return WelcomeOrLoginOrRegister();
           }
 
           // user is not logged in

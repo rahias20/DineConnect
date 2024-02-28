@@ -1,8 +1,5 @@
 import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/home_page.dart';
-import 'package:dine_connect/pages/login_page.dart';
-import 'package:dine_connect/pages/register_page.dart';
-import 'package:dine_connect/pages/welcome_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
