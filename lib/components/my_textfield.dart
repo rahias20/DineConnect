@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 class MyTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
+  final bool isError;
   final TextEditingController controller;
 
 
-  const MyTextField({super.key, required this.hintText, required this.obscureText, required this.controller});
+  const MyTextField({super.key, required this.hintText, required this.obscureText, required this.controller, this.isError = false});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,7 @@ class MyTextField extends StatelessWidget {
           filled: true,
           hintText: hintText,
           hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          errorText: isError ? 'This field cannot be empty' : null,
         ),
       ),
     );

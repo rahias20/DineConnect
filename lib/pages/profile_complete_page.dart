@@ -29,6 +29,13 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   String imageUrl = '';
   List<String> hobbies = [];
 
+  // fields empty check
+  bool _isNameEmpty = false;
+  bool _isAgeEmpty = false;
+  bool _isBioEmpty = false;
+  bool _isLookingForEmpty = false;
+  bool _isHobbiesEmpty = false;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -46,11 +53,27 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         hobbies.add(hobby);
       });
     }
-    _hobbyController.clear();
   }
 
   // save user profile to database
   Future<void> _saveProfile() async {
+    bool hasErrors = false;
+    // Convert age input to integer and check if it's null (invalid input)
+    int? age = int.tryParse(_ageController.text);
+
+    // Check each field and update the state if any are empty
+    setState(() {
+      _isNameEmpty = _nameController.text.isEmpty;
+      _isAgeEmpty = _ageController.text.isEmpty || age == null;
+      _isBioEmpty = _bioController.text.isEmpty;
+      _isLookingForEmpty = _lookingForController.text.isEmpty;
+      _isHobbiesEmpty = hobbies.isEmpty;
+    });
+    // check if any validation failed
+    hasErrors = _isNameEmpty || _isAgeEmpty || _isBioEmpty || _isLookingForEmpty || _isHobbiesEmpty;
+    if (hasErrors){
+      return;
+    }
     final userProfile = UserProfile(
         userId: _authService.getCurrentUser()!.uid,
         name: _nameController.text,
@@ -63,8 +86,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         .collection('userProfiles')
         .doc(userProfile.userId)
         .set(userProfile.toMap());
-
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomePage()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => HomePage()),
+        (Route<dynamic> route) => false);
   }
 
   @override
@@ -83,22 +107,26 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
             MyTextField(
                 hintText: 'Name',
                 obscureText: false,
-                controller: _nameController),
+                controller: _nameController,
+                isError: _isNameEmpty),
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'Age',
                 obscureText: false,
-                controller: _ageController),
+                controller: _ageController,
+                isError: _isAgeEmpty),
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'Tell us a bit about yourself',
                 obscureText: false,
-                controller: _bioController),
+                controller: _bioController,
+                isError: _isBioEmpty),
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'What are you looking for',
                 obscureText: false,
-                controller: _lookingForController),
+                controller: _lookingForController,
+                isError: _isLookingForEmpty),
             SizedBox(height: screenHeight * 0.04),
             MyListField(
                 hintText: 'Enter a hobby',
@@ -118,6 +146,18 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                       ))
                   .toList(),
             ),
+
+            // conditionally display an error message
+            if (_isHobbiesEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Text(
+                    'Please add at least one hobby',
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
+              ),
 
             SizedBox(height: screenHeight * 0.04),
             // save user profile

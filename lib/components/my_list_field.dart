@@ -5,11 +5,12 @@ class MyListField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String) onSubmitted;
 
-  const MyListField(
-      {super.key,
-      required this.hintText,
-      required this.controller,
-      required this.onSubmitted});
+  const MyListField({
+    super.key,
+    required this.hintText,
+    required this.controller,
+    required this.onSubmitted,
+  });
 
   @override
   Widget build(BuildContext context) {
