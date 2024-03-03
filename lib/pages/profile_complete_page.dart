@@ -1,0 +1,130 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dine_connect/components/my_button.dart';
+import 'package:dine_connect/components/my_list_field.dart';
+import 'package:dine_connect/components/my_textfield.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:dine_connect/models/user_profile.dart';
+import 'package:dine_connect/services/authentication/auth_service.dart';
+
+import 'home_page.dart';
+
+class ProfileCompletePage extends StatefulWidget {
+  const ProfileCompletePage({super.key});
+
+  @override
+  State<ProfileCompletePage> createState() => _ProfileCompletePageState();
+}
+
+class _ProfileCompletePageState extends State<ProfileCompletePage> {
+  // get auth service
+  final AuthService _authService = AuthService();
+
+  // controllers
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _lookingForController = TextEditingController();
+  final TextEditingController _hobbyController = TextEditingController();
+  String imageUrl = '';
+  List<String> hobbies = [];
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    _bioController.dispose();
+    _lookingForController.dispose();
+    _hobbyController.dispose();
+    super.dispose();
+  }
+
+  // add hobby to the list
+  void _addHobby(String hobby) {
+    if (hobby.isNotEmpty && !hobbies.contains(hobby)) {
+      setState(() {
+        hobbies.add(hobby);
+      });
+    }
+    _hobbyController.clear();
+  }
+
+  // save user profile to database
+  Future<void> _saveProfile() async {
+    final userProfile = UserProfile(
+        userId: _authService.getCurrentUser()!.uid,
+        name: _nameController.text,
+        age: int.parse(_ageController.text),
+        bio: _bioController.text,
+        lookingFor: _lookingForController.text,
+        hobbies: hobbies);
+    // save the user profile to the database
+    await FirebaseFirestore.instance
+        .collection('userProfiles')
+        .doc(userProfile.userId)
+        .set(userProfile.toMap());
+
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HomePage()), (Route<dynamic> route) => false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Complete Your Profile"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: screenHeight * 0.04),
+            MyTextField(
+                hintText: 'Name',
+                obscureText: false,
+                controller: _nameController),
+            SizedBox(height: screenHeight * 0.04),
+            MyTextField(
+                hintText: 'Age',
+                obscureText: false,
+                controller: _ageController),
+            SizedBox(height: screenHeight * 0.04),
+            MyTextField(
+                hintText: 'Tell us a bit about yourself',
+                obscureText: false,
+                controller: _bioController),
+            SizedBox(height: screenHeight * 0.04),
+            MyTextField(
+                hintText: 'What are you looking for',
+                obscureText: false,
+                controller: _lookingForController),
+            SizedBox(height: screenHeight * 0.04),
+            MyListField(
+                hintText: 'Enter a hobby',
+                controller: _hobbyController,
+                onSubmitted: _addHobby),
+            // Display hobbies
+            Wrap(
+              spacing: 8.0,
+              children: hobbies
+                  .map((hobby) => Chip(
+                        label: Text(hobby),
+                        onDeleted: () {
+                          setState(() {
+                            hobbies.remove(hobby);
+                          });
+                        },
+                      ))
+                  .toList(),
+            ),
+
+            SizedBox(height: screenHeight * 0.04),
+            // save user profile
+            MyButton(text: 'Save Profile', onTap: () => _saveProfile()),
+          ],
+        ),
+      ),
+    );
+  }
+}

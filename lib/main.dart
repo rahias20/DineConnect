@@ -1,5 +1,6 @@
 import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/home_page.dart';
+import 'package:dine_connect/pages/profile_complete_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AuthGate(),
+      home: ProfileCompletePage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
         '/loginOrRegister': (context) => LoginOrRegister(),
