@@ -25,7 +25,7 @@ class UserProfile {
       'age': age,
       'bio': bio,
       'lookingFor': lookingFor,
-      'imageUrl': imageUrl ?? "",
+      'imageUrl': imageUrl,
       'hobbies': hobbies
     };
   }
@@ -39,6 +39,6 @@ class UserProfile {
         bio: map['bio'],
         lookingFor: map['lookingFor'],
         imageUrl: map['imageUrl'] as String?, // cast as String since it can be null
-        hobbies: map['hobbies']);
+        hobbies: List<String>.from(map['hobbies']));
   }
 }

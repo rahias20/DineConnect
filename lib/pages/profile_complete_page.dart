@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 import 'home_page.dart';
 
@@ -117,7 +118,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   // upload the selected image
   Future<void> _uploadImage(File imageFile) async {
     String userId = _authService.getCurrentUser()!.uid;
-    String fileName = 'userProfiles/$userId/$imageFile.path';
+    String fileName = 'userProfiles/$userId/${path.basename(imageFile.path)}';
     Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
 
 
