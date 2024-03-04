@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
@@ -13,7 +12,6 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  // get authentication service
   final AuthService _authService = AuthService();
   UserProfile? _userProfile;
 
@@ -33,46 +31,98 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
       if (userProfileSnapshot.exists) {
         setState(() {
-          _userProfile = UserProfile.fromMap(
-              userProfileSnapshot.data() as Map<String, dynamic>);
+          _userProfile = UserProfile.fromMap(userProfileSnapshot.data() as Map<String, dynamic>);
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error fetching user profile: $e")),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error fetching user profile: $e")));
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(title: const Text("Profile")),
-    body: _userProfile == null
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 64,
-                  backgroundImage: _userProfile!.imageUrl!.isNotEmpty
-                      ? FileImage(File(_userProfile!.imageUrl.toString()))
-                      : const AssetImage('lib/images/profile_icon.png') as ImageProvider,
-                  backgroundColor: Colors.white60,
-                ),
-                Text("Name: ${_userProfile!.name}"),
-                Text("Age: ${_userProfile!.age}"),
-                Text("Bio: ${_userProfile!.bio}"),
-                Text("Looking For: ${_userProfile!.lookingFor}"),
-                Text("Hobbies: ${_userProfile!.hobbies.join(", ")}"),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Text(_userProfile!.imageUrl.toString()),
-                ),
-              ],
-            ),
-          ),
-  );
-}
+  @override
+  Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        centerTitle: true,
+        backgroundColor: colorScheme.primary,
+      ),
+      body: _userProfile == null
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: screenHeight * 0.04),
+              CircleAvatar(
+                radius: screenHeight * 0.1,
+                backgroundImage: _userProfile!.imageUrl!.isNotEmpty
+                    ? FileImage(File(_userProfile!.imageUrl.toString()))
+                    : const AssetImage('lib/images/profile_icon.png') as ImageProvider,
+                backgroundColor: Colors.white60,
+              ),
+              SizedBox(height: screenHeight * 0.03),
+              Text(
+                "${_userProfile!.name}, ${_userProfile!.age}",
+                style: TextStyle(
+                  fontSize: screenHeight * 0.025, // Dynamic font size
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              _infoCard("Bio", _userProfile!.bio, screenHeight, screenWidth),
+              _infoCard("Looking For", _userProfile!.lookingFor, screenHeight, screenWidth),
+              _hobbiesWrap(_userProfile!.hobbies, screenHeight),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _infoCard(String title, String content, double screenHeight, double screenWidth) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.01),
+      child: Padding(
+        padding: EdgeInsets.all(screenHeight * 0.02),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "$title:",
+              style: TextStyle(
+                fontSize: screenHeight * 0.022,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.01),
+            Text(
+              content,
+              style: TextStyle(fontSize: screenHeight * 0.02),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _hobbiesWrap(List<String> hobbies, double screenHeight) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Wrap(
+        spacing: 8.0,
+        runSpacing: 4.0,
+        children: hobbies.map((hobby) => Chip(
+          label: Text(hobby),
+          backgroundColor: colorScheme.secondary,
+        )).toList(),
+      ),
+    );
+  }
 }
