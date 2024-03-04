@@ -1,11 +1,16 @@
+import 'dart:ffi';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'home_page.dart';
 
@@ -70,8 +75,12 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       _isHobbiesEmpty = hobbies.isEmpty;
     });
     // check if any validation failed
-    hasErrors = _isNameEmpty || _isAgeEmpty || _isBioEmpty || _isLookingForEmpty || _isHobbiesEmpty;
-    if (hasErrors){
+    hasErrors = _isNameEmpty ||
+        _isAgeEmpty ||
+        _isBioEmpty ||
+        _isLookingForEmpty ||
+        _isHobbiesEmpty;
+    if (hasErrors) {
       return;
     }
     final userProfile = UserProfile(
@@ -80,7 +89,8 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         age: int.parse(_ageController.text),
         bio: _bioController.text,
         lookingFor: _lookingForController.text,
-        hobbies: hobbies);
+        hobbies: hobbies,
+        imageUrl: imageUrl);
     // save the user profile to the database
     await FirebaseFirestore.instance
         .collection('userProfiles')
@@ -91,6 +101,35 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         (Route<dynamic> route) => false);
   }
 
+  // select profile picture
+  Future<void> selectImage() async {
+    final ImagePicker imagePicker = ImagePicker();
+    final XFile? file =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      setState(() {
+        imageUrl = file.path;
+      });
+      await _uploadImage(File(file.path));
+    }
+  }
+
+  // upload the selected image
+  Future<void> _uploadImage(File imageFile) async {
+    String userId = _authService.getCurrentUser()!.uid;
+    String fileName = 'userProfiles/$userId/$imageFile.path';
+    Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+
+
+    UploadTask uploadTask = storageRef.putFile(imageFile);
+    TaskSnapshot snapshot = await uploadTask;
+    String imgUrl = await snapshot.ref.getDownloadURL();
+    setState(() {
+      imageUrl = imgUrl;
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -98,11 +137,31 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Complete Your Profile"),
+        title: const Center(child: Text("Complete Your Profile")),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: screenHeight * 0.04),
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 64,
+                  backgroundImage: imageUrl.isNotEmpty
+                      ? FileImage(File(imageUrl))
+                      : const AssetImage('lib/images/profile_icon.png') as ImageProvider,
+                  backgroundColor: Colors.white60,
+                ),
+                Positioned(
+                  bottom: -10,
+                  left: 80,
+                  child: IconButton(
+                    onPressed: () => selectImage(),
+                    icon: const Icon(Icons.add_a_photo),
+                  ),
+                )
+              ],
+            ),
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'Name',

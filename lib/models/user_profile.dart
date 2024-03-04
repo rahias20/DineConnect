@@ -4,7 +4,7 @@ class UserProfile {
   final int age;
   final String bio;
   final String lookingFor;
-  // final String imageUrl;
+  final String? imageUrl;
   final List<String> hobbies;
 
   UserProfile({
@@ -13,7 +13,7 @@ class UserProfile {
     required this.age,
     required this.bio,
     required this.lookingFor,
-    // required this.imageUrl,
+    this.imageUrl,
     required this.hobbies,
   });
 
@@ -25,7 +25,7 @@ class UserProfile {
       'age': age,
       'bio': bio,
       'lookingFor': lookingFor,
-      // 'imageUrl': imageUrl,
+      'imageUrl': imageUrl ?? "",
       'hobbies': hobbies
     };
   }
@@ -38,8 +38,7 @@ class UserProfile {
         age: map['age'],
         bio: map['bio'],
         lookingFor: map['lookingFor'],
-        // imageUrl: map['imageUrl'],
-        hobbies: map['hobbies']
-    );
+        imageUrl: map['imageUrl'] as String?, // cast as String since it can be null
+        hobbies: map['hobbies']);
   }
 }
