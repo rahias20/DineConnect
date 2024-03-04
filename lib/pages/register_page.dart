@@ -1,3 +1,4 @@
+import 'package:dine_connect/pages/profile_complete_page.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -104,6 +105,9 @@ class RegisterPage extends StatelessWidget {
       try {
         await _auth.signUpWithEmailPassword(
             _emailController.text, _passwordController.text);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const ProfileCompletePage()),
+                (Route<dynamic> route) => false);
       } catch (e) {
         showDialog(
           context: context,
