@@ -331,6 +331,29 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                 isError: _isLocationEmpty),
             Text('location: $_locationMessage', style: TextStyle(fontSize: 16.0),),
 
+            // location separate texfield
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: TextField(
+
+              enabled: false,
+              controller: _locationController,
+              obscureText: false,
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)
+                ),
+                fillColor: Theme.of(context).colorScheme.secondary,
+                filled: true,
+                hintText: 'Location 2',
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
+              ),
+            ),
+          ),
             // bio
             SizedBox(height: screenHeight * 0.04),
             MyTextField(

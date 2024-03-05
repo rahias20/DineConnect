@@ -1,4 +1,5 @@
 
+import 'package:dine_connect/pages/profile_complete_page.dart';
 import 'package:dine_connect/pages/user_profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class AuthGate extends StatelessWidget {
         builder: (context, snapshot){
           // user is logged in
           if (snapshot.hasData){
-            return UserProfilePage();
+            return ProfileCompletePage();
           }else{
             return WelcomeOrLoginOrRegister();
           }
