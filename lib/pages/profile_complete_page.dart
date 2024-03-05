@@ -10,6 +10,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -35,6 +37,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   final TextEditingController _locationController = TextEditingController();
   String imageUrl = '';
   List<String> hobbies = [];
+  String? _locationMessage;
+  bool _isLocationServiceEnabled = false;
+
 
   // fields empty check
   bool _isNameEmpty = false;
@@ -53,6 +58,136 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     _hobbyController.dispose();
     _locationController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLocationPermissionAndService();
+    _listenLocationServiceStatus();
+  }
+
+  Future<void> _checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    setState(() {
+      _isLocationServiceEnabled = serviceEnabled;
+    });
+  }
+
+  void _listenLocationServiceStatus() {
+    Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
+      setState(() {
+        _isLocationServiceEnabled = status == ServiceStatus.enabled;
+      });
+      if (_isLocationServiceEnabled) {
+        // Optionally, do something when the location service is enabled, like fetching the current position
+        _checkLocationPermissionAndService();
+      }
+    });
+  }
+
+  Future<void> _checkLocationPermissionAndService() async{
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled){
+      // location services are not enabled, prompt the user to enable
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Location Services Disabled"),
+            content: Text("Please enable location services to proceed."),
+            actions: <Widget>[
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  // Open location settings
+                  Geolocator.openLocationSettings();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever
+      // Show a dialog or snackbar informing the user.
+      return;
+    }
+
+    // if permissions are granted, proceed to fetch and display location
+    _determinePosition();
+  }
+
+
+
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // test if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        _locationMessage = 'Location services are disabled.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are disabled')));
+
+      });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied){
+      setState(() {
+        _locationMessage = 'Location permissions are denied';
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+      });
+      return;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // permissions are denied forever, handle appropriately
+      setState(() {
+        _locationMessage =
+            'Location permissions are permanently denied, we cannot request permissions';
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are permanently denied, we cannot request permissions')));
+      });
+      return;
+    }
+
+    // when we reach here, permissions are granted and we can continue
+    // accessing the position of the device
+    Position position = await Geolocator.getCurrentPosition();
+
+    // get place
+    try{
+      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = placemarks.first;
+      setState(() {
+        _locationMessage = "${place.locality}, ${place.country}";
+        _locationController.text = "${place.locality}, ${place.country}";
+      });
+    } catch (e) {
+      _locationMessage = "Failed to get city and country";
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to get Location')));
+
+    }
   }
 
   // add hobby to the list
@@ -128,14 +263,12 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     String fileName = 'userProfiles/$userId/${path.basename(imageFile.path)}';
     Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
 
-
     UploadTask uploadTask = storageRef.putFile(imageFile);
     TaskSnapshot snapshot = await uploadTask;
     String imgUrl = await snapshot.ref.getDownloadURL();
     setState(() {
       imageUrl = imgUrl;
     });
-
   }
 
   @override
@@ -157,7 +290,8 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                   radius: 64,
                   backgroundImage: imageUrl.isNotEmpty
                       ? FileImage(File(imageUrl))
-                      : const AssetImage('lib/images/profile_icon.png') as ImageProvider,
+                      : const AssetImage('lib/images/profile_icon.png')
+                          as ImageProvider,
                   backgroundColor: Colors.white60,
                 ),
                 Positioned(
@@ -190,10 +324,12 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
             // get location
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
-                hintText: 'City',
+                enabled: false,
+                hintText: 'Location',
                 obscureText: false,
                 controller: _locationController,
                 isError: _isLocationEmpty),
+            Text('location: $_locationMessage', style: TextStyle(fontSize: 16.0),),
 
             // bio
             SizedBox(height: screenHeight * 0.04),
