@@ -32,6 +32,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _lookingForController = TextEditingController();
   final TextEditingController _hobbyController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
   String imageUrl = '';
   List<String> hobbies = [];
 
@@ -41,6 +42,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   bool _isBioEmpty = false;
   bool _isLookingForEmpty = false;
   bool _isHobbiesEmpty = false;
+  bool _isLocationEmpty = false;
 
   @override
   void dispose() {
@@ -49,6 +51,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     _bioController.dispose();
     _lookingForController.dispose();
     _hobbyController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
@@ -74,13 +77,15 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       _isBioEmpty = _bioController.text.isEmpty;
       _isLookingForEmpty = _lookingForController.text.isEmpty;
       _isHobbiesEmpty = hobbies.isEmpty;
+      _isLocationEmpty = _locationController.text.isEmpty;
     });
     // check if any validation failed
     hasErrors = _isNameEmpty ||
         _isAgeEmpty ||
         _isBioEmpty ||
         _isLookingForEmpty ||
-        _isHobbiesEmpty;
+        _isHobbiesEmpty ||
+        _isLocationEmpty;
     if (hasErrors) {
       return;
     }
@@ -91,7 +96,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         bio: _bioController.text,
         lookingFor: _lookingForController.text,
         hobbies: hobbies,
-        imageUrl: imageUrl);
+        imageUrl: imageUrl,
+        location: _locationController.text);
+
     // save the user profile to the database
     await FirebaseFirestore.instance
         .collection('userProfiles')
@@ -163,30 +170,48 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                 )
               ],
             ),
+
+            // get name
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'Name',
                 obscureText: false,
                 controller: _nameController,
                 isError: _isNameEmpty),
+
+            // get age
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'Age',
                 obscureText: false,
                 controller: _ageController,
                 isError: _isAgeEmpty),
+
+            // get location
+            SizedBox(height: screenHeight * 0.04),
+            MyTextField(
+                hintText: 'City',
+                obscureText: false,
+                controller: _locationController,
+                isError: _isLocationEmpty),
+
+            // bio
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'Tell us a bit about yourself',
                 obscureText: false,
                 controller: _bioController,
                 isError: _isBioEmpty),
+
+            // looking for textfield
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
                 hintText: 'What are you looking for',
                 obscureText: false,
                 controller: _lookingForController,
                 isError: _isLookingForEmpty),
+
+            // get hobbies
             SizedBox(height: screenHeight * 0.04),
             MyListField(
                 hintText: 'Enter a hobby',
@@ -207,7 +232,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                   .toList(),
             ),
 
-            // conditionally display an error message
+            // conditionally display an error message if no hobbies
             if (_isHobbiesEmpty)
               const Center(
                 child: Padding(
