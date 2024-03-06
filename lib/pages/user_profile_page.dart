@@ -74,10 +74,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   color: colorScheme.onSurface,
                 ),
               ),
+
+              SizedBox(height: screenHeight * 0.02),
+              Text(
+                _userProfile!.location,
+                style: TextStyle(
+                  fontSize: screenHeight * 0.025, // Dynamic font size
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+
               SizedBox(height: screenHeight * 0.02),
               _infoCard("Bio", _userProfile!.bio, screenHeight, screenWidth),
               _infoCard("Looking For", _userProfile!.lookingFor, screenHeight, screenWidth),
-              _hobbiesWrap(_userProfile!.hobbies, screenHeight),
+              _hobbiesWrap(_userProfile!.hobbies, screenHeight, screenWidth),
+              SizedBox(height: screenHeight * 0.05),
             ],
           ),
         ),
@@ -86,15 +98,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 
   Widget _infoCard(String title, String content, double screenHeight, double screenWidth) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Card(
+      elevation: 3,
       margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.01),
       child: Padding(
         padding: EdgeInsets.all(screenHeight * 0.02),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "$title:",
+              title,
               style: TextStyle(
                 fontSize: screenHeight * 0.022,
                 fontWeight: FontWeight.bold,
@@ -103,6 +117,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             SizedBox(height: screenHeight * 0.01),
             Text(
               content,
+              textAlign: TextAlign.justify,
               style: TextStyle(fontSize: screenHeight * 0.02),
             ),
           ],
@@ -111,10 +126,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Widget _hobbiesWrap(List<String> hobbies, double screenHeight) {
+  Widget _hobbiesWrap(List<String> hobbies, double screenHeight, double screenWidth) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(screenWidth * 0.05),
       child: Wrap(
         spacing: 8.0,
         runSpacing: 4.0,
