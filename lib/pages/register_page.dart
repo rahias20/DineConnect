@@ -1,4 +1,4 @@
-import 'package:dine_connect/pages/profile_complete_page.dart';
+import 'package:dine_connect/pages/complete_profile_page.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 

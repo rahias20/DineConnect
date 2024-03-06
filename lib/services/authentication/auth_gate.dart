@@ -1,5 +1,5 @@
 
-import 'package:dine_connect/pages/profile_complete_page.dart';
+import 'package:dine_connect/pages/complete_profile_page.dart';
 import 'package:dine_connect/pages/user_profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

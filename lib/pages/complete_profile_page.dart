@@ -40,7 +40,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   final TextEditingController _locationController = TextEditingController();
   String imageUrl = '';
   List<String> hobbies = [];
-  String? _locationMessage;
   bool _isLocationServiceEnabled = false;
 
 
@@ -145,7 +144,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        _locationMessage = 'Location services are disabled.';
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Location permissions are disabled')));
 
@@ -156,7 +154,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied){
       setState(() {
-        _locationMessage = 'Location permissions are denied';
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Location permissions are denied')));
       });
@@ -166,8 +163,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     if (permission == LocationPermission.deniedForever) {
       // permissions are denied forever, handle appropriately
       setState(() {
-        _locationMessage =
-            'Location permissions are permanently denied, we cannot request permissions';
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Location permissions are permanently denied, we cannot request permissions')));
       });
@@ -183,11 +178,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks.first;
       setState(() {
-        _locationMessage = "${place.locality}, ${place.country}";
         _locationController.text = "${place.locality}, ${place.country}";
       });
     } catch (e) {
-      _locationMessage = "Failed to get city and country";
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to get Location')));
 
