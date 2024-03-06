@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
+import 'package:dine_connect/services/userProfile/user_profile_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ class ProfileCompletePage extends StatefulWidget {
 class _ProfileCompletePageState extends State<ProfileCompletePage> {
   // get auth service
   final AuthService _authService = AuthService();
+  late UserProfileService _userProfileService;
 
   // controllers
   final TextEditingController _nameController = TextEditingController();
@@ -63,6 +66,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   @override
   void initState() {
     super.initState();
+    _userProfileService = UserProfileService();
     _checkLocationPermissionAndService();
     _listenLocationServiceStatus();
   }
@@ -235,50 +239,34 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         location: _locationController.text);
 
     // save the user profile to the database
-    await FirebaseFirestore.instance
-        .collection('userProfiles')
-        .doc(userProfile.userId)
-        .set(userProfile.toMap());
+    await _userProfileService.saveUserProfile(userProfile);
+
+    // navigate to home page after completing profile
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => HomePage()),
         (Route<dynamic> route) => false);
   }
 
   // select profile picture
-  Future<void> selectImage() async {
-    final ImagePicker imagePicker = ImagePicker();
-    final XFile? file =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+  Future<void> selectAndUploadImage() async {
+    final XFile? file = await _userProfileService.selectImage();
     if (file != null) {
       setState(() {
         imageUrl = file.path;
       });
-      await _uploadImage(File(file.path));
     }
+    await _userProfileService.uploadImage(File(file!.path));
   }
 
-  // upload the selected image
-  Future<void> _uploadImage(File imageFile) async {
-    String userId = _authService.getCurrentUser()!.uid;
-    String fileName = 'userProfiles/$userId/${path.basename(imageFile.path)}';
-    Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
-
-    UploadTask uploadTask = storageRef.putFile(imageFile);
-    TaskSnapshot snapshot = await uploadTask;
-    String imgUrl = await snapshot.ref.getDownloadURL();
-    setState(() {
-      imageUrl = imgUrl;
-    });
-  }
 
   // this method is called when the "location" TextField is tapped
-Future<void> _onLocationFieldTapped() async {
-  await _checkLocationPermissionAndService();
-  _listenLocationServiceStatus();
-  // If the location services are enabled and permission is granted, fetch the location
-  if (_isLocationServiceEnabled) {
-    await _determinePosition();
-  }
+  Future<void> _onLocationFieldTapped() async {
+    await _checkLocationPermissionAndService();
+    _listenLocationServiceStatus();
+    // If the location services are enabled and permission is granted, fetch the location
+    if (_isLocationServiceEnabled) {
+      await _determinePosition();
+    }
 }
 
   @override
@@ -308,7 +296,7 @@ Future<void> _onLocationFieldTapped() async {
                   bottom: -10,
                   left: 80,
                   child: IconButton(
-                    onPressed: () => selectImage(),
+                    onPressed: () => selectAndUploadImage(),
                     icon: const Icon(Icons.add_a_photo),
                   ),
                 )
@@ -350,7 +338,7 @@ Future<void> _onLocationFieldTapped() async {
                     ),
                     fillColor: Theme.of(context).colorScheme.secondary,
                     filled: true,
-                    hintText: 'Location 2',
+                    hintText: 'Location',
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
                   ),

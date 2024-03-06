@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: UserProfilePage(),
+      home: AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
         '/loginOrRegister': (context) => LoginOrRegister(),

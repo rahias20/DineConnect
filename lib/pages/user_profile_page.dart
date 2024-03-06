@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
+import 'package:dine_connect/services/userProfile/user_profile_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -14,28 +16,26 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   final AuthService _authService = AuthService();
   UserProfile? _userProfile;
+  late UserProfileService _userProfileService;
 
   @override
   void initState() {
     super.initState();
+    _userProfileService = UserProfileService();
     _fetchUserProfile();
   }
 
   Future<void> _fetchUserProfile() async {
     try {
-      String userId = _authService.getCurrentUser()!.uid;
-      DocumentSnapshot userProfileSnapshot = await FirebaseFirestore.instance
-          .collection('userProfiles')
-          .doc(userId)
-          .get();
+      UserProfile? profile = await _userProfileService.fetchUserProfile();
 
-      if (userProfileSnapshot.exists) {
+      if (profile != null) {
         setState(() {
-          _userProfile = UserProfile.fromMap(userProfileSnapshot.data() as Map<String, dynamic>);
+          _userProfile = profile;
         });
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error fetching user profile: $e")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
