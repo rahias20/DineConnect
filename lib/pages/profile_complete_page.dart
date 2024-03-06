@@ -271,6 +271,16 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     });
   }
 
+  // this method is called when the "location" TextField is tapped
+Future<void> _onLocationFieldTapped() async {
+  await _checkLocationPermissionAndService();
+  _listenLocationServiceStatus();
+  // If the location services are enabled and permission is granted, fetch the location
+  if (_isLocationServiceEnabled) {
+    await _determinePosition();
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -321,39 +331,32 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                 controller: _ageController,
                 isError: _isAgeEmpty),
 
-            // get location
+            // location texfield
             SizedBox(height: screenHeight * 0.04),
-            MyTextField(
-                enabled: false,
-                hintText: 'Location',
-                obscureText: false,
-                controller: _locationController,
-                isError: _isLocationEmpty),
-            Text('location: $_locationMessage', style: TextStyle(fontSize: 16.0),),
-
-            // location separate texfield
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: TextField(
-
-              enabled: false,
-              controller: _locationController,
-              obscureText: false,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: GestureDetector(
+                onTap: _onLocationFieldTapped,
+                child: TextField(
+                  enabled: false,
+                  controller: _locationController,
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary)
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)
+                    ),
+                    fillColor: Theme.of(context).colorScheme.secondary,
+                    filled: true,
+                    hintText: 'Location 2',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                    errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)
-                ),
-                fillColor: Theme.of(context).colorScheme.secondary,
-                filled: true,
-                hintText: 'Location 2',
-                hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
               ),
             ),
-          ),
             // bio
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
