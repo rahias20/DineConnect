@@ -13,18 +13,16 @@ class UserProfileService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
 
-
   // fetch user profile data from the database
   Future<UserProfile?> fetchUserProfile() async {
     String userId = _auth.currentUser!.uid;
     try {
-      DocumentSnapshot userProfileSnapshot = await _firestore
-          .collection('userProfiles')
-          .doc(userId)
-          .get();
+      DocumentSnapshot userProfileSnapshot =
+          await _firestore.collection('userProfiles').doc(userId).get();
 
       if (userProfileSnapshot.exists) {
-        return UserProfile.fromMap(userProfileSnapshot.data() as Map<String, dynamic>);
+        return UserProfile.fromMap(
+            userProfileSnapshot.data() as Map<String, dynamic>);
       }
     } catch (e) {
       throw Exception("Error fetching user profile: $e");
@@ -39,24 +37,28 @@ class UserProfileService {
         .collection('userProfiles')
         .doc(userProfile.userId)
         .set(userProfile.toMap());
+  }
 
+  // delete the user profile
+  Future<void> deleteUserProfile(String userId) async {
+    await _firestore.collection('userProfiles').doc(userId).delete();
   }
 
   // select profile picture
   Future<XFile?> selectImage() async {
-    try{
+    try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image != null){
+      if (image != null) {
         return image;
       }
-    }catch(e){
+    } catch (e) {
       return null;
     }
     return null;
   }
 
   Future<String?> uploadImage(File image) async {
-    try{
+    try {
       File file = File(image.path);
 
       // upload image
@@ -68,12 +70,8 @@ class UserProfileService {
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
       return downloadUrl;
-    } catch (e){
+    } catch (e) {
       return null;
     }
-
   }
-
-
-
 }
