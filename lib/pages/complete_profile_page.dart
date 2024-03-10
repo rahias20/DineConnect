@@ -228,6 +228,12 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
               backgroundColor: Colors.red.shade500,
                 content: const Text('Please upload a profile photo to continue')));
       }
+      else if (int.tryParse(_ageController.text) == null){
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                backgroundColor: Colors.red.shade500,
+                content: const Text('Please enter a valid age')));
+      }
       return;
     }
     final userProfile = UserProfile(
