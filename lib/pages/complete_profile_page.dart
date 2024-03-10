@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
+import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/userProfile/user_profile_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -242,9 +243,10 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     // save the user profile to the database
     await _userProfileService.saveUserProfile(userProfile);
 
+
     // navigate to home page after completing profile
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => AuthGate()),
         (Route<dynamic> route) => false);
   }
 
