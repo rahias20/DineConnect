@@ -299,7 +299,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
             // get name
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
-                hintText: 'Name',
+                hintText: 'Full Name',
                 obscureText: false,
                 controller: _nameController,
                 isError: _isNameEmpty),

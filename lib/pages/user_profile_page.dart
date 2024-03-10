@@ -59,7 +59,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             children: [
               SizedBox(height: screenHeight * 0.04),
               CircleAvatar(
-                radius: screenHeight * 0.1,
+                radius: screenHeight * 0.125,
                 backgroundImage: _userProfile!.imageUrl!.isNotEmpty
                     ? FileImage(File(_userProfile!.imageUrl.toString()))
                     : const AssetImage('lib/images/profile_icon.png') as ImageProvider,

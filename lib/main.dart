@@ -1,7 +1,8 @@
 import 'package:dine_connect/firebase_options.dart';
+import 'package:dine_connect/pages/chats_page.dart';
+import 'package:dine_connect/pages/edit_profile_page.dart';
 import 'package:dine_connect/pages/home_page.dart';
-import 'package:dine_connect/pages/complete_profile_page.dart';
-import 'package:dine_connect/pages/user_profile_page.dart';
+import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/loginOrRegister': (context) => LoginOrRegister(),
         '/homepage': (context) => HomePage(),
+        '/editProfile': (context) => EditProfilePage(),
+        '/chatsPage': (context) => ChatsPage(),
 
       },
 
