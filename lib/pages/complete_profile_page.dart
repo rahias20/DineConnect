@@ -50,6 +50,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   bool _isLookingForEmpty = false;
   bool _isHobbiesEmpty = false;
   bool _isLocationEmpty = false;
+  bool _isImageEmpty = false;
 
   @override
   void dispose() {
@@ -183,7 +184,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to get Location')));
-
     }
   }
 
@@ -210,6 +210,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       _isLookingForEmpty = _lookingForController.text.isEmpty;
       _isHobbiesEmpty = hobbies.isEmpty;
       _isLocationEmpty = _locationController.text.isEmpty;
+      _isImageEmpty = imageUrl.isEmpty;
     });
     // check if any validation failed
     hasErrors = _isNameEmpty ||
@@ -217,8 +218,15 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         _isBioEmpty ||
         _isLookingForEmpty ||
         _isHobbiesEmpty ||
-        _isLocationEmpty;
+        _isLocationEmpty ||
+        _isImageEmpty;
     if (hasErrors) {
+      if (_isImageEmpty){
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red.shade500,
+                content: const Text('Please upload a profile photo to continue')));
+      }
       return;
     }
     final userProfile = UserProfile(
@@ -292,7 +300,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                     onPressed: () => selectAndUploadImage(),
                     icon: const Icon(Icons.add_a_photo),
                   ),
-                )
+                ),
               ],
             ),
 
