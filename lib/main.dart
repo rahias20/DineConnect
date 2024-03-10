@@ -1,3 +1,4 @@
+import 'package:dine_connect/components/my_textfield.dart';
 import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/edit_profile_page.dart';
@@ -34,7 +35,6 @@ class MyApp extends StatelessWidget {
         '/homepage': (context) => HomePage(),
         '/editProfile': (context) => EditProfilePage(),
         '/chatsPage': (context) => ChatsPage(),
-
       },
 
     );

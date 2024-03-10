@@ -14,7 +14,6 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  final AuthService _authService = AuthService();
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
 
