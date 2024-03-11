@@ -31,6 +31,7 @@ class MyTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         validator: validator,
         readOnly: readOnly,
+
         decoration: InputDecoration(
           labelText: labelText,
           border: const OutlineInputBorder(),

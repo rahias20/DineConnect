@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
+import 'package:dine_connect/pages/user_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -140,17 +141,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
         age: int.parse(_ageController.text),
         bio: _bioController.text,
         lookingFor: _lookingForController.text,
-        hobbies: hobbies,
+        hobbies: _userProfile!.hobbies,
         imageUrl: imageUrl,
         location: _locationController.text);
 
     // save the user profile to the database
-    await _userProfileService.saveUserProfile(userProfile);
+    await _userProfileService.updateUserProfile(userProfile);
 
-    // // navigate to home page after completing profile
-    // Navigator.of(context).pushAndRemoveUntil(
-    //     MaterialPageRoute(builder: (context) => AuthGate()),
-    //         (Route<dynamic> route) => false);
+
+    // navigate to home page after completing profile
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => UserProfilePage()),
+            (Route<dynamic> route) => false);
   }
 
   // select profile picture
@@ -379,7 +381,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               controller: _bioController,
               labelText: 'Bio',
               maxLines: 4,
-              keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null) {
                   return 'Please enter your bio';
@@ -391,7 +392,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             MyTextFormField(
               controller: _lookingForController,
               labelText: 'What are you looking for . . .',
-              keyboardType: TextInputType.number,
               maxLines: 4,
               validator: (value) {
                 if (value == null) {
@@ -425,7 +425,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
             SizedBox(height: screenHeight * 0.04),
 
-            MyButton(text: 'Save Profile', onTap: () => _saveProfile()),
+            MyButton(text: 'Save Changes', onTap: () => _saveProfile()),
           ],
         ),
       ),

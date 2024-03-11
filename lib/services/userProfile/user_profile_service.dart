@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,6 +38,15 @@ class UserProfileService {
         .collection('userProfiles')
         .doc(userProfile.userId)
         .set(userProfile.toMap());
+  }
+  
+  // update user profile in the database
+  Future<void> updateUserProfile(UserProfile userProfile) async {
+    try{
+      await _firestore.collection('userProfiles').doc(userProfile.userId).update(userProfile.toMap());
+    } catch (e) {
+      throw Exception("Error updating user profile: $e");
+    }
   }
 
   // delete the user profile
