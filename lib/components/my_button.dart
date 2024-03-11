@@ -20,7 +20,6 @@ class MyButton extends StatelessWidget {
         child: Center(
           child: Text(text),
         ),
-
       ),
     );
   }

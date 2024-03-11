@@ -2,9 +2,16 @@ import 'dart:io';
 import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../components/my_button.dart';
+import '../components/my_list_field.dart';
 import '../models/user_profile.dart';
+import '../services/authentication/auth_service.dart';
 import '../services/userProfile/user_profile_service.dart';
+import 'package:path/path.dart' as path;
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -14,6 +21,8 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  // get auth service
+  final AuthService _authService = AuthService();
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
 
@@ -27,6 +36,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String imageUrl = '';
   List<String> hobbies = [];
   bool _isLocationServiceEnabled = false;
+
+  // fields empty check
+  bool _isNameEmpty = false;
+  bool _isAgeEmpty = false;
+  bool _isBioEmpty = false;
+  bool _isLookingForEmpty = false;
+  bool _isHobbiesEmpty = false;
+  bool _isLocationEmpty = false;
+  bool _isImageEmpty = false;
 
   @override
   void initState() {
@@ -43,7 +61,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     // fetch user profile
     _fetchUserProfile();
-
   }
 
   @override
@@ -71,7 +88,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _locationController.text = _userProfile?.location ?? '';
           _bioController.text = _userProfile?.bio ?? '';
           _lookingForController.text = _userProfile?.lookingFor ?? '';
-          _hobbyController.text = _userProfile?.hobbies.join(', ') ?? '';
+          // _hobbyController.text = _userProfile?.hobbies.join(', ') ?? '';
+          imageUrl = _userProfile?.imageUrl ?? '';
         });
       }
     } catch (e) {
@@ -80,20 +98,245 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  // save user profile to database
+  Future<void> _saveProfile() async {
+    bool hasErrors = false;
+    // Convert age input to integer and check if it's null (invalid input)
+    int? age = int.tryParse(_ageController.text);
+
+    // Check each field and update the state if any are empty
+    setState(() {
+      _isNameEmpty = _nameController.text.isEmpty;
+      _isAgeEmpty = _ageController.text.isEmpty || age == null;
+      _isBioEmpty = _bioController.text.isEmpty;
+      _isLookingForEmpty = _lookingForController.text.isEmpty;
+      _isHobbiesEmpty = hobbies.isEmpty;
+      _isLocationEmpty = _locationController.text.isEmpty;
+      _isImageEmpty = imageUrl.isEmpty;
+    });
+    // check if any validation failed
+    hasErrors = _isNameEmpty ||
+        _isAgeEmpty ||
+        _isBioEmpty ||
+        _isLookingForEmpty ||
+        _isHobbiesEmpty ||
+        _isLocationEmpty ||
+        _isImageEmpty;
+    if (hasErrors) {
+      if (_isImageEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red.shade500,
+            content: const Text('Please upload a profile photo to continue')));
+      } else if (int.tryParse(_ageController.text) == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red.shade500,
+            content: const Text('Please enter a valid age')));
+      }
+      return;
+    }
+    final userProfile = UserProfile(
+        userId: _authService.getCurrentUser()!.uid,
+        name: _nameController.text,
+        age: int.parse(_ageController.text),
+        bio: _bioController.text,
+        lookingFor: _lookingForController.text,
+        hobbies: hobbies,
+        imageUrl: imageUrl,
+        location: _locationController.text);
+
+    // save the user profile to the database
+    await _userProfileService.saveUserProfile(userProfile);
+
+    // // navigate to home page after completing profile
+    // Navigator.of(context).pushAndRemoveUntil(
+    //     MaterialPageRoute(builder: (context) => AuthGate()),
+    //         (Route<dynamic> route) => false);
+  }
+
+  // select profile picture
+  Future<void> selectAndUploadImage() async {
+    final XFile? file = await _userProfileService.selectImage();
+    if (file != null) {
+      setState(() {
+        imageUrl = file.path;
+      });
+    }
+    await _userProfileService.uploadImage(File(file!.path));
+  }
+
+  Future<void> _checkLocationPermissionAndService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // location services are not enabled, prompt the user to enable
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Location Services Disabled"),
+            content: Text("Please enable location services to proceed."),
+            actions: <Widget>[
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  // Open location settings
+                  Geolocator.openLocationSettings();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever
+      // Show a dialog or snackbar informing the user.
+      return;
+    }
+
+    // if permissions are granted, proceed to fetch and display location
+    _determinePosition();
+  }
+
+  // get location
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // test if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are disabled')));
+      });
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+      });
+      return;
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // permissions are denied forever, handle appropriately
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, we cannot request permissions')));
+      });
+      return;
+    }
+
+    // when we reach here, permissions are granted and we can continue
+    // accessing the position of the device
+    Position position = await Geolocator.getCurrentPosition();
+
+    // get place
+    try {
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = placemarks.first;
+      setState(() {
+        _locationController.text = "${place.locality}, ${place.country}";
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to get Location')));
+    }
+  }
+
+  // this method is called when the "location" TextField is tapped
+  Future<void> _onLocationFieldTapped() async {
+    await _checkLocationPermissionAndService();
+    _listenLocationServiceStatus();
+    // If the location services are enabled and permission is granted, fetch the location
+    if (_isLocationServiceEnabled) {
+      await _determinePosition();
+    }
+  }
+
+  void _listenLocationServiceStatus() {
+    Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
+      setState(() {
+        _isLocationServiceEnabled = status == ServiceStatus.enabled;
+      });
+      if (_isLocationServiceEnabled) {
+        // Optionally, do something when the location service is enabled, like fetching the current position
+        _checkLocationPermissionAndService();
+      }
+    });
+  }
+
+  // add hobby to the list
+  void _addHobby(String hobby) {
+    if (hobby.isNotEmpty && !hobbies.contains(hobby)) {
+      setState(() {
+        hobbies.add(hobby);
+        _userProfile?.hobbies.add(hobby);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final double screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    final double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final ColorScheme colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Profile"),
-          centerTitle: true,
-          backgroundColor: colorScheme.primary,
-        ),
-        body: Column(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        centerTitle: true,
+        backgroundColor: colorScheme.primary,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
           children: [
+            SizedBox(height: screenHeight * 0.04),
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 64,
+                  backgroundImage: imageUrl.isNotEmpty
+                      ? FileImage(File(imageUrl))
+                      : const AssetImage('lib/images/profile_icon.png')
+                  as ImageProvider,
+                  backgroundColor: Colors.white60,
+                ),
+                Positioned(
+                  bottom: -10,
+                  left: 80,
+                  child: IconButton(
+                    onPressed: () => selectAndUploadImage(),
+                    icon: const Icon(Icons.add_a_photo),
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: screenHeight * 0.04),
             MyTextFormField(
               controller: _nameController,
@@ -105,7 +348,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 return null;
               },
             ),
-
             SizedBox(height: screenHeight * 0.04),
             MyTextFormField(
               controller: _ageController,
@@ -119,10 +361,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
               },
             ),
 
+            // location
+            SizedBox(height: screenHeight * 0.04),
+            GestureDetector(
+              onTap: _onLocationFieldTapped,
+              child: AbsorbPointer(
+                child: MyTextFormField(
+                  controller: _locationController,
+                  labelText: 'Location',
+                  readOnly: true,
+                ),
+              ),
+            ),
+
             SizedBox(height: screenHeight * 0.04),
             MyTextFormField(
               controller: _bioController,
               labelText: 'Bio',
+              maxLines: 4,
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null) {
@@ -131,12 +387,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 return null;
               },
             ),
-
             SizedBox(height: screenHeight * 0.04),
             MyTextFormField(
               controller: _lookingForController,
               labelText: 'What are you looking for . . .',
               keyboardType: TextInputType.number,
+              maxLines: 4,
               validator: (value) {
                 if (value == null) {
                   return 'Please enter what are you looking for';
@@ -145,59 +401,33 @@ class _EditProfilePageState extends State<EditProfilePage> {
               },
             ),
 
+            SizedBox(height: screenHeight * 0.04),
+            MyListField(
+                hintText: 'Enter a hobby',
+                controller: _hobbyController,
+                onSubmitted: _addHobby),
 
-            SizedBox(height: screenHeight * 0.1),
-            Text(_userProfile!.name),
-
-          ],
-        ));
-  }
-
-  Widget _infoCard(
-      String title, String content, double screenHeight, double screenWidth) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Card(
-      elevation: 3,
-      margin: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.05, vertical: screenHeight * 0.01),
-      child: Padding(
-        padding: EdgeInsets.all(screenHeight * 0.02),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: screenHeight * 0.022,
-                fontWeight: FontWeight.bold,
-              ),
+            Wrap(
+              spacing: 8.0, // Gap between adjacent chips
+              runSpacing: 4.0, // Gap between lines
+              children: List<Widget>.generate(_userProfile?.hobbies.length ?? 0,
+                      (int index) {
+                    return Chip(
+                      label: Text(_userProfile!.hobbies[index]),
+                      onDeleted: () {
+                        setState(() {
+                          _userProfile!.hobbies.removeAt(index);
+                        });
+                      },
+                    );
+                  }),
             ),
-            SizedBox(height: screenHeight * 0.01),
-            Text(
-              content,
-              textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: screenHeight * 0.02),
-            ),
+
+            SizedBox(height: screenHeight * 0.04),
+
+            MyButton(text: 'Save Profile', onTap: () => _saveProfile()),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _hobbiesWrap(
-      List<String> hobbies, double screenHeight, double screenWidth) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: EdgeInsets.all(screenWidth * 0.05),
-      child: Wrap(
-        spacing: 8.0,
-        runSpacing: 4.0,
-        children: hobbies
-            .map((hobby) => Chip(
-                  label: Text(hobby),
-                  backgroundColor: colorScheme.secondary,
-                ))
-            .toList(),
       ),
     );
   }

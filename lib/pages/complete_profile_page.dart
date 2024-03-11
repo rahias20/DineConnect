@@ -28,7 +28,7 @@ class ProfileCompletePage extends StatefulWidget {
 }
 
 class _ProfileCompletePageState extends State<ProfileCompletePage> {
-  // get auth service
+  // get auth and userProfile service
   final AuthService _authService = AuthService();
   late UserProfileService _userProfileService;
 
@@ -70,13 +70,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     _userProfileService = UserProfileService();
     _checkLocationPermissionAndService();
     _listenLocationServiceStatus();
-  }
-
-  Future<void> _checkLocationService() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    setState(() {
-      _isLocationServiceEnabled = serviceEnabled;
-    });
   }
 
   void _listenLocationServiceStatus() {
@@ -354,6 +347,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                 ),
               ),
             ),
+
             // bio
             SizedBox(height: screenHeight * 0.04),
             MyTextField(
