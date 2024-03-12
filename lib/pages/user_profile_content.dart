@@ -6,14 +6,14 @@ import 'package:dine_connect/services/userProfile/user_profile_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class UserProfileContentPage extends StatefulWidget {
-  const UserProfileContentPage({super.key});
+class UserProfileContent extends StatefulWidget {
+  const UserProfileContent({super.key});
 
   @override
-  State<UserProfileContentPage> createState() => _UserProfileContentPageState();
+  State<UserProfileContent> createState() => _UserProfileContentState();
 }
 
-class _UserProfileContentPageState extends State<UserProfileContentPage> {
+class _UserProfileContentState extends State<UserProfileContent> {
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
 

@@ -22,6 +22,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 30),
                 // logo
                 const SizedBox(
                   width: 900,
@@ -35,7 +36,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-        
+
                 // welcome back message
                 const SizedBox(height: 30),
                 Padding(
@@ -49,25 +50,45 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-        
+
                 // email text field
                 const SizedBox(height: 25),
                 MyTextField(
                     hintText: "Email",
                     obscureText: false,
                     controller: _emailController),
-        
+
                 // password text field
                 const SizedBox(height: 25),
                 MyTextField(
                     hintText: "Password",
                     obscureText: true,
                     controller: _passwordController),
-        
+
+                const SizedBox(height: 9),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/forgotPasswordPage'),
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 // login button
                 const SizedBox(height: 25),
                 MyButton(text: "Login", onTap: () => login(context)),
-        
+
                 // register now
                 const SizedBox(height: 25),
                 Row(

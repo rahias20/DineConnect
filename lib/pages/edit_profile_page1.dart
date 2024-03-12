@@ -1,4 +1,4 @@
-import 'package:dine_connect/pages/user_profile_content_page.dart';
+import 'package:dine_connect/pages/user_profile_content.dart';
 import 'package:flutter/material.dart';
 
 class EditProfilePage1 extends StatelessWidget {
@@ -30,7 +30,7 @@ class EditProfilePage1 extends StatelessWidget {
           ),
         ],
       ),
-      body: UserProfileContentPage(),
+      body: UserProfileContent(),
     );
   }
 }

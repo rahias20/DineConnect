@@ -3,6 +3,7 @@ import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/edit_profile_page1.dart';
 import 'package:dine_connect/pages/edit_profile_page2.dart';
+import 'package:dine_connect/pages/forgot_password_page.dart';
 import 'package:dine_connect/pages/home_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
@@ -37,6 +38,8 @@ class MyApp extends StatelessWidget {
         '/editProfilePage1': (context) => const EditProfilePage1(),
         '/editProfilePage2': (context) => const EditProfilePage2(),
         '/chatsPage': (context) => const ChatsPage(),
+        '/forgotPasswordPage': (context) => const ForgotPasswordPage(),
+
       },
 
     );

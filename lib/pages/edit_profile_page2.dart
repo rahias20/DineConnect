@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
-import 'package:dine_connect/pages/user_profile_content_page.dart';
+import 'package:dine_connect/pages/user_profile_content.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
