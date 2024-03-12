@@ -1,12 +1,9 @@
 
-import 'package:dine_connect/pages/complete_profile_page.dart';
-import 'package:dine_connect/pages/user_profile_content_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/services/authentication/welcome_or_login_or_register.dart';
 
 import '../../pages/home_page.dart';
-import 'login_or_register.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});

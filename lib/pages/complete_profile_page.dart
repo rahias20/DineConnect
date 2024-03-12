@@ -88,6 +88,8 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled){
       // location services are not enabled, prompt the user to enable
+
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -176,6 +178,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         _locationController.text = "${place.locality}, ${place.country}";
       });
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to get Location')));
     }

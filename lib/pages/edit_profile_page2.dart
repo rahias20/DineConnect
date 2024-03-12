@@ -94,6 +94,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
@@ -152,10 +153,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
 
 
     // navigate to home page after completing profile
+    if (!mounted) return;
     Navigator.pop(context);
-    // Navigator.of(context).pushAndRemoveUntil(
-    //     MaterialPageRoute(builder: (context) => UserProfilePage()),
-    //         (Route<dynamic> route) => false);
+
   }
 
   // select profile picture
@@ -173,6 +173,8 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       // location services are not enabled, prompt the user to enable
+
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {
