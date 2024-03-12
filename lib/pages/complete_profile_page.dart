@@ -327,22 +327,24 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: GestureDetector(
                 onTap: _onLocationFieldTapped,
-                child: TextField(
-                  enabled: false,
-                  controller: _locationController,
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary)
+                child: AbsorbPointer(
+                  child: TextField(
+                    enabled: false,
+                    controller: _locationController,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary)
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)
+                      ),
+                      fillColor: Theme.of(context).colorScheme.secondary,
+                      filled: true,
+                      hintText: 'Location',
+                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
                     ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)
-                    ),
-                    fillColor: Theme.of(context).colorScheme.secondary,
-                    filled: true,
-                    hintText: 'Location',
-                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
                   ),
                 ),
               ),
