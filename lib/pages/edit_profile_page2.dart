@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
-import 'package:dine_connect/pages/user_profile_page.dart';
+import 'package:dine_connect/pages/user_profile_content_page.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,14 +14,14 @@ import '../services/authentication/auth_service.dart';
 import '../services/userProfile/user_profile_service.dart';
 import 'package:path/path.dart' as path;
 
-class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+class EditProfilePage2 extends StatefulWidget {
+  const EditProfilePage2({super.key});
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<EditProfilePage2> createState() => _EditProfilePage2State();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _EditProfilePage2State extends State<EditProfilePage2> {
   // get auth service
   final AuthService _authService = AuthService();
   UserProfile? _userProfile;
@@ -111,10 +111,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _isAgeEmpty = _ageController.text.isEmpty || age == null;
       _isBioEmpty = _bioController.text.isEmpty;
       _isLookingForEmpty = _lookingForController.text.isEmpty;
-      _isHobbiesEmpty = hobbies.isEmpty;
+      _isHobbiesEmpty = _userProfile?.hobbies?.isEmpty ?? true;
       _isLocationEmpty = _locationController.text.isEmpty;
       _isImageEmpty = imageUrl.isEmpty;
     });
+
     // check if any validation failed
     hasErrors = _isNameEmpty ||
         _isAgeEmpty ||
@@ -135,6 +136,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
       return;
     }
+
     final userProfile = UserProfile(
         userId: _authService.getCurrentUser()!.uid,
         name: _nameController.text,
@@ -150,9 +152,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 
     // navigate to home page after completing profile
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => UserProfilePage()),
-            (Route<dynamic> route) => false);
+    Navigator.pop(context);
+    // Navigator.of(context).pushAndRemoveUntil(
+    //     MaterialPageRoute(builder: (context) => UserProfilePage()),
+    //         (Route<dynamic> route) => false);
   }
 
   // select profile picture
@@ -314,6 +317,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: const Text("Profile"),
         centerTitle: true,
         backgroundColor: colorScheme.primary,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: GestureDetector(
+              onTap: () => _saveProfile(),
+              child: const Text("Save", style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500
+              ),),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -342,7 +357,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             SizedBox(height: screenHeight * 0.04),
             MyTextFormField(
               controller: _nameController,
-              labelText: 'Name',
+              labelText: 'Full Name',
               validator: (value) {
                 if (value == null) {
                   return 'Please enter your name';
@@ -424,8 +439,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
 
             SizedBox(height: screenHeight * 0.04),
-
-            MyButton(text: 'Save Changes', onTap: () => _saveProfile()),
           ],
         ),
       ),

@@ -6,14 +6,14 @@ import 'package:dine_connect/services/userProfile/user_profile_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class UserProfilePage extends StatefulWidget {
-  const UserProfilePage({super.key});
+class UserProfileContentPage extends StatefulWidget {
+  const UserProfileContentPage({super.key});
 
   @override
-  State<UserProfilePage> createState() => _UserProfilePageState();
+  State<UserProfileContentPage> createState() => _UserProfileContentPageState();
 }
 
-class _UserProfilePageState extends State<UserProfilePage> {
+class _UserProfileContentPageState extends State<UserProfileContentPage> {
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
 
@@ -44,13 +44,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile"),
-        centerTitle: true,
-        backgroundColor: colorScheme.primary,
-      ),
-      body: _userProfile == null
+    return Center(
+      child: _userProfile == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Center(

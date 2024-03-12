@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           GestureDetector(
             onTap: (){
-              Navigator.pushNamed(context, '/editProfile');
+              Navigator.pushNamed(context, '/editProfilePage1');
             },
             child: CircleAvatar(
               backgroundImage: userProfile?.imageUrl != null
