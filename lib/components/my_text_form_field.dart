@@ -6,6 +6,7 @@ class MyTextFormField extends StatelessWidget {
   final int? maxLines;
   final bool obscureText;
   final bool readOnly;
+  final bool isError;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
 
@@ -14,6 +15,7 @@ class MyTextFormField extends StatelessWidget {
       required this.controller,
       required this.labelText,
       this.maxLines = 1,
+        this.isError = false,
       this.obscureText = false,
       this.keyboardType = TextInputType.text,
       this.validator,this.
@@ -31,9 +33,9 @@ class MyTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         validator: validator,
         readOnly: readOnly,
-
         decoration: InputDecoration(
           labelText: labelText,
+            errorText: isError ? 'This field cannot be empty' : null,
           border: const OutlineInputBorder(),
         ),
       ),

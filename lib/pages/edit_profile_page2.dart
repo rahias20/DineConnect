@@ -129,10 +129,10 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
             content: const Text('Please upload a profile photo to continue')));
-      } else if (int.tryParse(_ageController.text) == null) {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
-            content: const Text('Please enter a valid age')));
+            content: const Text('Please complete all the fields')));
       }
       return;
     }
@@ -358,6 +358,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
             MyTextFormField(
               controller: _nameController,
               labelText: 'Full Name',
+              isError: _isNameEmpty,
               validator: (value) {
                 if (value == null) {
                   return 'Please enter your name';
@@ -369,6 +370,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
             MyTextFormField(
               controller: _ageController,
               labelText: 'Age',
+              isError: _isAgeEmpty,
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null) {
@@ -395,6 +397,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
             MyTextFormField(
               controller: _bioController,
               labelText: 'Bio',
+              isError: _isBioEmpty,
               maxLines: 4,
               validator: (value) {
                 if (value == null) {
@@ -407,6 +410,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
             MyTextFormField(
               controller: _lookingForController,
               labelText: 'What are you looking for . . .',
+              isError: _isLookingForEmpty,
               maxLines: 4,
               validator: (value) {
                 if (value == null) {
@@ -438,7 +442,19 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                   }),
             ),
 
-            SizedBox(height: screenHeight * 0.04),
+            // conditionally display an error message if no hobbies
+            if (_isHobbiesEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Text(
+                    'Please add at least one hobby',
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
+              ),
+
+            SizedBox(height: screenHeight * 0.12),
           ],
         ),
       ),
