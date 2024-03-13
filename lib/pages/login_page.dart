@@ -80,21 +80,21 @@ class _LoginPageState extends State<LoginPage> {
                   // email text field
                   const SizedBox(height: 25),
                   MyTextFormField(
-                      key: const Key('emailField'),
-                      obscureText: false,
-                      controller: _emailController,
-                      labelText: 'Email',
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty) {
-                          return 'Please enter an email';
-                        }
-                        // Regular expression pattern for validating email format
-                        if (!regex.hasMatch(value)) {
-                          return 'Invalid email';
-                        }
-                        return null;
-                      }),
+                    key: const Key('emailField'),
+                    obscureText: false,
+                    controller: _emailController,
+                    labelText: 'Email',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email';
+                      }
+                      // Regular expression pattern for validating email format
+                      if (!regex.hasMatch(value)) {
+                        return 'Invalid email';
+                      }
+                      return null;
+                    },
+                  ),
 
                   // password text field
                   const SizedBox(height: 25),
@@ -103,8 +103,8 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                     controller: _passwordController,
                     labelText: 'Password',
-                    validator: (value){
-                      if (value == null || value.isEmpty){
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
                         return 'Please enter a password';
                       }
                     },
