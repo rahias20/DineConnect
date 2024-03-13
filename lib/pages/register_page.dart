@@ -77,6 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   // email text field
                   const SizedBox(height: 25),
                   MyTextFormField(
+                    key: const Key("emailField"),
                     labelText: 'Email',
                     obscureText: false,
                     controller: _emailController,
