@@ -31,7 +31,7 @@ void main() {
     ));
 
     // Enter an invalid email address.
-    await tester.enterText(find.byKey(const Key('emailField')), 'not_valid');
+    await tester.enterText(find.byKey(const Key('emailField')), '');
     await tester.pumpAndSettle(); // Wait for the UI to show the error message.
 
     // Enter an empty password.
@@ -47,8 +47,18 @@ void main() {
 
 
     // Check for the expected error messages.
-    expect(find.text('Invalid email'), findsOneWidget); // Confirm the invalid email message is shown.
+    expect(find.text('Please enter an email'), findsOneWidget); // Confirm the invalid email message is shown
     expect(find.text('Please enter a password'), findsOneWidget); // Confirm the password message is shown.
+
+    await tester.enterText(find.byKey(const Key('emailField')), 'not_valid');
+    await tester.pumpAndSettle();
+
+
+    await tester.tap(loginButtonFinder);
+    await tester.pumpAndSettle();
+    expect(find.text('Invalid email'), findsOneWidget);
+
+
   });
 
 
