@@ -38,6 +38,10 @@ class _LoginPageState extends State<LoginPage> {
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
     final regex = RegExp(pattern);
 
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Form(
@@ -48,13 +52,13 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 30),
+                  SizedBox(height: screenHeight * 0.03),
                   // logo
                   const SizedBox(
                     width: 900,
                     child: AspectRatio(
                       aspectRatio:
-                          3, // This is the aspect ratio of the container, change it as needed
+                          2.5, // This is the aspect ratio of the container, change it as needed
                       child: Image(
                         image: AssetImage('lib/images/logo.png'),
                         fit: BoxFit
@@ -64,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   // welcome back message
-                  const SizedBox(height: 30),
+                  SizedBox(height: screenHeight * 0.04),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
@@ -78,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   // email text field
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   MyTextFormField(
                     key: const Key('emailField'),
                     obscureText: false,
@@ -97,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   // password text field
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   MyTextFormField(
                     key: const Key("passwordField"),
                     obscureText: true,
@@ -111,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   // forgot password
-                  const SizedBox(height: 9),
+                  SizedBox(height: screenHeight * 0.01),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
@@ -132,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   // login button
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   MyButton(
                       text: "Login",
                       onTap: () {
@@ -142,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                       }),
 
                   // register now
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

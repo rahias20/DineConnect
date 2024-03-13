@@ -43,6 +43,10 @@ class _RegisterPageState extends State<RegisterPage> {
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
     final regex = RegExp(pattern);
 
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Form(
@@ -54,6 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // logo
+                  SizedBox(height: screenHeight * 0.02),
                   const SizedBox(
                     width: 500,
                     child: AspectRatio(
@@ -66,8 +71,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
+
                   // welcome back message
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   Text(
                     "Let's create an account for you",
                     style: TextStyle(
@@ -75,7 +81,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontSize: 20),
                   ),
                   // email text field
-                  const SizedBox(height: 25),
+
+                  SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("emailField"),
                     labelText: 'Email',
@@ -94,7 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   // password text field
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("passwordField"),
                     labelText: 'Password',
@@ -112,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   // password requirements message
-                  const SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.02),
                   const Text(
                     'Password must be at least 8 characters long',
                     style: TextStyle(
@@ -122,7 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   // confirm password field
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("confirmPasswordField"),
                     labelText: 'Confirm Password',
@@ -140,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   // register button
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   MyButton(
                     text: "Register",
                     onTap: () {
@@ -151,7 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   // login
-                  const SizedBox(height: 25),
+                  SizedBox(height: screenHeight * 0.03),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

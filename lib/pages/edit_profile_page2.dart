@@ -22,6 +22,8 @@ class EditProfilePage2 extends StatefulWidget {
 }
 
 class _EditProfilePage2State extends State<EditProfilePage2> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   // get auth service
   final AuthService _authService = AuthService();
   UserProfile? _userProfile;
@@ -108,32 +110,26 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
 
     // Check each field and update the state if any are empty
     setState(() {
-      _isNameEmpty = _nameController.text.isEmpty;
-      _isAgeEmpty = _ageController.text.isEmpty || age == null;
-      _isBioEmpty = _bioController.text.isEmpty;
-      _isLookingForEmpty = _lookingForController.text.isEmpty;
       _isHobbiesEmpty = _userProfile?.hobbies?.isEmpty ?? true;
       _isLocationEmpty = _locationController.text.isEmpty;
       _isImageEmpty = imageUrl.isEmpty;
     });
 
     // check if any validation failed
-    hasErrors = _isNameEmpty ||
-        _isAgeEmpty ||
-        _isBioEmpty ||
-        _isLookingForEmpty ||
+    hasErrors =
         _isHobbiesEmpty ||
         _isLocationEmpty ||
         _isImageEmpty;
-    if (hasErrors) {
+
+    if (hasErrors){
       if (_isImageEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
             content: const Text('Please upload a profile photo to continue')));
-      } else {
+      }else if (_isLocationEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
-            content: const Text('Please complete all the fields')));
+            content: const Text('Click on the location field to get location')));
       }
       return;
     }
@@ -151,11 +147,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     // save the user profile to the database
     await _userProfileService.updateUserProfile(userProfile);
 
-
     // navigate to home page after completing profile
     if (!mounted) return;
     Navigator.pop(context);
-
   }
 
   // select profile picture
@@ -257,7 +251,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     // get place
     try {
       List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
+          await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks.first;
       setState(() {
         _locationController.text = "${place.locality}, ${place.country}";
@@ -302,17 +296,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-    final double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final ColorScheme colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -323,142 +309,149 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: GestureDetector(
-              onTap: () => _saveProfile(),
-              child: const Text("Save", style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500
-              ),),
+              onTap: () {
+                if (_formKey.currentState!.validate()) {
+                  if (_userProfile!.hobbies.isNotEmpty) {
+                    _saveProfile();
+                  }
+                }
+              },
+              child: const Text(
+                "Save",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight * 0.04),
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 64,
-                  backgroundImage: imageUrl.isNotEmpty
-                      ? FileImage(File(imageUrl))
-                      : const AssetImage('lib/images/profile_icon.png')
-                  as ImageProvider,
-                  backgroundColor: Colors.white60,
-                ),
-                Positioned(
-                  bottom: -10,
-                  left: 80,
-                  child: IconButton(
-                    onPressed: () => selectAndUploadImage(),
-                    icon: const Icon(Icons.add_a_photo),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: screenHeight * 0.04),
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 64,
+                    backgroundImage: imageUrl.isNotEmpty
+                        ? FileImage(File(imageUrl))
+                        : const AssetImage('lib/images/profile_icon.png')
+                            as ImageProvider,
+                    backgroundColor: Colors.white60,
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: screenHeight * 0.04),
-            MyTextFormField(
-              controller: _nameController,
-              labelText: 'Full Name',
-              isError: _isNameEmpty,
-              validator: (value) {
-                if (value == null) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
-            ),
-
-            SizedBox(height: screenHeight * 0.04),
-            MyTextFormField(
-              controller: _ageController,
-              labelText: 'Age',
-              isError: _isAgeEmpty,
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null) {
-                  return 'Please enter your age';
-                }
-                return null;
-              },
-            ),
-
-            // location
-            SizedBox(height: screenHeight * 0.04),
-            GestureDetector(
-              onTap: _onLocationFieldTapped,
-              child: AbsorbPointer(
-                child: MyTextFormField(
-                  controller: _locationController,
-                  labelText: 'Location',
-                  readOnly: true,
-                ),
+                  Positioned(
+                    bottom: -15,
+                    left: 95,
+                    child: IconButton(
+                      onPressed: () => selectAndUploadImage(),
+                      icon: const Icon(Icons.add_a_photo),
+                    ),
+                  ),
+                ],
               ),
-            ),
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'Full Name',
+                controller: _nameController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your full name';
+                  }
+                  return null;
+                },
+              ),
 
-            SizedBox(height: screenHeight * 0.04),
-            MyTextFormField(
-              controller: _bioController,
-              labelText: 'Bio',
-              isError: _isBioEmpty,
-              maxLines: 4,
-              validator: (value) {
-                if (value == null) {
-                  return 'Please enter your bio';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: screenHeight * 0.04),
-            MyTextFormField(
-              controller: _lookingForController,
-              labelText: 'What are you looking for . . .',
-              isError: _isLookingForEmpty,
-              maxLines: 4,
-              validator: (value) {
-                if (value == null) {
-                  return 'Please enter what are you looking for';
-                }
-                return null;
-              },
-            ),
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'Age',
+                keyboardType: TextInputType.number,
+                controller: _ageController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your age';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid age';
+                  }
+                  return null;
+                },
+              ),
 
-            SizedBox(height: screenHeight * 0.04),
-            MyListField(
-                hintText: 'Enter a hobby',
-                controller: _hobbyController,
-                onSubmitted: _addHobby),
-
-            Wrap(
-              spacing: 8.0, // Gap between adjacent chips
-              runSpacing: 4.0, // Gap between lines
-              children: List<Widget>.generate(_userProfile?.hobbies.length ?? 0,
-                      (int index) {
-                    return Chip(
-                      label: Text(_userProfile!.hobbies[index]),
-                      onDeleted: () {
-                        setState(() {
-                          _userProfile!.hobbies.removeAt(index);
-                        });
-                      },
-                    );
-                  }),
-            ),
-
-            // conditionally display an error message if no hobbies
-            if (_isHobbiesEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(0),
-                  child: Text(
-                    'Please add at least one hobby',
-                    style: TextStyle(color: Colors.red, fontSize: 12),
+              // location
+              SizedBox(height: screenHeight * 0.04),
+              GestureDetector(
+                onTap: _onLocationFieldTapped,
+                child: AbsorbPointer(
+                  child: MyTextFormField(
+                    controller: _locationController,
+                    labelText: 'Location',
+                    readOnly: true,
                   ),
                 ),
               ),
 
-            SizedBox(height: screenHeight * 0.12),
-          ],
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'Tell us a bit about yourself',
+                controller: _bioController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your bio';
+                  }
+                  return null;
+                },
+              ),
+
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'What are you looking for',
+                controller: _lookingForController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please specify what you are looking for';
+                  }
+                  return null;
+                },
+              ),
+
+              SizedBox(height: screenHeight * 0.04),
+              MyListField(
+                  hintText: 'Enter a hobby',
+                  controller: _hobbyController,
+                  onSubmitted: _addHobby),
+
+              Wrap(
+                spacing: 8.0, // Gap between adjacent chips
+                runSpacing: 4.0, // Gap between lines
+                children: List<Widget>.generate(_userProfile?.hobbies.length ?? 0,
+                    (int index) {
+                  return Chip(
+                    label: Text(_userProfile!.hobbies[index]),
+                    onDeleted: () {
+                      setState(() {
+                        _userProfile!.hobbies.removeAt(index);
+                      });
+                    },
+                  );
+                }),
+              ),
+
+              // conditionally display an error message if no hobbies
+              if (_isHobbiesEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(0),
+                    child: Text(
+                      'Please add at least one hobby',
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+                ),
+
+              SizedBox(height: screenHeight * 0.12),
+            ],
+          ),
         ),
       ),
     );

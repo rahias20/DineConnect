@@ -263,6 +263,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
@@ -272,145 +273,148 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: screenHeight * 0.04),
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 64,
-                    backgroundImage: imageUrl.isNotEmpty
-                        ? FileImage(File(imageUrl))
-                        : const AssetImage('lib/images/profile_icon.png')
-                            as ImageProvider,
-                    backgroundColor: Colors.white60,
-                  ),
-                  Positioned(
-                    bottom: -10,
-                    left: 80,
-                    child: IconButton(
-                      onPressed: () => selectAndUploadImage(),
-                      icon: const Icon(Icons.add_a_photo),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: keyboardHeight),
+            child: Column(
+              children: [
+                SizedBox(height: screenHeight * 0.04),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 70,
+                      backgroundImage: imageUrl.isNotEmpty
+                          ? FileImage(File(imageUrl))
+                          : const AssetImage('lib/images/profile_icon.png')
+                              as ImageProvider,
+                      backgroundColor: Colors.white60,
                     ),
-                  ),
-                ],
-              ),
-
-              // get name
-              SizedBox(height: screenHeight * 0.04),
-              MyTextFormField(
-                labelText: 'Full Name',
-                controller: _nameController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your full name';
-                  }
-                  return null;
-                },
-              ),
-
-              // get age
-              SizedBox(height: screenHeight * 0.04),
-              MyTextFormField(
-                labelText: 'Age',
-                keyboardType: TextInputType.number,
-                controller: _ageController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your age';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid age';
-                  }
-                  return null;
-                },
-              ),
-
-              // location texfield
-              SizedBox(height: screenHeight * 0.04),
-              GestureDetector(
-                onTap: _onLocationFieldTapped,
-                child: AbsorbPointer(
-                  child: MyTextFormField(
-                    controller: _locationController,
-                    labelText: 'Location',
-                    readOnly: true,
-                  ),
-                ),
-              ),
-
-              // bio
-              SizedBox(height: screenHeight * 0.04),
-              MyTextFormField(
-                labelText: 'Tell us a bit about yourself',
-                controller: _bioController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter a bio';
-                  }
-                  return null;
-                },
-              ),
-
-              // looking for textfield
-              SizedBox(height: screenHeight * 0.04),
-              MyTextFormField(
-                labelText: 'What are you looking for',
-                controller: _lookingForController,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please specify what you are looking for';
-                  }
-                  return null;
-                },
-              ),
-
-              // get hobbies
-              SizedBox(height: screenHeight * 0.04),
-              MyListField(
-                hintText: 'Enter a hobby',
-                controller: _hobbyController,
-                onSubmitted: _addHobby,
-              ),
-              // Display hobbies
-              Wrap(
-                spacing: 8.0,
-                children: hobbies
-                    .map((hobby) => Chip(
-                          label: Text(hobby),
-                          onDeleted: () {
-                            setState(() {
-                              hobbies.remove(hobby);
-                            });
-                          },
-                        ))
-                    .toList(),
-              ),
-
-              // conditionally display an error message if no hobbies
-              if (_isHobbiesEmpty)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(0),
-                    child: Text(
-                      'Please add at least one hobby',
-                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    Positioned(
+                      bottom: -13,
+                      left: 95,
+                      child: IconButton(
+                        onPressed: () => selectAndUploadImage(),
+                        icon: const Icon(Icons.add_a_photo),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
 
-              SizedBox(height: screenHeight * 0.04),
-              // save user profile
-              MyButton(
-                  text: 'Save Profile',
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      if (!_isHobbiesEmpty) {
-                        _saveProfile();
-                      }
+                // get name
+                SizedBox(height: screenHeight * 0.04),
+                MyTextFormField(
+                  labelText: 'Full Name',
+                  controller: _nameController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your full name';
                     }
-                  }),
-            ],
+                    return null;
+                  },
+                ),
+
+                // get age
+                SizedBox(height: screenHeight * 0.04),
+                MyTextFormField(
+                  labelText: 'Age',
+                  keyboardType: TextInputType.number,
+                  controller: _ageController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your age';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Please enter a valid age';
+                    }
+                    return null;
+                  },
+                ),
+
+                // location texfield
+                SizedBox(height: screenHeight * 0.04),
+                GestureDetector(
+                  onTap: _onLocationFieldTapped,
+                  child: AbsorbPointer(
+                    child: MyTextFormField(
+                      controller: _locationController,
+                      labelText: 'Location',
+                      readOnly: true,
+                    ),
+                  ),
+                ),
+
+                // bio
+                SizedBox(height: screenHeight * 0.04),
+                MyTextFormField(
+                  labelText: 'Tell us a bit about yourself',
+                  controller: _bioController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your bio';
+                    }
+                    return null;
+                  },
+                ),
+
+                // looking for textfield
+                SizedBox(height: screenHeight * 0.04),
+                MyTextFormField(
+                  labelText: 'What are you looking for',
+                  controller: _lookingForController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please specify what you are looking for';
+                    }
+                    return null;
+                  },
+                ),
+
+                // get hobbies
+                SizedBox(height: screenHeight * 0.04),
+                MyListField(
+                  hintText: 'Enter a hobby',
+                  controller: _hobbyController,
+                  onSubmitted: _addHobby,
+                ),
+                // Display hobbies
+                Wrap(
+                  spacing: 8.0,
+                  children: hobbies
+                      .map((hobby) => Chip(
+                            label: Text(hobby),
+                            onDeleted: () {
+                              setState(() {
+                                hobbies.remove(hobby);
+                              });
+                            },
+                          ))
+                      .toList(),
+                ),
+
+                // conditionally display an error message if no hobbies
+                if (_isHobbiesEmpty)
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(0),
+                      child: Text(
+                        'Please add at least one hobby',
+                        style: TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ),
+                  ),
+
+                SizedBox(height: screenHeight * 0.04),
+                // save user profile
+                MyButton(
+                    text: 'Save Profile',
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        if (!_isHobbiesEmpty) {
+                          _saveProfile();
+                        }
+                      }
+                    }),
+              ],
+            ),
           ),
         ),
       ),
