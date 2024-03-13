@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/chatsPage');
                 },
-                icon: const Icon(Icons.chat_bubble_outline_rounded),),
+                icon: const Icon(Icons.chat_bubble_outline),),
         actions: [
           GestureDetector(
             onTap: (){

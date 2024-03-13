@@ -15,22 +15,20 @@ class MyListField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 25.0, right: 25.0, bottom: 10.0),
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.tertiary),
+                BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide:
                 BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
-          fillColor: Theme.of(context).colorScheme.secondary,
-          filled: true,
+
           hintText: hintText,
-          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
         ),
         onSubmitted: (value) {
           onSubmitted(value);

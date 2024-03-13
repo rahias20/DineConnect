@@ -368,6 +368,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                 return null;
               },
             ),
+
             SizedBox(height: screenHeight * 0.04),
             MyTextFormField(
               controller: _ageController,

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
+import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/userProfile/user_profile_service.dart';
@@ -28,6 +29,8 @@ class ProfileCompletePage extends StatefulWidget {
 }
 
 class _ProfileCompletePageState extends State<ProfileCompletePage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   // get auth and userProfile service
   final AuthService _authService = AuthService();
   late UserProfileService _userProfileService;
@@ -43,12 +46,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   List<String> hobbies = [];
   bool _isLocationServiceEnabled = false;
 
-
   // fields empty check
-  bool _isNameEmpty = false;
-  bool _isAgeEmpty = false;
-  bool _isBioEmpty = false;
-  bool _isLookingForEmpty = false;
   bool _isHobbiesEmpty = false;
   bool _isLocationEmpty = false;
   bool _isImageEmpty = false;
@@ -84,9 +82,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     });
   }
 
-  Future<void> _checkLocationPermissionAndService() async{
+  Future<void> _checkLocationPermissionAndService() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled){
+    if (!serviceEnabled) {
       // location services are not enabled, prompt the user to enable
 
       if (!mounted) return;
@@ -94,11 +92,11 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Location Services Disabled"),
-            content: Text("Please enable location services to proceed."),
+            title: const Text("Location Services Disabled"),
+            content: const Text("Please enable location services to proceed."),
             actions: <Widget>[
               TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
                   // Open location settings
                   Geolocator.openLocationSettings();
@@ -123,15 +121,12 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever
-      // Show a dialog or snackbar informing the user.
       return;
     }
 
     // if permissions are granted, proceed to fetch and display location
     _determinePosition();
   }
-
-
 
   Future<void> _determinePosition() async {
     bool serviceEnabled;
@@ -142,14 +137,13 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     if (!serviceEnabled) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permissions are disabled')));
-
+            const SnackBar(content: Text('Location permissions are disabled')));
       });
       return;
     }
 
     permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied){
+    if (permission == LocationPermission.denied) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Location permissions are denied')));
@@ -160,8 +154,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     if (permission == LocationPermission.deniedForever) {
       // permissions are denied forever, handle appropriately
       setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are permanently denied, we cannot request permissions')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Location permissions are permanently denied, we cannot request permissions')));
       });
       return;
     }
@@ -171,8 +166,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     Position position = await Geolocator.getCurrentPosition();
 
     // get place
-    try{
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks.first;
       setState(() {
         _locationController.text = "${place.locality}, ${place.country}";
@@ -196,39 +192,31 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   // save user profile to database
   Future<void> _saveProfile() async {
     bool hasErrors = false;
+
     // Convert age input to integer and check if it's null (invalid input)
     int? age = int.tryParse(_ageController.text);
 
     // Check each field and update the state if any are empty
     setState(() {
-      _isNameEmpty = _nameController.text.isEmpty;
-      _isAgeEmpty = _ageController.text.isEmpty || age == null;
-      _isBioEmpty = _bioController.text.isEmpty;
-      _isLookingForEmpty = _lookingForController.text.isEmpty;
       _isHobbiesEmpty = hobbies.isEmpty;
-      _isLocationEmpty = _locationController.text.isEmpty;
       _isImageEmpty = imageUrl.isEmpty;
+      _isLocationEmpty = _locationController.text.isEmpty;
     });
-    // check if any validation failed
-    hasErrors = _isNameEmpty ||
-        _isAgeEmpty ||
-        _isBioEmpty ||
-        _isLookingForEmpty ||
+
+    hasErrors =
         _isHobbiesEmpty ||
         _isLocationEmpty ||
         _isImageEmpty;
-    if (hasErrors) {
-      if (_isImageEmpty){
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red.shade500,
-                content: const Text('Please upload a profile photo to continue')));
-      }
-      else if (int.tryParse(_ageController.text) == null){
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                backgroundColor: Colors.red.shade500,
-                content: const Text('Please enter a valid age')));
+
+    if (hasErrors){
+      if (_isImageEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red.shade500,
+            content: const Text('Please upload a profile photo to continue')));
+      }else if (_isLocationEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red.shade500,
+            content: const Text('Click on the location field to get location')));
       }
       return;
     }
@@ -244,7 +232,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
 
     // save the user profile to the database
     await _userProfileService.saveUserProfile(userProfile);
-
 
     // navigate to home page after completing profile
     Navigator.of(context).pushAndRemoveUntil(
@@ -263,7 +250,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     await _userProfileService.uploadImage(File(file!.path));
   }
 
-
   // this method is called when the "location" TextField is tapped
   Future<void> _onLocationFieldTapped() async {
     await _checkLocationPermissionAndService();
@@ -272,7 +258,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     if (_isLocationServiceEnabled) {
       await _determinePosition();
     }
-}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,129 +269,149 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       appBar: AppBar(
         title: const Center(child: Text("Complete Your Profile")),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight * 0.04),
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 64,
-                  backgroundImage: imageUrl.isNotEmpty
-                      ? FileImage(File(imageUrl))
-                      : const AssetImage('lib/images/profile_icon.png')
-                          as ImageProvider,
-                  backgroundColor: Colors.white60,
-                ),
-                Positioned(
-                  bottom: -10,
-                  left: 80,
-                  child: IconButton(
-                    onPressed: () => selectAndUploadImage(),
-                    icon: const Icon(Icons.add_a_photo),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: screenHeight * 0.04),
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 64,
+                    backgroundImage: imageUrl.isNotEmpty
+                        ? FileImage(File(imageUrl))
+                        : const AssetImage('lib/images/profile_icon.png')
+                            as ImageProvider,
+                    backgroundColor: Colors.white60,
                   ),
-                ),
-              ],
-            ),
+                  Positioned(
+                    bottom: -10,
+                    left: 80,
+                    child: IconButton(
+                      onPressed: () => selectAndUploadImage(),
+                      icon: const Icon(Icons.add_a_photo),
+                    ),
+                  ),
+                ],
+              ),
 
-            // get name
-            SizedBox(height: screenHeight * 0.04),
-            MyTextField(
-                hintText: 'Full Name',
-                obscureText: false,
+              // get name
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'Full Name',
                 controller: _nameController,
-                isError: _isNameEmpty),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your full name';
+                  }
+                  return null;
+                },
+              ),
 
-            // get age
-            SizedBox(height: screenHeight * 0.04),
-            MyTextField(
-                hintText: 'Age',
-                obscureText: false,
+              // get age
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'Age',
+                keyboardType: TextInputType.number,
                 controller: _ageController,
-                isError: _isAgeEmpty),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your age';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid age';
+                  }
+                  return null;
+                },
+              ),
 
-            // location texfield
-            SizedBox(height: screenHeight * 0.04),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: GestureDetector(
+              // location texfield
+              SizedBox(height: screenHeight * 0.04),
+              GestureDetector(
                 onTap: _onLocationFieldTapped,
                 child: AbsorbPointer(
-                  child: TextField(
-                    enabled: false,
+                  child: MyTextFormField(
                     controller: _locationController,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary)
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)
-                      ),
-                      fillColor: Theme.of(context).colorScheme.secondary,
-                      filled: true,
-                      hintText: 'Location',
-                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                      errorText: _isLocationEmpty ? 'This field cannot be empty' : null,
+                    labelText: 'Location',
+                    readOnly: true,
+                  ),
+                ),
+              ),
+
+              // bio
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'Tell us a bit about yourself',
+                controller: _bioController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter a bio';
+                  }
+                  return null;
+                },
+              ),
+
+              // looking for textfield
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'What are you looking for',
+                controller: _lookingForController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please specify what you are looking for';
+                  }
+                  return null;
+                },
+              ),
+
+              // get hobbies
+              SizedBox(height: screenHeight * 0.04),
+              MyListField(
+                hintText: 'Enter a hobby',
+                controller: _hobbyController,
+                onSubmitted: _addHobby,
+              ),
+              // Display hobbies
+              Wrap(
+                spacing: 8.0,
+                children: hobbies
+                    .map((hobby) => Chip(
+                          label: Text(hobby),
+                          onDeleted: () {
+                            setState(() {
+                              hobbies.remove(hobby);
+                            });
+                          },
+                        ))
+                    .toList(),
+              ),
+
+              // conditionally display an error message if no hobbies
+              if (_isHobbiesEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(0),
+                    child: Text(
+                      'Please add at least one hobby',
+                      style: TextStyle(color: Colors.red, fontSize: 12),
                     ),
                   ),
                 ),
-              ),
-            ),
 
-            // bio
-            SizedBox(height: screenHeight * 0.04),
-            MyTextField(
-                hintText: 'Tell us a bit about yourself',
-                obscureText: false,
-                controller: _bioController,
-                isError: _isBioEmpty),
-
-            // looking for textfield
-            SizedBox(height: screenHeight * 0.04),
-            MyTextField(
-                hintText: 'What are you looking for',
-                obscureText: false,
-                controller: _lookingForController,
-                isError: _isLookingForEmpty),
-
-            // get hobbies
-            SizedBox(height: screenHeight * 0.04),
-            MyListField(
-                hintText: 'Enter a hobby',
-                controller: _hobbyController,
-                onSubmitted: _addHobby),
-            // Display hobbies
-            Wrap(
-              spacing: 8.0,
-              children: hobbies
-                  .map((hobby) => Chip(
-                        label: Text(hobby),
-                        onDeleted: () {
-                          setState(() {
-                            hobbies.remove(hobby);
-                          });
-                        },
-                      ))
-                  .toList(),
-            ),
-
-            // conditionally display an error message if no hobbies
-            if (_isHobbiesEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(0),
-                  child: Text(
-                    'Please add at least one hobby',
-                    style: TextStyle(color: Colors.red, fontSize: 12),
-                  ),
-                ),
-              ),
-
-            SizedBox(height: screenHeight * 0.04),
-            // save user profile
-            MyButton(text: 'Save Profile', onTap: () => _saveProfile()),
-          ],
+              SizedBox(height: screenHeight * 0.04),
+              // save user profile
+              MyButton(
+                  text: 'Save Profile',
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      if (!_isHobbiesEmpty) {
+                        _saveProfile();
+                      }
+                    }
+                  }),
+            ],
+          ),
         ),
       ),
     );
