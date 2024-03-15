@@ -1,4 +1,5 @@
 
+import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/services/authentication/welcome_or_login_or_register.dart';
@@ -16,7 +17,7 @@ class AuthGate extends StatelessWidget {
         builder: (context, snapshot){
           // user is logged in
           if (snapshot.hasData){
-            return HomePage();
+            return CreateEventPage1();
           }else{
             return WelcomeOrLoginOrRegister();
           }

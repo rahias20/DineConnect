@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 
 class MyTextFormField extends StatelessWidget {
@@ -8,6 +10,7 @@ class MyTextFormField extends StatelessWidget {
   final bool readOnly;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final IconData? prefixIcon;
 
   const MyTextFormField(
       {super.key,
@@ -16,8 +19,9 @@ class MyTextFormField extends StatelessWidget {
       this.maxLines = 1,
       this.obscureText = false,
       this.keyboardType = TextInputType.text,
-      this.validator,this.
-      readOnly = false,
+      this.validator,
+  this.readOnly = false,
+        this.prefixIcon,
       });
 
   @override
@@ -35,6 +39,7 @@ class MyTextFormField extends StatelessWidget {
         readOnly: readOnly,
         decoration: InputDecoration(
           labelText: labelText,
+          prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
           // Use the color scheme from the theme
           border: OutlineInputBorder(
             borderSide: BorderSide(color: theme.colorScheme.surface),

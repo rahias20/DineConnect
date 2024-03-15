@@ -44,6 +44,7 @@ dependencies:
   path: ^1.8.0
   geolocator: ^11.0.0
   geocoding: ^2.2.0
+  intl:
 
 dev_dependencies:
   flutter_test:

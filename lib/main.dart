@@ -1,6 +1,7 @@
-import 'package:dine_connect/components/my_textfield.dart';
 import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/chats_page.dart';
+import 'package:dine_connect/pages/create_event_page1.dart';
+import 'package:dine_connect/pages/create_event_page2.dart';
 import 'package:dine_connect/pages/edit_profile_page1.dart';
 import 'package:dine_connect/pages/edit_profile_page2.dart';
 import 'package:dine_connect/pages/forgot_password_page.dart';
@@ -39,6 +40,8 @@ class MyApp extends StatelessWidget {
         '/editProfilePage2': (context) => const EditProfilePage2(),
         '/chatsPage': (context) => const ChatsPage(),
         '/forgotPasswordPage': (context) => const ForgotPasswordPage(),
+        '/createEvent1': (context) => const CreateEventPage1(),
+        '/createEvent2': (context) => const CreateEventPage2(),
 
       },
 
