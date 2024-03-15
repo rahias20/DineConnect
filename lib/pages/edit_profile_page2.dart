@@ -11,7 +11,7 @@ import '../components/my_button.dart';
 import '../components/my_list_field.dart';
 import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
-import '../services/userProfile/user_profile_service.dart';
+import '../services/user_profile_service.dart';
 import 'package:path/path.dart' as path;
 
 class EditProfilePage2 extends StatefulWidget {

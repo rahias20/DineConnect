@@ -13,7 +13,7 @@ import 'package:dine_connect/themes/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:dine_connect/models/event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,10 +41,11 @@ class MyApp extends StatelessWidget {
         '/chatsPage': (context) => const ChatsPage(),
         '/forgotPasswordPage': (context) => const ForgotPasswordPage(),
         '/createEvent1': (context) => const CreateEventPage1(),
-        '/createEvent2': (context) => const CreateEventPage2(),
-
+        '/createEvent2': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Event;
+          return CreateEventPage2(event: args);
+        },
       },
-
     );
   }
 }

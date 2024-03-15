@@ -2,11 +2,9 @@
 
 class Event {
   final String eventId;
-  final String ownerUserId;
-  final String title;
+  final String hostUserId;
   final String description;
   final DateTime eventDate;
-  final String location;
   final String addressLine1;
   final String addressLine2;
   final String city;
@@ -16,11 +14,9 @@ class Event {
 
   Event({
     required this.eventId,
-    required this.ownerUserId,
-    required this.title,
+    required this.hostUserId,
     required this.description,
     required this.eventDate,
-    required this.location,
     required this.addressLine1,
     required this.addressLine2,
     required this.city,
@@ -33,11 +29,9 @@ class Event {
   Map<String, dynamic> toMap() {
     return {
       'eventId': eventId,
-      'ownerUserId': ownerUserId,
-      'title': title,
+      'ownerUserId': hostUserId,
       'description': description,
       'eventDate': eventDate.toIso8601String(),
-      'location': location,
       'addressLine1': addressLine1,
       'addressLine2': addressLine2,
       'city': city,
@@ -51,11 +45,9 @@ class Event {
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
       eventId: map['eventId'],
-      ownerUserId: map['ownerUserId'],
-      title: map['title'],
+      hostUserId: map['ownerUserId'],
       description: map['description'],
       eventDate: DateTime.parse(map['eventDate']),
-      location: map['location'],
       addressLine1: map['addressLine1'],
       addressLine2: map['addressLine2'],
       city: map['city'],

@@ -7,7 +7,7 @@ import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:dine_connect/components/my_textfield.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
-import 'package:dine_connect/services/userProfile/user_profile_service.dart';
+import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';

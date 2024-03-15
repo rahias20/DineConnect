@@ -3,7 +3,7 @@ import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_profile.dart';
-import '../services/userProfile/user_profile_service.dart';
+import '../services/user_profile_service.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
