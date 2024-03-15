@@ -14,8 +14,12 @@ class CreateEventPage1 extends StatefulWidget {
 
 class _CreateEventPage1State extends State<CreateEventPage1> {
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  int noOfPeople = 1;
+  final TextEditingController _addressLine1Controller = TextEditingController();
+  final TextEditingController _addressLine2Controller = TextEditingController();
+  final TextEditingController _townCityController = TextEditingController();
+  final TextEditingController _postcodeController = TextEditingController();
+
+  int noOfPeople = 2;
   DateTime selectedDate = DateTime.now();
 
   // get formatted date
@@ -73,7 +77,7 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                     style: TextStyle(fontSize: screenHeight * 0.04),
                   ),
 
-                  SizedBox(height: screenHeight * 0.06),
+                  SizedBox(height: screenHeight * 0.04),
                   MyTextFormField2(
                     controller: _descriptionController,
                     labelText: 'Description',
@@ -81,15 +85,8 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                     maxLines: 2,
                   ),
 
-                  SizedBox(height: screenHeight * 0.04),
-                  MyTextFormField2(
-                    controller: _locationController,
-                    labelText: 'Location',
-                    prefixIcon: Icons.location_on_sharp,
-                  ),
-
                   // date and time
-                  SizedBox(height: screenHeight * 0.04),
+                  SizedBox(height: screenHeight * 0.004),
                   ListTile(
                     title: Text(
                       getFormattedDate(),
@@ -100,19 +97,18 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                   ),
 
                   // no of people
-                  SizedBox(height: screenHeight * 0.05),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const Icon(Icons.person),
-                        SizedBox(width: screenWidth * 0.07),
+                        SizedBox(width: screenWidth * 0.01),
                         IconButton(
                           icon: const Icon(Icons.remove),
                           onPressed: () {
                             setState(() {
-                              if (noOfPeople > 1) noOfPeople--;
+                              if (noOfPeople > 2) noOfPeople--;
                             });
                           },
                         ),
@@ -131,6 +127,35 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                       ],
                     ),
                   ),
+
+                  SizedBox(height: screenHeight * 0.004),
+
+                  TextField(
+                    controller: _addressLine1Controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Address line 1',
+                    ),
+                  ),
+                  TextField(
+                    controller: _addressLine2Controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Address line 2',
+                    ),
+                  ),
+
+                  TextField(
+                    controller: _townCityController,
+                    decoration: InputDecoration(
+                      labelText: 'Town/City',
+                    ),
+                  ),
+                  TextField(
+                    controller: _postcodeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Postcode',
+                    ),
+                  ),
+
                 ],
               ),
             ),
