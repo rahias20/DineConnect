@@ -61,82 +61,101 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
         backgroundColor: colorScheme.primary,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.event.description,
-              style: const TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            SizedBox(height: screenHeight * 0.04),
-            Row(
-              children: [
-                SizedBox(height: screenHeight * 0.04),
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: screenWidth * 0.05,
-                      backgroundImage: imageUrl.isNotEmpty
-                          ? FileImage(File(imageUrl))
-                          : const AssetImage('lib/images/profile_icon.png')
-                      as ImageProvider,
-                      backgroundColor: Colors.white60,
-                    ),
-                  ],
-                ),
-                SizedBox(width: 10),
-                Text(
-                  'Hosted by ${_userProfile?.name.split(' ')[0]}',
-                  style: const TextStyle(fontSize: 16.0),
-                ),
-              ],
-            ),
-
-            SizedBox(height: screenHeight * 0.04),
-            Text(
-              DateFormat('EEE, MMM d yyyy\nh:mm a').format(widget.event.eventDate), // Use event.date here formatted
-              style: const TextStyle(fontSize: 16.0),
-            ),
-
-            SizedBox(height: screenHeight * 0.03),
-            Text(
-              '${widget.event.addressLine1}\n${widget.event.addressLine2}\n${widget.event.city}\n${widget.event.postcode}', // Use event.location here
-              style: TextStyle(fontSize: 16.0),
-            ),
-
-            SizedBox(height: screenHeight * 0.04),
-            Text(
-              '${widget.event.numberOfParticipants}',
-              style: TextStyle(fontSize: 16.0),
-            ),
-
-
-            Spacer(),
-            Center(
-              child: SizedBox(
-                width: screenWidth / 2, // Make the button expand to the width of the screen
-                child: ElevatedButton(
-                  onPressed: (){},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+          padding: EdgeInsets.all(screenWidth / 7),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.event.description,
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.04,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  child: const Text('Create'),
-                ),
-              ),
-            ),
 
-            SizedBox(height: screenHeight * 0.01),
-          ],
+                  SizedBox(height: screenHeight * 0.04),
+                  Row(
+                    children: [
+                      SizedBox(height: screenHeight * 0.04),
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: screenWidth * 0.05,
+                            backgroundImage: imageUrl.isNotEmpty
+                                ? FileImage(File(imageUrl))
+                                : const AssetImage('lib/images/profile_icon.png')
+                            as ImageProvider,
+                            backgroundColor: Colors.white60,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Hosted by ${_userProfile?.name.split(' ')[0]}',
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.04),
+                  Row(
+                    children: [
+                      Icon(Icons.event),
+                      const SizedBox(width: 12),
+                      Text(
+                        DateFormat('EEE, MMM d yyyy\nh:mm a').format(widget.event.eventDate), // Use event.date here formatted
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.03),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on_sharp),
+                      const SizedBox(width: 12),
+                      Text(
+                        '${widget.event.addressLine1}\n${widget.event.addressLine2}\n${widget.event.city}\n${widget.event.postcode}', // Use event.location here
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.04),
+                  Row(
+                    children: [
+                      const Icon(Icons.person),
+                      const SizedBox(width: 12),
+                      Text(
+                        '${widget.event.numberOfParticipants}',
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+
+                  Spacer(),
+                  Center(
+                    child: SizedBox(
+                      width: screenWidth / 2, // Make the button expand to the width of the screen
+                      child: ElevatedButton(
+                        onPressed: (){},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.secondary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text('Create'),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: screenHeight * 0.01),
+                ],
+              ),
         ),
-      ),
+
     );
   }
 }
