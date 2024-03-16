@@ -71,7 +71,7 @@ class _UserProfileContentState extends State<UserProfileContent> {
                 ),
               ),
 
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.01),
               Text(
                 _userProfile!.location,
                 style: TextStyle(
@@ -113,7 +113,7 @@ class _UserProfileContentState extends State<UserProfileContent> {
             SizedBox(height: screenHeight * 0.01),
             Text(
               content,
-              textAlign: TextAlign.justify,
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: screenHeight * 0.02),
             ),
           ],
