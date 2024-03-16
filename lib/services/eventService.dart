@@ -60,4 +60,20 @@ class EventService {
       throw Exception("Error removing participant: $e");
     }
   }
+
+  // fetch all events created by a specific user
+  Future<List<Event>> fetchEventsCreatedByUser(String userId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('events')
+          .where('hostUserId', isEqualTo: userId) // assuming 'hostUserId' is the field
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => Event.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception("Error fetching events created by user: $e");
+    }
+  }
 }
