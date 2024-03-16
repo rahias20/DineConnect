@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dine_connect/components/navbar_button.dart';
 import 'package:dine_connect/pages/event_details_content.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/eventService.dart';
@@ -175,28 +176,15 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
-
               ),
-
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: 20),
-        child: ElevatedButton(
-          onPressed: _createEvent,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            textStyle: TextStyle(fontSize: screenWidth * 0.05),
-          ),
-          child: const Text('Create'),
-        ),
-      ),
+      bottomNavigationBar: NavbarButton(
+        onPressed: _createEvent,
+        buttonText: 'Create',
+      )
     );
   }
 }
