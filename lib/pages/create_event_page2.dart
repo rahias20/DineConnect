@@ -22,32 +22,37 @@ class CreateEventPage2 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Let\'s go to Pizza Hut for some pizza!',
-              style: TextStyle(
+              event.description,
+              style: const TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16.0),
+
+            SizedBox(height: screenHeight * 0.04),
             Text(
               'Hosted by ${event.hostUserId}',
-              style: TextStyle(fontSize: 16.0),
+              style: const TextStyle(fontSize: 16.0),
             ),
-            SizedBox(height: 16.0),
+
+            SizedBox(height: screenHeight * 0.04),
             Text(
-              'Thurs, Jun 12 2024 1:00 PM', // Use event.date here formatted
-              style: TextStyle(fontSize: 16.0),
+              event.eventDate as String, // Use event.date here formatted
+              style: const TextStyle(fontSize: 16.0),
             ),
-            SizedBox(height: 16.0),
+
+
             Text(
-              'Pizza Hut\n181-183 King St,\nAberdeen AB24 5AH', // Use event.location here
+              '${event.addressLine1}\n${event.addressLine2}\n${event.city}\n${event.postcode}', // Use event.location here
               style: TextStyle(fontSize: 16.0),
             ),
-            SizedBox(height: 16.0),
+
+            SizedBox(height: screenHeight * 0.04),
             Text(
-              '${event.participantUserIds.length}', // Use event.participants here
+              '${event.participantUserIds.length}',
               style: TextStyle(fontSize: 16.0),
             ),
+
             Spacer(),
             Center(
               child: SizedBox(

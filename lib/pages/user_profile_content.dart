@@ -14,6 +14,7 @@ class UserProfileContent extends StatefulWidget {
 }
 
 class _UserProfileContentState extends State<UserProfileContent> {
+  final AuthService _authService = AuthService();
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
 
@@ -25,8 +26,9 @@ class _UserProfileContentState extends State<UserProfileContent> {
   }
 
   Future<void> _fetchUserProfile() async {
+    String? uid = _authService.getCurrentUser()?.uid;
     try {
-      UserProfile? profile = await _userProfileService.fetchUserProfile();
+      UserProfile? profile = await _userProfileService.fetchUserProfile(uid!);
 
       if (profile != null) {
         setState(() {

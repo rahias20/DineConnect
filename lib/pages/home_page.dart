@@ -25,8 +25,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchUserProfile() async {
+    String? uid = _authService.getCurrentUser()?.uid;
     try {
-      UserProfile? profile = await _userProfileService.fetchUserProfile();
+      UserProfile? profile = await _userProfileService.fetchUserProfile(uid!);
       if (profile != null) {
         setState(() {
           userProfile = profile;

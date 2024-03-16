@@ -15,8 +15,7 @@ class UserProfileService {
   final ImagePicker _picker = ImagePicker();
 
   // fetch user profile data from the database
-  Future<UserProfile?> fetchUserProfile() async {
-    String userId = _auth.currentUser!.uid;
+  Future<UserProfile?> fetchUserProfile(String userId) async {
     try {
       DocumentSnapshot userProfileSnapshot =
           await _firestore.collection('userProfiles').doc(userId).get();
