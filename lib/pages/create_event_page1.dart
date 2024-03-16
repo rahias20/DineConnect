@@ -73,9 +73,11 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
   // save event information in event model
   void _saveEvent() {
     String eventId = const Uuid().v4();
+    // get logged in user's uid
+    String uid = _authService.getCurrentUser()!.uid;
     newEvent = Event(
         eventId: eventId,
-        hostUserId: _authService.getCurrentUser()!.uid,
+        hostUserId: uid,
         description: _descriptionController.text,
         eventDate: selectedDate,
         addressLine1: _addressLine1Controller.text,
@@ -83,7 +85,7 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
         city: _townCityController.text,
         postcode: _postcodeController.text,
         numberOfParticipants: noOfPeople,
-        participantUserIds: []);
+        participantUserIds: [uid]);
   }
 
   @override
@@ -206,7 +208,8 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               _saveEvent();
-              Navigator.pushNamed(context, '/createEvent2', arguments: newEvent);
+              Navigator.pushNamed(context, '/createEvent2',
+                  arguments: newEvent);
             }
           },
           child: const Icon(Icons.arrow_forward),

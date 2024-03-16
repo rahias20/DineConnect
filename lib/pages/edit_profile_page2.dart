@@ -174,11 +174,11 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Location Services Disabled"),
-            content: Text("Please enable location services to proceed."),
+            title: const Text("Location Services Disabled"),
+            content: const Text("Please enable location services to proceed."),
             actions: <Widget>[
               TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
                   // Open location settings
                   Geolocator.openLocationSettings();
