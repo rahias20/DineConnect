@@ -16,6 +16,13 @@ class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
   UserProfile? userProfile;
   late UserProfileService _userProfileService;
+  int _selectedIndex = 0;
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text('Join Page'),
+    Text('Host Page'),
+    Text('Settings Page'),
+  ];
 
   @override
   void initState() {
@@ -40,6 +47,25 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    // Navigate to the new page based on index.
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/joinPage');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/hostPage');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/settingsPage');
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -48,17 +74,17 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Center(child: Text("Home Page")),
+        title: const Center(child: Text("DineConnect")),
         leading: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/chatsPage');
-                },
-                icon: const Icon(Icons.chat_bubble_outline),),
+          onPressed: () {
+            Navigator.pushNamed(context, '/chatsPage');
+          },
+          icon: const Icon(Icons.chat_bubble_outline),
+        ),
         actions: [
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pushNamed(context, '/editProfilePage1');
             },
             child: CircleAvatar(
@@ -91,6 +117,25 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.group),
+            label: 'Join',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_sharp),
+            label: 'Host',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: colorScheme.secondary,
+        onTap: _onItemTapped,
       ),
     );
   }

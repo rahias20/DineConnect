@@ -7,6 +7,9 @@ import 'package:dine_connect/pages/edit_profile_page2.dart';
 import 'package:dine_connect/pages/forgot_password_page.dart';
 import 'package:dine_connect/pages/home_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
+import 'package:dine_connect/pages/host_page.dart';
+import 'package:dine_connect/pages/join_page.dart';
+import 'package:dine_connect/pages/settings_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
@@ -41,6 +44,9 @@ class MyApp extends StatelessWidget {
         '/chatsPage': (context) => const ChatsPage(),
         '/forgotPasswordPage': (context) => const ForgotPasswordPage(),
         '/createEvent1': (context) => const CreateEventPage1(),
+        '/joinPage': (context) => const JoinPage(),
+        '/hostPage': (context) => const HostPage(),
+        '/settingsPage': (context) => const SettingsPage(),
         '/createEvent2': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Event;
           return CreateEventPage2(event: args);
