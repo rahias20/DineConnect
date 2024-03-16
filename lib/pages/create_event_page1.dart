@@ -18,6 +18,7 @@ class CreateEventPage1 extends StatefulWidget {
 class _CreateEventPage1State extends State<CreateEventPage1> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
+  static String eventId = const Uuid().v4();
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _addressLine1Controller = TextEditingController();
@@ -72,7 +73,6 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
 
   // save event information in event model
   void _saveEvent() {
-    String eventId = const Uuid().v4();
     // get logged in user's uid
     String uid = _authService.getCurrentUser()!.uid;
     newEvent = Event(

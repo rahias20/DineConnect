@@ -4,7 +4,7 @@ import 'package:dine_connect/models/event.dart';
 class EventService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Save event data in the database
+  // save event data in the database
   Future<void> saveEvent(Event event) async {
     await _firestore
         .collection('events')
