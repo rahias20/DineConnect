@@ -21,26 +21,31 @@ class SettingsPage extends StatelessWidget {
         'icon': Icons.person_outlined,
         'title': 'Account',
         'subtitle': 'Privacy, security, change password',
+        'action': () => Navigator.pushNamed(context, '/accountPage')
       },
       {
         'icon': Icons.palette_outlined,
         'title': 'Appearance',
         'subtitle': 'Theme',
+        'action': () => Navigator.pushNamed(context, '/appearancePage')
       },
       {
         'icon': Icons.notifications_outlined,
         'title': 'Notifications',
         'subtitle': 'Message, event reminders',
+        'action': () => Navigator.pushNamed(context, '/notificationsPage')
       },
       {
         'icon': Icons.help_outline,
         'title': 'Help & Support',
         'subtitle': 'Get help and find answers to your questions',
+        'action': () => Navigator.pushNamed(context, '/helpAndSupportPage')
       },
       {
         'icon': Icons.info_outline,
         'title': 'About',
         'subtitle': 'Learn more about DineConnect',
+        'action': () => Navigator.pushNamed(context, '/aboutPage')
       },
     ];
 
@@ -53,7 +58,11 @@ class SettingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: colorScheme.primary,
+        title: const Text('Settings'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.grey,
+        elevation: 0,
       ),
       bottomNavigationBar: NavbarButton(
         onPressed: signOutUser,
@@ -73,7 +82,10 @@ class SettingsPage extends StatelessWidget {
                     TextStyle(color: colorScheme.onSurface.withOpacity(0.6))),
             onTap: () {
               // navigation or functionality for each option
-              // Navigator.pushNamed(context, '/accountSettings');
+              if(item['action'] != null){
+                item['action']();
+              }
+
             },
           );
         },

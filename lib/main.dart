@@ -1,14 +1,19 @@
 import 'package:dine_connect/firebase_options.dart';
+import 'package:dine_connect/pages/about_page.dart';
+import 'package:dine_connect/pages/account_page.dart';
+import 'package:dine_connect/pages/appearance_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:dine_connect/pages/create_event_page2.dart';
 import 'package:dine_connect/pages/edit_profile_page1.dart';
 import 'package:dine_connect/pages/edit_profile_page2.dart';
 import 'package:dine_connect/pages/forgot_password_page.dart';
+import 'package:dine_connect/pages/help_and_support_page.dart';
 import 'package:dine_connect/pages/home_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/host_page.dart';
 import 'package:dine_connect/pages/join_page.dart';
+import 'package:dine_connect/pages/notifications_page.dart';
 import 'package:dine_connect/pages/settings_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
@@ -47,6 +52,13 @@ class MyApp extends StatelessWidget {
         '/joinPage': (context) => const JoinPage(),
         '/hostPage': (context) => const HostPage(),
         '/settingsPage': (context) => const SettingsPage(),
+        '/aboutPage': (context) => const AboutPage(),
+        '/helpAndSupportPage': (context) => const HelpAndSupportPage(),
+        '/appearancePage': (context) => const AppearancePage(),
+        '/accountPage': (context) => const AccountPage(),
+        '/notificationsPage': (context) => const NotificationsPage(),
+
+
         '/createEvent2': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Event;
           return CreateEventPage2(event: args);
