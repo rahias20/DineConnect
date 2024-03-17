@@ -46,14 +46,14 @@ class WelcomePage extends StatelessWidget {
                   GestureDetector(
                     onTap: onTap,
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0), // Add some padding
+                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
                       decoration: BoxDecoration(
-                        color: colorScheme.primary, // Use the primary color from your color scheme
+                        color: colorScheme.primary,
                         borderRadius: BorderRadius.circular(20.0), // Rounded corners
                       ),
                       child: const Text(
                         "Get Started",
-                        style: TextStyle(fontSize: 16.0, color: Colors.white), // Text style
+                        style: TextStyle(fontSize: 16.0, color: Colors.white),
                       ),
                     ),
                   ),
