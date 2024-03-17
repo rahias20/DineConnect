@@ -111,7 +111,7 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
                 Text(
                   widget.event.description,
                   style: TextStyle(
-                    fontSize: screenHeight * 0.04,
+                    fontSize: screenHeight * 0.03,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -120,10 +120,18 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                   labelText: 'Description',
                   prefixIcon: Icons.description_outlined,
                   maxLines: 2,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    } else if (value.length > 70){
+                      return 'Description too long';
+                    }
+                    return null;
+                  },
                 ),
 
                 // date and time
-                SizedBox(height: screenHeight * 0.004),
+                SizedBox(height: screenHeight * 0.002),
                 ListTile(
                   title: Text(
                     getFormattedDate(),
@@ -165,32 +173,65 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                   ),
                 ),
 
+                // address line 1
                 SizedBox(height: screenHeight * 0.004),
-
-                TextField(
+                TextFormField(
                   controller: _addressLine1Controller,
                   decoration: const InputDecoration(
                     labelText: 'Address line 1',
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '';
+                    }
+                    return null;
+                  },
                 ),
-                TextField(
+
+                // address line 2
+                TextFormField(
                   controller: _addressLine2Controller,
                   decoration: const InputDecoration(
                     labelText: 'Address line 2',
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '';
+                    }
+                    return null;
+                  },
                 ),
 
-                TextField(
+                // town/city
+                TextFormField(
                   controller: _townCityController,
                   decoration: InputDecoration(
                     labelText: 'Town/City',
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '';
+                    }
+                    return null;
+                  },
                 ),
-                TextField(
+
+                // postcode
+                TextFormField(
                   controller: _postcodeController,
                   decoration: const InputDecoration(
                     labelText: 'Postcode',
                   ),
+                  validator: (value) {
+                    String pattern = r'^[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][ABD-HJLNP-UW-Z]{2}$';
+                    RegExp regExp = RegExp(pattern, caseSensitive: false);
+                    if (value == null || value.isEmpty) {
+                      return '';
+                    }else if (!regExp.hasMatch(value)){
+                      return 'Invalid Postcode';
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),

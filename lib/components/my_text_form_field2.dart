@@ -32,6 +32,7 @@ class MyTextFormField2 extends StatelessWidget {
               controller: controller,
               keyboardType: keyboardType,
               validator: validator,
+              maxLines: maxLines,
               decoration: InputDecoration(
                 labelText: labelText,
                 prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
