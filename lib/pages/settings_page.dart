@@ -5,11 +5,15 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Scaffold(
-        body: Text('Setting Page'),
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colorScheme.primary,
       ),
+      body: const Center(child: Text('Settings Page')),
     );
   }
 }
-

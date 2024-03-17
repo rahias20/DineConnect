@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../models/event.dart';
+import '../services/authentication/auth_service.dart';
+import '../services/eventService.dart';
+
 class HostPage extends StatefulWidget {
   const HostPage({super.key});
 
@@ -8,13 +12,36 @@ class HostPage extends StatefulWidget {
 }
 
 class _HostPageState extends State<HostPage> {
-  final List<String> _upcomingEvents = ['Event A', 'Event B', 'Event C','Event A', 'Event B', 'Event C','Event D', 'Event E', 'Event F'];
-  final List<String> _pastEvents = ['Event D', 'Event E', 'Event F','Event D', 'Event E', 'Event F','Event D', 'Event E', 'Event F'];
+  late EventService _eventService;
+  late AuthService _authService;
+  List<Event> _upcomingEvents = [];
+  List<Event> _pastEvents = [];
 
-  void _navigateToCreateEvent(BuildContext context) {
-    // Navigate to the Create Event page
-    Navigator.pushNamed(context, '/createEvent1');
+  @override
+  void initState() {
+    super.initState();
+    _eventService = EventService();
+    _authService = AuthService();
+    _fetchCreatedEvents();
   }
+
+Future<void> _fetchCreatedEvents() async {
+  String? uid = _authService.getCurrentUser()?.uid;
+  DateTime now = DateTime.now();
+  if (uid != null) {
+    try {
+      List<Event> events = await _eventService.fetchEventsCreatedByUser(uid);
+      setState(() {
+        _upcomingEvents = events.where((event) => event.eventDate.isAfter(now)).toList();
+        _pastEvents = events.where((event) => event.eventDate.isBefore(now)).toList();
+      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +65,7 @@ class _HostPageState extends State<HostPage> {
               child: Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02), // dynamic space before the list
-                  Expanded(child: _buildEventsList(_upcomingEvents)),
+                  Expanded(child: _buildEventsList(_upcomingEvents, screenHeight)),
                 ],
               ),
             ),
@@ -47,7 +74,7 @@ class _HostPageState extends State<HostPage> {
               child: Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02), // dynamic space before the list
-                  Expanded(child: _buildEventsList(_pastEvents)),
+                  Expanded(child: _buildEventsList(_pastEvents, screenHeight)),
                 ],
               ),
             ),
@@ -61,17 +88,21 @@ class _HostPageState extends State<HostPage> {
     );
   }
 
-  Widget _buildEventsList(List<String> events) {
-    return ListView.builder(
-      itemCount: events.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-          child: ListTile(
-            title: Text(events[index]),
-            // You can add onTap to navigate to the event detail
-          ),
-        );
-      },
+  Widget _buildEventsList(List<Event> events, double screenHeight) {
+    return Padding(
+      padding: EdgeInsets.only(top: screenHeight * 0.02),
+      child: ListView.builder(
+        itemCount: events.length,
+        itemBuilder: (BuildContext context, int index) {
+          Event event = events[index];
+          return Card(
+            child: ListTile(
+              title: Text(event.description),
+              subtitle: Text(event.description),
+            ),
+          );
+        },
+      ),
     );
   }
 }

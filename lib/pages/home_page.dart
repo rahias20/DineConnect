@@ -3,6 +3,7 @@ import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_profile.dart';
+import '../services/authentication/auth_gate.dart';
 import '../services/user_profile_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,11 +19,6 @@ class _HomePageState extends State<HomePage> {
   late UserProfileService _userProfileService;
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Join Page'),
-    Text('Host Page'),
-    Text('Settings Page'),
-  ];
 
   @override
   void initState() {
@@ -55,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     // Navigate to the new page based on index.
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, '/joinPage');
+        // Navigator.pushNamed(context, '/joinPage');
         break;
       case 1:
         Navigator.pushNamed(context, '/hostPage');
@@ -104,7 +100,12 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(_authService.getCurrentUser()!.email as String),
               IconButton(
-                  onPressed: () => _authService.signUserOut(),
+                  onPressed: () {
+                    _authService.signUserOut();
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => AuthGate()),
+                        (Route<dynamic> route) => false);
+                  },
                   icon: const Icon(Icons.logout)),
               Text(
                 "${userProfile?.name}, ${userProfile?.age}",
@@ -114,6 +115,8 @@ class _HomePageState extends State<HomePage> {
                   color: colorScheme.onSurface,
                 ),
               ),
+
+
             ],
           ),
         ),
@@ -134,7 +137,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: colorScheme.secondary,
+        selectedItemColor: colorScheme.primary,
         onTap: _onItemTapped,
       ),
     );

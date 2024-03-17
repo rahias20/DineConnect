@@ -18,7 +18,7 @@ class CreateEventPage1 extends StatefulWidget {
 class _CreateEventPage1State extends State<CreateEventPage1> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
-  static String eventId = const Uuid().v4();
+  String eventId = const Uuid().v4();
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _addressLine1Controller = TextEditingController();

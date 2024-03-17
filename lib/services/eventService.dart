@@ -6,16 +6,14 @@ class EventService {
 
   // save event data in the database
   Future<void> saveEvent(Event event) async {
-    await _firestore
-        .collection('events')
-        .doc(event.eventId)
-        .set(event.toMap());
+    await _firestore.collection('events').doc(event.eventId).set(event.toMap());
   }
 
   // fetch event data from the database
   Future<Event?> fetchEvent(String eventId) async {
     try {
-      DocumentSnapshot eventSnapshot = await _firestore.collection('events').doc(eventId).get();
+      DocumentSnapshot eventSnapshot =
+          await _firestore.collection('events').doc(eventId).get();
       if (eventSnapshot.exists) {
         return Event.fromMap(eventSnapshot.data() as Map<String, dynamic>);
       }
@@ -28,7 +26,10 @@ class EventService {
   // update event data in the database
   Future<void> updateEvent(Event event) async {
     try {
-      await _firestore.collection('events').doc(event.eventId).update(event.toMap());
+      await _firestore
+          .collection('events')
+          .doc(event.eventId)
+          .update(event.toMap());
     } catch (e) {
       throw Exception("Error updating event: $e");
     }
@@ -66,14 +67,16 @@ class EventService {
     try {
       QuerySnapshot querySnapshot = await _firestore
           .collection('events')
-          .where('hostUserId', isEqualTo: userId) // assuming 'hostUserId' is the field
+          .where('ownerUserId', isEqualTo: userId)
           .get();
 
-      return querySnapshot.docs
+      List<Event> events = querySnapshot.docs
           .map((doc) => Event.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
+
+      return events;
     } catch (e) {
-      throw Exception("Error fetching events created by user: $e");
+      throw Exception("Error fetching events: $e");
     }
   }
 }
