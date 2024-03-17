@@ -2,6 +2,7 @@ import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/about_page.dart';
 import 'package:dine_connect/pages/account_page.dart';
 import 'package:dine_connect/pages/appearance_page.dart';
+import 'package:dine_connect/pages/change_password_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:dine_connect/pages/create_event_page2.dart';
@@ -15,6 +16,7 @@ import 'package:dine_connect/pages/host_page.dart';
 import 'package:dine_connect/pages/join_page.dart';
 import 'package:dine_connect/pages/notifications_page.dart';
 import 'package:dine_connect/pages/settings_page.dart';
+import 'package:dine_connect/pages/welcome_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
       home: AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
+        '/welcomePage': (context) => WelcomePage(onTap: (){}),
         '/loginOrRegister': (context) => const LoginOrRegister(),
         '/homepage': (context) => HomePage(),
         '/editProfilePage1': (context) => const EditProfilePage1(),
@@ -57,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/appearancePage': (context) => const AppearancePage(),
         '/accountPage': (context) => const AccountPage(),
         '/notificationsPage': (context) => const NotificationsPage(),
+        '/changePasswordPage': (context) => const ChangePasswordPage(),
 
 
         '/createEvent2': (context) {

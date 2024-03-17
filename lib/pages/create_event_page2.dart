@@ -66,8 +66,8 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
     }
   }
 
-  void _showEventCreatedDialogAndNavigate(){
-        showDialog(
+  void _showEventCreatedDialogAndNavigate() {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return const AlertDialog(
@@ -82,16 +82,15 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
         );
       },
     );
-        Future.delayed(const Duration(seconds: 1), (){
-          Navigator.of(context).pop();
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/homepage',
-                (Route<dynamic> route) => false,
-          );
-        });
+    Future.delayed(const Duration(seconds: 1), () {
+      Navigator.of(context).pop();
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/homepage',
+        (Route<dynamic> route) => false,
+      );
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -101,90 +100,89 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colorScheme.primary,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth / 7),
-          child: Column(
-            children: [
-              Text(
-                widget.event.description,
-                style: TextStyle(
-                  fontSize: screenHeight * 0.04,
-                  fontWeight: FontWeight.w500,
+        appBar: AppBar(
+          backgroundColor: colorScheme.primary,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth / 7),
+            child: Column(
+              children: [
+                Text(
+                  widget.event.description,
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.04,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.04),
-              Row(
-                children: [
-                  SizedBox(height: screenHeight * 0.04),
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: screenWidth * 0.05,
-                        backgroundImage: imageUrl.isNotEmpty
-                            ? FileImage(File(imageUrl))
-                            : const AssetImage('lib/images/profile_icon.png')
-                                as ImageProvider,
-                        backgroundColor: Colors.white60,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'Hosted by ',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    '${_userProfile?.name.split(' ')[0]}',
-                    style: TextStyle(fontSize: 16.0, color: Colors.red[300]),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.04),
-              Row(
-                children: [
-                  const Icon(Icons.event),
-                  const SizedBox(width: 15),
-                  Text(
-                    DateFormat('EEE, MMM d yyyy\nh:mm a').format(
-                        widget.event.eventDate), // Use event.date here formatted
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.03),
-              Row(
-                children: [
-                  const Icon(Icons.location_on_sharp),
-                  const SizedBox(width: 15),
-                  Text(
-                    '${widget.event.addressLine1}\n${widget.event.addressLine2}\n${widget.event.city}\n${widget.event.postcode}', // Use event.location here
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.04),
-              Row(
-                children: [
-                  const Icon(Icons.person),
-                  const SizedBox(width: 15),
-                  Text(
-                    '${widget.event.numberOfParticipants}',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ],
-              ),
-            ],
+                SizedBox(height: screenHeight * 0.04),
+                Row(
+                  children: [
+                    SizedBox(height: screenHeight * 0.04),
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: screenWidth * 0.05,
+                          backgroundImage: imageUrl.isNotEmpty
+                              ? FileImage(File(imageUrl))
+                              : const AssetImage('lib/images/profile_icon.png')
+                                  as ImageProvider,
+                          backgroundColor: Colors.white60,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'Hosted by ',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Text(
+                      '${_userProfile?.name.split(' ')[0]}',
+                      style: TextStyle(fontSize: 16.0, color: Colors.red[300]),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                Row(
+                  children: [
+                    const Icon(Icons.event),
+                    const SizedBox(width: 15),
+                    Text(
+                      DateFormat('EEE, MMM d yyyy\nh:mm a').format(widget
+                          .event.eventDate), // Use event.date here formatted
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                Row(
+                  children: [
+                    const Icon(Icons.location_on_sharp),
+                    const SizedBox(width: 15),
+                    Text(
+                      '${widget.event.addressLine1}\n${widget.event.addressLine2}\n${widget.event.city}\n${widget.event.postcode}', // Use event.location here
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                Row(
+                  children: [
+                    const Icon(Icons.person),
+                    const SizedBox(width: 15),
+                    Text(
+                      '${widget.event.numberOfParticipants}',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: NavbarButton(
-        onPressed: _createEvent,
-        buttonText: 'Create',
-      )
-    );
+        bottomNavigationBar: NavbarButton(
+          onPressed: _createEvent,
+          buttonText: 'Create',
+        ));
   }
 }
