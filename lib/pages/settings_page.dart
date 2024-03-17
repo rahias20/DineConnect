@@ -8,7 +8,6 @@ import '../services/authentication/auth_gate.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     AuthService authService = AuthService();
@@ -19,19 +18,24 @@ class SettingsPage extends StatelessWidget {
     // list of settings options
     final List<Map<String, dynamic>> settingsOptions = [
       {
-        'icon': Icons.person,
+        'icon': Icons.person_outlined,
         'title': 'Account',
         'subtitle': 'Privacy, security, change password',
       },
       {
-        'icon': Icons.palette,
+        'icon': Icons.palette_outlined,
         'title': 'Appearance',
         'subtitle': 'Theme',
       },
       {
-        'icon': Icons.notifications,
+        'icon': Icons.notifications_outlined,
         'title': 'Notifications',
         'subtitle': 'Message, event reminders',
+      },
+      {
+        'icon': Icons.help_outline,
+        'title': 'Help & Support',
+        'subtitle': 'Get help and find answers to your questions',
       },
       {
         'icon': Icons.info_outline,
@@ -40,12 +44,13 @@ class SettingsPage extends StatelessWidget {
       },
     ];
 
-    void signOutUser(){
+    void signOutUser() {
       authService.signUserOut();
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const AuthGate()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorScheme.primary,
@@ -54,7 +59,6 @@ class SettingsPage extends StatelessWidget {
         onPressed: signOutUser,
         buttonText: 'Sign Out',
       ),
-
       body: ListView.separated(
         padding: EdgeInsets.all(16),
         itemCount: settingsOptions.length,
