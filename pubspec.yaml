@@ -42,8 +42,6 @@ dependencies:
   image_picker: ^1.0.7
   firebase_storage: ^11.6.7
   path: ^1.8.0
-  geolocator: ^11.0.0
-  geocoding: ^2.2.0
   intl:
   http: ^1.2.1
   uuid: ^4.3.3
@@ -53,8 +51,6 @@ dev_dependencies:
     sdk: flutter
   mockito: ^5.0.0
   build_runner: ^2.4.8
-  firebase_core: ^2.25.4
-  firebase_auth: ^4.17.4
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

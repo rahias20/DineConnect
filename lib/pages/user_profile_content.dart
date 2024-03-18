@@ -65,13 +65,13 @@ class _UserProfileContentState extends State<UserProfileContent> {
               Text(
                 "${_userProfile!.name}, ${_userProfile!.age}",
                 style: TextStyle(
-                  fontSize: screenHeight * 0.025, // Dynamic font size
+                  fontSize: screenHeight * 0.029, // Dynamic font size
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
                 ),
               ),
 
-              SizedBox(height: screenHeight * 0.01),
+              SizedBox(height: screenHeight * 0.005),
               Text(
                 _userProfile!.location,
                 style: TextStyle(
