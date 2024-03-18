@@ -14,8 +14,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -207,7 +205,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                   controller: _locationController,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Please enter your bio';
+                      return 'Please enter your location';
                     }
                     return null;
                   },
