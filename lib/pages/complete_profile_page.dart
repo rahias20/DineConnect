@@ -44,7 +44,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   final TextEditingController _locationController = TextEditingController();
   String imageUrl = '';
   List<String> hobbies = [];
-  bool _isLocationServiceEnabled = false;
 
   // fields empty check
   bool _isHobbiesEmpty = false;
@@ -66,125 +65,13 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
-    _checkLocationPermissionAndService();
-    _listenLocationServiceStatus();
-  }
-
-  void _listenLocationServiceStatus() {
-    Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
-      setState(() {
-        _isLocationServiceEnabled = status == ServiceStatus.enabled;
-      });
-      if (_isLocationServiceEnabled) {
-        // Optionally, do something when the location service is enabled, like fetching the current position
-        _checkLocationPermissionAndService();
-      }
-    });
-  }
-
-  Future<void> _checkLocationPermissionAndService() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // location services are not enabled, prompt the user to enable
-
-      if (!mounted) return;
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Location Services Disabled"),
-            content: const Text("Please enable location services to proceed."),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("OK"),
-                onPressed: () {
-                  // Open location settings
-                  Geolocator.openLocationSettings();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever
-      return;
-    }
-
-    // if permissions are granted, proceed to fetch and display location
-    _determinePosition();
-  }
-
-  Future<void> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // test if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are disabled')));
-      });
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-      });
-      return;
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // permissions are denied forever, handle appropriately
-      setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                'Location permissions are permanently denied, we cannot request permissions')));
-      });
-      return;
-    }
-
-    // when we reach here, permissions are granted and we can continue
-    // accessing the position of the device
-    Position position = await Geolocator.getCurrentPosition();
-
-    // get place
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks.first;
-      setState(() {
-        _locationController.text = "${place.locality}, ${place.country}";
-      });
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to get Location')));
-    }
   }
 
   // add hobby to the list
   void _addHobby(String hobby) {
     if (hobby.isNotEmpty && !hobbies.contains(hobby)) {
       setState(() {
-        hobbies.add(hobby);
+        hobbies.add(hobby.trim());
       });
     }
   }
@@ -200,12 +87,10 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     setState(() {
       _isHobbiesEmpty = hobbies.isEmpty;
       _isImageEmpty = imageUrl.isEmpty;
-      _isLocationEmpty = _locationController.text.isEmpty;
     });
 
     hasErrors =
         _isHobbiesEmpty ||
-        _isLocationEmpty ||
         _isImageEmpty;
 
     if (hasErrors){
@@ -213,10 +98,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
             content: const Text('Please upload a profile photo to continue')));
-      }else if (_isLocationEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.red.shade500,
-            content: const Text('Click on the location field to get location')));
       }
       return;
     }
@@ -228,7 +109,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
         lookingFor: _lookingForController.text,
         hobbies: hobbies,
         imageUrl: imageUrl,
-        location: _locationController.text);
+        location: _locationController.text.trim());
 
     // save the user profile to the database
     await _userProfileService.saveUserProfile(userProfile);
@@ -248,16 +129,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       });
     }
     await _userProfileService.uploadImage(File(file!.path));
-  }
-
-  // this method is called when the "location" TextField is tapped
-  Future<void> _onLocationFieldTapped() async {
-    await _checkLocationPermissionAndService();
-    _listenLocationServiceStatus();
-    // If the location services are enabled and permission is granted, fetch the location
-    if (_isLocationServiceEnabled) {
-      await _determinePosition();
-    }
   }
 
   @override
@@ -329,24 +200,27 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                   },
                 ),
 
-                // location texfield
+                // city textfield
                 SizedBox(height: screenHeight * 0.04),
-                GestureDetector(
-                  onTap: _onLocationFieldTapped,
-                  child: AbsorbPointer(
-                    child: MyTextFormField(
-                      controller: _locationController,
-                      labelText: 'Location',
-                      readOnly: true,
-                    ),
-                  ),
+                MyTextFormField(
+                  labelText: 'City',
+                  controller: _locationController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter your bio';
+                    }
+                    return null;
+                  },
                 ),
+
+
 
                 // bio
                 SizedBox(height: screenHeight * 0.04),
                 MyTextFormField(
                   labelText: 'Tell us a bit about yourself',
                   controller: _bioController,
+                  maxLines: 3,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter your bio';
@@ -360,6 +234,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                 MyTextFormField(
                   labelText: 'What are you looking for',
                   controller: _lookingForController,
+                  maxLines: 2,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please specify what you are looking for';

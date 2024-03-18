@@ -93,11 +93,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
+      body:Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Text(
+                'Welcome, ${userProfile?.name ?? 'Guest'}!',
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              ),
               Text(_authService.getCurrentUser()!.email as String),
               IconButton(
                   onPressed: () {
@@ -120,7 +123,6 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
