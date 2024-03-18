@@ -1,16 +1,10 @@
 import 'dart:ffi';
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_text_form_field.dart';
-import 'package:dine_connect/components/my_textfield.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/user_profile_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';

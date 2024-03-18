@@ -79,4 +79,25 @@ class EventService {
       throw Exception("Error fetching events: $e");
     }
   }
+
+  // fetch events in the specified city
+  Future<List<Event>> fetchEventsInCity(String city) async {
+    try {
+      final now = DateTime.now();
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('events')
+          .where('city', isEqualTo: city)
+          .where('eventDate', isGreaterThan: now)
+          .orderBy('eventDate')
+          .get();
+
+      List<Event> events = querySnapshot.docs
+          .map((doc) => Event.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      return events;
+    } catch (e) {
+      throw Exception("Error fetching events in city: $e");
+    }
+  }
 }
