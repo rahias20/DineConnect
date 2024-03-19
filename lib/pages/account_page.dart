@@ -81,11 +81,21 @@ class AccountPage extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.email_outlined),
+            title: const Text('Change Email'),
+            subtitle: Text(FirebaseAuth.instance.currentUser!.email.toString()),
+            onTap: () {
+              // navigate to change password page
+              Navigator.pushNamed(context, '/changeEmailPage');
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.delete_outline_outlined),
             title: const Text('Delete Account'),
             subtitle: const Text('Permanently delete your account'),
             onTap: () => _showDeleteAccountDialog(context),
           ),
+
         ],
       ),
     );

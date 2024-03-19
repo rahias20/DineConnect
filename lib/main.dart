@@ -2,6 +2,7 @@ import 'package:dine_connect/firebase_options.dart';
 import 'package:dine_connect/pages/about_page.dart';
 import 'package:dine_connect/pages/account_page.dart';
 import 'package:dine_connect/pages/appearance_page.dart';
+import 'package:dine_connect/pages/change_email_page.dart';
 import 'package:dine_connect/pages/change_password_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/create_event_page1.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
         '/accountPage': (context) => const AccountPage(),
         '/notificationsPage': (context) => const NotificationsPage(),
         '/changePasswordPage': (context) => const ChangePasswordPage(),
+        '/changeEmailPage': (context) => const ChangeEmailPage(),
         '/createEvent2': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Event;
           return CreateEventPage2(event: args);
