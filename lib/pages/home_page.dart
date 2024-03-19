@@ -3,8 +3,9 @@ import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_profile.dart';
-import '../services/authentication/auth_gate.dart';
+import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
+import 'package:dine_connect/models/event.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -17,8 +18,9 @@ class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
   UserProfile? userProfile;
   late UserProfileService _userProfileService;
+  final EventService _eventService = EventService();
+  List<Event> _upcomingEvents = [];
   int _selectedIndex = 0;
-
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
       if (profile != null) {
         setState(() {
           userProfile = profile;
+          _loadUpcomingEvents();
         });
       }
     } catch (e) {
@@ -61,6 +64,25 @@ class _HomePageState extends State<HomePage> {
         break;
     }
   }
+
+  Future<void> _loadUpcomingEvents() async {
+    String? uid = _authService.getCurrentUser()?.uid;
+    DateTime now = DateTime.now();
+    if (uid != null) {
+      try {
+        List<Event> events = await _eventService.fetchEventsInCity('Aberdeen');
+        setState(() {
+          _upcomingEvents =
+              events.where((event) => event.eventDate.isAfter(now)).toList();
+        });
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,36 +115,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body:Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'Welcome, ${userProfile?.name ?? 'Guest'}!',
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-              ),
-              Text(_authService.getCurrentUser()!.email as String),
-              IconButton(
-                  onPressed: () {
-                    _authService.signUserOut();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => AuthGate()),
-                        (Route<dynamic> route) => false);
-                  },
-                  icon: const Icon(Icons.logout)),
-              Text(
-                "${userProfile?.name}, ${userProfile?.age}",
-                style: TextStyle(
-                  fontSize: screenHeight * 0.025, // Dynamic font size
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-
-
-            ],
-          ),
-        ),
+      body: ListView.builder(
+        itemCount: _upcomingEvents.length,
+        itemBuilder: (context, index) {
+          // Using a custom 'EventCard' widget to display each event.
+          return EventCard(event: _upcomingEvents[index]);
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -141,6 +140,27 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _selectedIndex,
         selectedItemColor: colorScheme.primary,
         onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class EventCard extends StatelessWidget {
+  final Event event;
+
+  const EventCard({Key? key, required this.event}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.event), // An icon or image representing the event
+        title: Text(event.description),
+        subtitle: Text('${event.city}, on ${event.eventDate}'),
+        isThreeLine: true,
+        onTap: () {
+          // Navigate to event details page
+        },
       ),
     );
   }

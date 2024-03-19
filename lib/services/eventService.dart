@@ -84,10 +84,11 @@ class EventService {
   Future<List<Event>> fetchEventsInCity(String city) async {
     try {
       final now = DateTime.now();
+      final isoDateNow = now.toIso8601String();
       QuerySnapshot querySnapshot = await _firestore
           .collection('events')
           .where('city', isEqualTo: city)
-          .where('eventDate', isGreaterThan: now)
+          .where('eventDate', isGreaterThan: isoDateNow)
           .orderBy('eventDate')
           .get();
 
