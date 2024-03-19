@@ -55,7 +55,7 @@ class EventService {
   Future<void> removeParticipant(String eventId, String userId) async {
     try {
       await _firestore.collection('events').doc(eventId).update({
-        'participants': FieldValue.arrayRemove([userId])
+        'participantUserIds': FieldValue.arrayRemove([userId])
       });
     } catch (e) {
       throw Exception("Error removing participant: $e");
@@ -94,7 +94,7 @@ class EventService {
 
       // filter out events that the user has already joined
       List<Event> events = [];
-      for (var doc in querySnapshot.docs){
+      for (var doc in querySnapshot.docs) {
         var event = Event.fromMap(doc.data() as Map<String, dynamic>);
         if (!event.participantUserIds.contains(userId)) {
           events.add(event);
@@ -104,6 +104,26 @@ class EventService {
       return events;
     } catch (e) {
       throw Exception("Error fetching events in city: $e");
+    }
+  }
+
+  // fetch events that a specific user has joined
+  Future<List<Event>> fetchJoinedEventsByUser(String userId) async {
+    try {
+      // Assuming your events collection has a 'participantUserIds' field which is an array of user IDs
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('events')
+          .where('participantUserIds', arrayContains: userId)
+          .orderBy('eventDate')
+          .get();
+
+      List<Event> events = querySnapshot.docs
+          .map((doc) => Event.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      return events;
+    } catch (e) {
+      throw Exception("Error fetching joined events: $e");
     }
   }
 }

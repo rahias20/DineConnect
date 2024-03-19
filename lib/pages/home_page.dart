@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
     // Navigate to the new page based on index.
     switch (index) {
       case 0:
-        // Navigator.pushNamed(context, '/joinPage');
+        Navigator.pushNamed(context, '/joinPage');
         break;
       case 1:
         Navigator.pushNamed(context, '/hostPage');
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
     if (uid != null) {
       try {
         List<Event> events =
-            await _eventService.fetchEventsInCity('Aberdeen', uid);
+            await _eventService.fetchEventsInCity(userProfile!.location, uid);
         setState(() {
           _upcomingEvents =
               events.where((event) => event.eventDate.isAfter(now)).toList();
