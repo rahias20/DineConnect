@@ -68,6 +68,7 @@ class EventService {
       QuerySnapshot querySnapshot = await _firestore
           .collection('events')
           .where('ownerUserId', isEqualTo: userId)
+          .orderBy('eventDate')
           .get();
 
       List<Event> events = querySnapshot.docs
