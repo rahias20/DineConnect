@@ -32,7 +32,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchUserProfile() async {
-    String? uid = _authService.getCurrentUser()?.uid;
+    String? uid = _authService
+        .getCurrentUser()
+        ?.uid;
     try {
       UserProfile? profile = await _userProfileService.fetchUserProfile(uid!);
       if (profile != null) {
@@ -68,12 +70,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadUpcomingEvents(String uid) async {
-    String? uid = _authService.getCurrentUser()?.uid;
+    String? uid = _authService
+        .getCurrentUser()
+        ?.uid;
     DateTime now = DateTime.now();
     if (uid != null) {
       try {
         List<Event> events =
-            await _eventService.fetchEventsInCity(userProfile!.location, uid);
+        await _eventService.fetchEventsInCity(userProfile!.location, uid);
         setState(() {
           _upcomingEvents =
               events.where((event) => event.eventDate.isAfter(now)).toList();
@@ -87,18 +91,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   void refreshEvents() async {
-    await _loadUpcomingEvents(_authService.getCurrentUser()?.uid ?? '');
+    await _loadUpcomingEvents(_authService
+        .getCurrentUser()
+        ?.uid ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final double screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    final double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final ColorScheme colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: colorScheme.primary,
         title: const Center(child: Text("DineConnect")),
         leading: IconButton(
           onPressed: () {
@@ -115,19 +130,34 @@ class _HomePageState extends State<HomePage> {
               backgroundImage: userProfile?.imageUrl != null
                   ? FileImage(File(userProfile!.imageUrl.toString()))
                   : const AssetImage('lib/images/profile_icon.png')
-                      as ImageProvider,
+              as ImageProvider,
               backgroundColor: Colors.white60,
             ),
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _upcomingEvents.length,
-        itemBuilder: (context, index) {
-          // Using a custom 'EventCard' widget to display each event.
-          return EventCard(
-              event: _upcomingEvents[index], onEventJoined: refreshEvents);
-        },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Welcome, ${userProfile?.name ?? 'Guest'}!',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(height: 0),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _upcomingEvents.length,
+              itemBuilder: (context, index) {
+                // Using a custom 'EventCard' widget to display each event.
+                return EventCard(
+                    event: _upcomingEvents[index],
+                    onEventJoined: refreshEvents);
+              },
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -151,6 +181,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 class EventCard extends StatelessWidget {
   final Event event;
@@ -196,7 +227,7 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formattedDate =
-        DateFormat('EEEE d, MMMM, yyyy').format(event.eventDate);
+    DateFormat('EEEE d, MMMM, yyyy').format(event.eventDate);
     final formattedTime = DateFormat('h:mm a').format(event.eventDate);
     return Card(
       child: ListTile(
