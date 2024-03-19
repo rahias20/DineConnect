@@ -85,7 +85,7 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
         city: _townCityController.text,
         postcode: _postcodeController.text,
         numberOfParticipants: noOfPeople,
-        participantUserIds: [uid]);
+        participantUserIds: []);
   }
 
   @override
