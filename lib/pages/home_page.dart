@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       if (profile != null) {
         setState(() {
           userProfile = profile;
-          _loadUpcomingEvents();
+          _loadUpcomingEvents(uid);
         });
       }
     } catch (e) {
@@ -67,12 +67,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _loadUpcomingEvents() async {
+  Future<void> _loadUpcomingEvents(String uid) async {
     String? uid = _authService.getCurrentUser()?.uid;
     DateTime now = DateTime.now();
     if (uid != null) {
       try {
-        List<Event> events = await _eventService.fetchEventsInCity('Aberdeen');
+        List<Event> events =
+            await _eventService.fetchEventsInCity('Aberdeen', uid);
         setState(() {
           _upcomingEvents =
               events.where((event) => event.eventDate.isAfter(now)).toList();
@@ -85,6 +86,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void refreshEvents() async {
+    await _loadUpcomingEvents(_authService.getCurrentUser()?.uid ?? '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +125,8 @@ class _HomePageState extends State<HomePage> {
         itemCount: _upcomingEvents.length,
         itemBuilder: (context, index) {
           // Using a custom 'EventCard' widget to display each event.
-          return EventCard(event: _upcomingEvents[index]);
+          return EventCard(
+              event: _upcomingEvents[index], onEventJoined: refreshEvents);
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -149,8 +154,10 @@ class _HomePageState extends State<HomePage> {
 
 class EventCard extends StatelessWidget {
   final Event event;
+  final VoidCallback onEventJoined;
 
-  const EventCard({Key? key, required this.event}) : super(key: key);
+  const EventCard({Key? key, required this.event, required this.onEventJoined})
+      : super(key: key);
 
   void _joinEvent(BuildContext context, Event event) async {
     final EventService _eventService = EventService();
@@ -173,6 +180,7 @@ class EventCard extends StatelessWidget {
           },
         ),
       );
+      onEventJoined();
     } catch (e) {
       // Handle errors, e.g., show an error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -184,17 +192,16 @@ class EventCard extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-  final formattedDate = DateFormat('EEEE d, MMMM, yyyy').format(event.eventDate);
+    final formattedDate =
+        DateFormat('EEEE d, MMMM, yyyy').format(event.eventDate);
     final formattedTime = DateFormat('h:mm a').format(event.eventDate);
     return Card(
       child: ListTile(
         leading: const Icon(Icons.event),
         title: Text(event.description),
         subtitle: Text('${event.city}\n $formattedDate \n $formattedTime'),
-
         isThreeLine: true,
         onTap: () {
           // Navigate to event details page

@@ -81,7 +81,7 @@ class EventService {
   }
 
   // fetch events in the specified city
-  Future<List<Event>> fetchEventsInCity(String city) async {
+  Future<List<Event>> fetchEventsInCity(String city, String userId) async {
     try {
       final now = DateTime.now();
       final isoDateNow = now.toIso8601String();
@@ -92,9 +92,14 @@ class EventService {
           .orderBy('eventDate')
           .get();
 
-      List<Event> events = querySnapshot.docs
-          .map((doc) => Event.fromMap(doc.data() as Map<String, dynamic>))
-          .toList();
+      // filter out events that the user has already joined
+      List<Event> events = [];
+      for (var doc in querySnapshot.docs){
+        var event = Event.fromMap(doc.data() as Map<String, dynamic>);
+        if (!event.participantUserIds.contains(userId)) {
+          events.add(event);
+        }
+      }
 
       return events;
     } catch (e) {
