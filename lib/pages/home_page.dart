@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
     // Navigate to the new page based on index.
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, '/joinPage');
+        Navigator.pushNamed(context, '/joinPage').then((_) => refreshEvents());
         break;
       case 1:
         Navigator.pushNamed(context, '/hostPage');
@@ -176,11 +176,12 @@ class EventCard extends StatelessWidget {
           onDialogClose: () {
             // specify what happens after the dialog is closed
             Navigator.pop(context); // close the dialog if needed
-            Navigator.pop(context);
           },
         ),
-      );
-      onEventJoined();
+      ).then((_) => {
+        Navigator.pop(context),
+        onEventJoined()
+      });
     } catch (e) {
       // Handle errors, e.g., show an error message
       ScaffoldMessenger.of(context).showSnackBar(
