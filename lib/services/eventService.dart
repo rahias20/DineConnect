@@ -81,7 +81,7 @@ class EventService {
     }
   }
 
-  // fetch events in the specified city
+  // fetch events in the specified city with open slots for participants
   Future<List<Event>> fetchEventsInCity(String city, String userId) async {
     try {
       final now = DateTime.now();
@@ -97,7 +97,8 @@ class EventService {
       List<Event> events = [];
       for (var doc in querySnapshot.docs) {
         var event = Event.fromMap(doc.data() as Map<String, dynamic>);
-        if (!event.participantUserIds.contains(userId)) {
+        if (!event.participantUserIds.contains(userId) &&
+            (event.participantUserIds.length +1 < event.numberOfParticipants)) {
           events.add(event);
         }
       }
