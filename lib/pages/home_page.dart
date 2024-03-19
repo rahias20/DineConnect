@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../components/event_dialog.dart';
 import '../models/user_profile.dart';
 import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
@@ -150,16 +152,57 @@ class EventCard extends StatelessWidget {
 
   const EventCard({Key? key, required this.event}) : super(key: key);
 
+  void _joinEvent(BuildContext context, Event event) async {
+    final EventService _eventService = EventService();
+    final AuthService _authService = AuthService();
+
+    try {
+      final String userId = _authService.getCurrentUser()?.uid ?? '';
+      await _eventService.addParticipant(event.eventId, userId);
+      // Show a success message
+      showDialog(
+        context: context,
+        builder: (_) => EventDialog(
+          titleText: "Event Joined",
+          dialogText: "",
+          durationInSeconds: 1,
+          onDialogClose: () {
+            // specify what happens after the dialog is closed
+            Navigator.pop(context); // close the dialog if needed
+            Navigator.pop(context);
+          },
+        ),
+      );
+    } catch (e) {
+      // Handle errors, e.g., show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to join the event: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+  final formattedDate = DateFormat('EEEE d, MMMM, yyyy').format(event.eventDate);
+    final formattedTime = DateFormat('h:mm a').format(event.eventDate);
     return Card(
       child: ListTile(
-        leading: Icon(Icons.event), // An icon or image representing the event
+        leading: const Icon(Icons.event),
         title: Text(event.description),
-        subtitle: Text('${event.city}, on ${event.eventDate}'),
+        subtitle: Text('${event.city}\n $formattedDate \n $formattedTime'),
+
         isThreeLine: true,
         onTap: () {
           // Navigate to event details page
+          Navigator.pushNamed(context, '/eventContent', arguments: {
+            'event': event,
+            'navbarButtonText': 'Join',
+            'navbarButtonPressed': () => _joinEvent(context, event),
+          });
         },
       ),
     );

@@ -44,7 +44,7 @@ class EventService {
   Future<void> addParticipant(String eventId, String userId) async {
     try {
       await _firestore.collection('events').doc(eventId).update({
-        'participants': FieldValue.arrayUnion([userId])
+        'participantUserIds': FieldValue.arrayUnion([userId])
       });
     } catch (e) {
       throw Exception("Error adding participant: $e");

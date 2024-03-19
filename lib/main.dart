@@ -8,6 +8,7 @@ import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:dine_connect/pages/create_event_page2.dart';
 import 'package:dine_connect/pages/edit_profile_page1.dart';
 import 'package:dine_connect/pages/edit_profile_page2.dart';
+import 'package:dine_connect/pages/event_content.dart';
 import 'package:dine_connect/pages/forgot_password_page.dart';
 import 'package:dine_connect/pages/help_and_support_page.dart';
 import 'package:dine_connect/pages/home_page.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
       home: AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
-        '/welcomePage': (context) => WelcomePage(onTap: (){}),
+        '/welcomePage': (context) => WelcomePage(onTap: () {}),
         '/loginOrRegister': (context) => const LoginOrRegister(),
         '/homepage': (context) => HomePage(),
         '/editProfilePage1': (context) => const EditProfilePage1(),
@@ -61,11 +62,17 @@ class MyApp extends StatelessWidget {
         '/accountPage': (context) => const AccountPage(),
         '/notificationsPage': (context) => const NotificationsPage(),
         '/changePasswordPage': (context) => const ChangePasswordPage(),
-
-
         '/createEvent2': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Event;
           return CreateEventPage2(event: args);
+        },
+        '/eventContent': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          return EventContent(
+            event: args['event'] as Event,
+            navbarButtonText: args['navbarButtonText'] as String,
+            navbarButtonPressed: args['navbarButtonPressed'] as VoidCallback,
+          );
         },
       },
     );

@@ -1,25 +1,25 @@
 import 'dart:io';
-import 'package:dine_connect/components/navbar_button.dart';
-import 'package:dine_connect/services/eventService.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/models/event.dart';
 import 'package:intl/intl.dart';
 
+import '../components/navbar_button.dart';
 import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
+import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
-import 'package:path/path.dart' as path;
 
-class CreateEventPage2 extends StatefulWidget {
+class EventContent extends StatefulWidget {
   final Event event;
-
-  const CreateEventPage2({super.key, required this.event});
+  final String navbarButtonText;
+  final VoidCallback navbarButtonPressed;
+  const EventContent({super.key, required this.event, required this.navbarButtonText, required this.navbarButtonPressed,});
 
   @override
-  State<CreateEventPage2> createState() => _CreateEventPage2State();
+  State<EventContent> createState() => _EventContentState();
 }
 
-class _CreateEventPage2State extends State<CreateEventPage2> {
+class _EventContentState extends State<EventContent> {
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
   final AuthService _authService = AuthService();
@@ -34,9 +34,9 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
   }
 
   Future<void> _fetchUserProfile() async {
-    String? uid = _authService.getCurrentUser()?.uid;
+    String? uid = widget.event.hostUserId;
     try {
-      UserProfile? profile = await _userProfileService.fetchUserProfile(uid!);
+      UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
       if (profile != null) {
         setState(() {
           _userProfile = profile;
@@ -48,46 +48,6 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
-  }
-
-  Future<void> _createEvent() async {
-    try {
-      await _eventService.saveEvent(widget.event);
-      // if the event saved is successful show 'Event Created
-      _showEventCreatedDialogAndNavigate();
-    } catch (e) {
-      final snackBar =
-          SnackBar(content: Text('Failed to create event: ${e.toString()}'));
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-  }
-
-  void _showEventCreatedDialogAndNavigate() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          title: Text('Event Created'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Icon(Icons.check_circle, color: Colors.green, size: 70),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    Future.delayed(const Duration(seconds: 1), () {
-      Navigator.of(context).pop();
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/homepage',
-        (Route<dynamic> route) => false,
-      );
-    });
   }
 
   @override
@@ -179,8 +139,8 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
         ),
       ),
       bottomNavigationBar: NavbarButton(
-        onPressed: _createEvent,
-        buttonText: 'Create',
+        onPressed: widget.navbarButtonPressed,
+        buttonText: widget.navbarButtonText,
       ),
     );
   }
