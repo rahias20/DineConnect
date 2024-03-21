@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:dine_connect/models/event.dart';
 import 'package:intl/intl.dart';
 
+import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/eventService.dart';
+import '../services/user_profile_service.dart';
 
 class JoinPage extends StatefulWidget {
   const JoinPage({super.key});
@@ -15,6 +17,7 @@ class JoinPage extends StatefulWidget {
 class _JoinPageState extends State<JoinPage> {
   late EventService _eventService;
   late AuthService _authService;
+  late UserProfileService _userProfileService;
   late String? currentUserUid;
   List<Event> _joinedUpcomingEvents = [];
   List<Event> _joinedPastEvents = [];
@@ -24,7 +27,20 @@ class _JoinPageState extends State<JoinPage> {
     super.initState();
     _eventService = EventService();
     _authService = AuthService();
+    _userProfileService = UserProfileService();
     _fetchJoinedEvents();
+  }
+  Future<UserProfile> _fetchUserProfile(String uid) async {
+    try {
+      UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
+      if (profile != null) {
+        return profile;
+      } else {
+        throw Exception("Profile not found");
+      }
+    } catch (e) {
+      throw Exception("Failed to fetch profile: $e");
+    }
   }
     Future<void> _fetchJoinedEvents() async {
     currentUserUid = _authService.getCurrentUser()?.uid;
@@ -43,6 +59,40 @@ class _JoinPageState extends State<JoinPage> {
       }
     }
   }
+
+  Future<void> onHostProfileClicked(BuildContext context, String hostUserId, String eventId) async {
+    UserProfile hostProfile = await _fetchUserProfile(hostUserId);
+    Navigator.pushNamed(context, '/hostProfilePage', arguments: {
+      'userProfile': hostProfile,
+      'eventId': eventId
+    });
+  }
+
+  Future<void> onChatPressed(String eventId) async {
+    final String currentUserId = AuthService().getCurrentUser()?.uid ?? '';
+    try {
+      final event = await _eventService.fetchEvent(eventId);
+      if (event != null && event.participantUserIds.contains(currentUserId)) {
+        // push chats page
+        Navigator.pushNamed(context, '/chatPage');
+      } else {
+        // user has not joined the event, show SnackBar
+        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: const Text("Please join the event to start chatting"),
+          backgroundColor: Colors.red[500],
+          duration: const Duration(seconds: 3),
+        ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+        ),
+      );
+    }
+
+  }
+
 
 @override
   Widget build(BuildContext context) {
@@ -85,7 +135,6 @@ Widget _buildEventsList(
             elevation: 2,
             margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             child: ListTile(
-
               title: Text(event.description),
               subtitle: Text(
                 "${DateFormat('EEE, MMM d, yyyy').format(event.eventDate)} at ${DateFormat('h:mm a').format(event.eventDate)}",
@@ -128,6 +177,18 @@ Widget _buildEventsList(
                       },
                     )
                   : null, // no trailing button for past events
+              onTap: () {
+                // Navigate to event details page
+                Navigator.pushNamed(context, '/eventContent', arguments: {
+                  'event': event,
+                  'navbarButtonText': 'Chat',
+                  'navbarButtonPressed': () => onChatPressed(event.eventId),
+                  'onHostClicked': () => {
+                    _fetchUserProfile(event.hostUserId),
+                    onHostProfileClicked(context, event.hostUserId, event.eventId)
+                  }
+                });
+              },
             ),
           );
         },

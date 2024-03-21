@@ -62,10 +62,10 @@ class _HostProfilePageState extends State<HostProfilePage> {
         backgroundColor: colorScheme.primary,
       ),
       body: UserProfileContent(userProfile: widget.userProfile),
-      bottomNavigationBar: NavbarButton(
-        onPressed: onChatPressed,
-        buttonText: 'Chat',
-      ),
+      // bottomNavigationBar: NavbarButton(
+      //   onPressed: onChatPressed,
+      //   buttonText: 'Chat',
+      // ),
     );
   }
 }
