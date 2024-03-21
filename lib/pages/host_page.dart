@@ -48,6 +48,8 @@ class _HostPageState extends State<HostPage> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -157,6 +159,15 @@ class _HostPageState extends State<HostPage> {
                       },
                     )
                   : null, // no trailing button for past events
+              onTap: () {
+                // navigate to event details page
+                Navigator.pushNamed(context, '/eventContent', arguments: {
+                  'event': event,
+                  'navbarButtonText': 'Chat',
+                  'navbarButtonPressed': () => Navigator.pushNamed(context, '/chatPage'),
+                  'onHostClicked': () => {}
+                });
+              },
             ),
           );
         },

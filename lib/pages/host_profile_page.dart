@@ -1,7 +1,6 @@
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:dine_connect/services/eventService.dart';
 import 'package:flutter/material.dart';
-import '../components/navbar_button.dart';
 import '../components/user_profile_content.dart';
 import '../models/user_profile.dart';
 

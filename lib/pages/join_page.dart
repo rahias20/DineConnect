@@ -178,7 +178,7 @@ Widget _buildEventsList(
                     )
                   : null, // no trailing button for past events
               onTap: () {
-                // Navigate to event details page
+                // navigate to event details page
                 Navigator.pushNamed(context, '/eventContent', arguments: {
                   'event': event,
                   'navbarButtonText': 'Chat',
