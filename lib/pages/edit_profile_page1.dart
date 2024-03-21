@@ -1,4 +1,4 @@
-import 'package:dine_connect/pages/user_profile_content.dart';
+import 'package:dine_connect/components/user_profile_content.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user_profile.dart';

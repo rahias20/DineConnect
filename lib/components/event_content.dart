@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_connect/models/event.dart';
 import 'package:intl/intl.dart';
 
-import '../components/navbar_button.dart';
+import 'navbar_button.dart';
 import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/eventService.dart';
@@ -13,7 +14,8 @@ class EventContent extends StatefulWidget {
   final Event event;
   final String navbarButtonText;
   final VoidCallback navbarButtonPressed;
-  const EventContent({super.key, required this.event, required this.navbarButtonText, required this.navbarButtonPressed,});
+  final VoidCallback onHostClicked;
+  const EventContent({super.key, required this.event, required this.navbarButtonText, required this.navbarButtonPressed, required this.onHostClicked,});
 
   @override
   State<EventContent> createState() => _EventContentState();
@@ -94,9 +96,12 @@ class _EventContentState extends State<EventContent> {
                     'Hosted by ',
                     style: TextStyle(fontSize: 16.0),
                   ),
-                  Text(
-                    '${_userProfile?.name.split(' ')[0]}',
-                    style: TextStyle(fontSize: 16.0, color: Colors.red[300]),
+                  GestureDetector(
+                    onTap: (){},
+                    child: Text(
+                      '${_userProfile?.name.split(' ')[0]}',
+                      style: TextStyle(fontSize: 16.0, color: Colors.red[300]),
+                    ),
                   ),
                 ],
               ),
