@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
-  UserProfile? userProfile;
+  late UserProfile userProfile;
   late UserProfileService _userProfileService;
   final EventService _eventService = EventService();
   List<Event> _upcomingEvents = [];
@@ -139,7 +139,8 @@ class _HomePageState extends State<HomePage> {
                 // Using a custom 'EventCard' widget to display each event.
                 return EventCard(
                     event: _upcomingEvents[index],
-                    onEventJoined: refreshEvents);
+                    onEventJoined: refreshEvents,
+                );
               },
             ),
           ),
@@ -168,12 +169,41 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class EventCard extends StatelessWidget {
+class EventCard extends StatefulWidget {
   final Event event;
   final VoidCallback onEventJoined;
 
   const EventCard({Key? key, required this.event, required this.onEventJoined})
       : super(key: key);
+
+  @override
+  State<EventCard> createState() => _EventCardState();
+}
+
+class _EventCardState extends State<EventCard> {
+  late UserProfileService _userProfileService;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _userProfileService = UserProfileService();
+  }
+
+
+  Future<UserProfile> _fetchUserProfile(String uid) async {
+    try {
+      UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
+      if (profile != null) {
+        return profile;
+      } else {
+        throw Exception("Profile not found");
+      }
+    } catch (e) {
+      throw Exception("Failed to fetch profile: $e");
+    }
+  }
 
   void _joinEvent(BuildContext context, Event event) async {
     final EventService _eventService = EventService();
@@ -194,7 +224,7 @@ class EventCard extends StatelessWidget {
             Navigator.pop(context); // close the dialog if needed
           },
         ),
-      ).then((_) => {Navigator.pop(context), onEventJoined()});
+      ).then((_) => {Navigator.pop(context), widget.onEventJoined()});
     } catch (e) {
       // Handle errors, e.g., show an error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -206,25 +236,35 @@ class EventCard extends StatelessWidget {
     }
   }
 
+  Future<void> onHostProfileClicked(BuildContext context, String hostUserId, String eventId) async {
+    UserProfile hostProfile = await _fetchUserProfile(hostUserId);
+    Navigator.pushNamed(context, '/hostProfilePage', arguments: {
+      'userProfile': hostProfile,
+      'eventId': eventId
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final formattedDate =
-        DateFormat('EEEE d, MMMM, yyyy').format(event.eventDate);
-    final formattedTime = DateFormat('h:mm a').format(event.eventDate);
+        DateFormat('EEEE d, MMMM, yyyy').format(widget.event.eventDate);
+    final formattedTime = DateFormat('h:mm a').format(widget.event.eventDate);
     return Card(
       child: ListTile(
         leading: const Icon(Icons.event),
-        title: Text(event.description),
-        subtitle: Text('${event.city}\n $formattedDate \n $formattedTime'),
+        title: Text(widget.event.description),
+        subtitle: Text('${widget.event.city}\n $formattedDate \n $formattedTime'),
         isThreeLine: true,
         onTap: () {
           // Navigate to event details page
           Navigator.pushNamed(context, '/eventContent', arguments: {
-            'event': event,
+            'event': widget.event,
             'navbarButtonText': 'Join',
-            'navbarButtonPressed': () => _joinEvent(context, event,),
-            'onHostClicked': (){},
-
+            'navbarButtonPressed': () => _joinEvent(context, widget.event,),
+            'onHostClicked': () => {
+              _fetchUserProfile(widget.event.hostUserId),
+              onHostProfileClicked(context, widget.event.hostUserId, widget.event.eventId)
+            }
           });
         },
       ),

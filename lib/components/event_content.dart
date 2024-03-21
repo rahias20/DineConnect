@@ -97,7 +97,7 @@ class _EventContentState extends State<EventContent> {
                     style: TextStyle(fontSize: 16.0),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: widget.onHostClicked,
                     child: Text(
                       '${_userProfile?.name.split(' ')[0]}',
                       style: TextStyle(fontSize: 16.0, color: Colors.red[300]),
