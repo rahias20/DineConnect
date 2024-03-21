@@ -16,6 +16,7 @@ class _EditProfilePage1State extends State<EditProfilePage1> {
   final AuthService _authService = AuthService();
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
+  bool _isLoading = true; // add a loading state
 
   @override
   void initState() {
@@ -25,21 +26,27 @@ class _EditProfilePage1State extends State<EditProfilePage1> {
   }
 
   void _editProfile(BuildContext context) {
-    Navigator.pushNamed(context, '/editProfilePage2').then((_) => reloadUserProfile());
+    Navigator.pushNamed(context, '/editProfilePage2')
+        .then((_) => reloadUserProfile());
   }
 
   Future<void> _fetchUserProfile() async {
     String? uid = _authService.getCurrentUser()?.uid;
-    if (uid != null){
+    if (uid != null) {
       try {
         UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
 
         if (profile != null) {
           setState(() {
             _userProfile = profile;
+            _isLoading = false; // loading done
           });
         }
       } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }
@@ -73,7 +80,11 @@ class _EditProfilePage1State extends State<EditProfilePage1> {
           ),
         ],
       ),
-      body: UserProfileContent(userProfile: _userProfile!),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : UserProfileContent(userProfile: _userProfile!),
     );
   }
 }

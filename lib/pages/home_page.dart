@@ -10,7 +10,7 @@ import '../services/user_profile_service.dart';
 import 'package:dine_connect/models/event.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,11 +18,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AuthService _authService = AuthService();
-  late UserProfile userProfile;
+  UserProfile? userProfile;
   late UserProfileService _userProfileService;
   final EventService _eventService = EventService();
   List<Event> _upcomingEvents = [];
   int _selectedIndex = 0;
+  bool _isLoading = true; // add a loading state
 
   @override
   void initState() {
@@ -33,18 +34,24 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchUserProfile() async {
     String? uid = _authService.getCurrentUser()?.uid;
-    try {
-      UserProfile? profile = await _userProfileService.fetchUserProfile(uid!);
-      if (profile != null) {
+    if (uid != null) {
+      try {
+        UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
+        if (profile != null) {
+          setState(() {
+            userProfile = profile;
+            _isLoading = false; // loading done
+            _loadUpcomingEvents(uid);
+          });
+        }
+      } catch (e) {
         setState(() {
-          userProfile = profile;
-          _loadUpcomingEvents(uid);
+          _isLoading = false;
         });
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -122,30 +129,35 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Welcome, ${userProfile?.name ?? 'Guest'}!',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            ) // show loading indicator
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Welcome, ${userProfile?.name ?? 'Guest'}!',
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(height: 0),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _upcomingEvents.length,
+                    itemBuilder: (context, index) {
+                      // Using a custom 'EventCard' widget to display each event.
+                      return EventCard(
+                        event: _upcomingEvents[index],
+                        onEventJoined: refreshEvents,
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: 0),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _upcomingEvents.length,
-              itemBuilder: (context, index) {
-                // Using a custom 'EventCard' widget to display each event.
-                return EventCard(
-                    event: _upcomingEvents[index],
-                    onEventJoined: refreshEvents,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -183,14 +195,11 @@ class EventCard extends StatefulWidget {
 class _EventCardState extends State<EventCard> {
   late UserProfileService _userProfileService;
 
-
-
   @override
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
   }
-
 
   Future<UserProfile> _fetchUserProfile(String uid) async {
     try {
@@ -236,12 +245,11 @@ class _EventCardState extends State<EventCard> {
     }
   }
 
-  Future<void> onHostProfileClicked(BuildContext context, String hostUserId, String eventId) async {
+  Future<void> onHostProfileClicked(
+      BuildContext context, String hostUserId, String eventId) async {
     UserProfile hostProfile = await _fetchUserProfile(hostUserId);
-    Navigator.pushNamed(context, '/hostProfilePage', arguments: {
-      'userProfile': hostProfile,
-      'eventId': eventId
-    });
+    Navigator.pushNamed(context, '/hostProfilePage',
+        arguments: {'userProfile': hostProfile, 'eventId': eventId});
   }
 
   @override
@@ -253,18 +261,23 @@ class _EventCardState extends State<EventCard> {
       child: ListTile(
         leading: const Icon(Icons.event),
         title: Text(widget.event.description),
-        subtitle: Text('${widget.event.city}\n $formattedDate \n $formattedTime'),
+        subtitle:
+            Text('${widget.event.city}\n $formattedDate \n $formattedTime'),
         isThreeLine: true,
         onTap: () {
           // Navigate to event details page
           Navigator.pushNamed(context, '/eventContent', arguments: {
             'event': widget.event,
             'navbarButtonText': 'Join',
-            'navbarButtonPressed': () => _joinEvent(context, widget.event,),
+            'navbarButtonPressed': () => _joinEvent(
+                  context,
+                  widget.event,
+                ),
             'onHostClicked': () => {
-              _fetchUserProfile(widget.event.hostUserId),
-              onHostProfileClicked(context, widget.event.hostUserId, widget.event.eventId)
-            }
+                  _fetchUserProfile(widget.event.hostUserId),
+                  onHostProfileClicked(
+                      context, widget.event.hostUserId, widget.event.eventId)
+                }
           });
         },
       ),
