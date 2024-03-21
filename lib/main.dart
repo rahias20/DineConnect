@@ -90,6 +90,8 @@ class MyApp extends StatelessWidget {
             onHostClicked: args['onHostClicked'] as VoidCallback,
           );
         },
+        '/chatPage': (context) => const ChatsPage(),
+
       },
     );
   }
