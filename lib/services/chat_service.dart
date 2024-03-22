@@ -4,11 +4,13 @@ class ChatService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // method to send a message within an event's chatroom
-  Future<void> sendMessage(String eventId, String messageText) async {
+  Future<void> sendMessage(String eventId, String senderId, String senderName, String messageText) async {
     final Timestamp timestamp = Timestamp.now();
 
     // constructing the message object with necessary fields
     Map<String, dynamic> message = {
+      'senderId': senderId,
+      'senderName': senderName,
       'eventId': eventId,
       'message': messageText,
       'timestamp': timestamp,
