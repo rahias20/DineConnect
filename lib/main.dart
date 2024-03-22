@@ -56,7 +56,6 @@ class MyApp extends StatelessWidget {
         '/homepage': (context) => HomePage(),
         '/editProfilePage1': (context) => const EditProfilePage1(),
         '/editProfilePage2': (context) => const EditProfilePage2(),
-        '/chatsPage': (context) => const ChatsPage(),
         '/forgotPasswordPage': (context) => const ForgotPasswordPage(),
         '/createEvent1': (context) => const CreateEventPage1(),
         '/joinPage': (context) => const JoinPage(),
@@ -90,7 +89,10 @@ class MyApp extends StatelessWidget {
             onHostClicked: args['onHostClicked'] as VoidCallback,
           );
         },
-        '/chatPage': (context) => const ChatsPage(),
+        '/chatPage': (context) {
+          final eventId = ModalRoute.of(context)!.settings.arguments as String;
+          return ChatsPage(eventId: eventId);
+        },
 
       },
     );
