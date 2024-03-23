@@ -79,7 +79,7 @@ class _JoinPageState extends State<JoinPage> {
       final event = await _eventService.fetchEvent(eventId);
       if (event != null && event.participantUserIds.contains(currentUserId)) {
         // push chats page
-        Navigator.pushNamed(context, '/chatPage', arguments: eventId);
+        Navigator.pushNamed(context, '/chatsPage', arguments: eventId);
       } else {
         // user has not joined the event, show SnackBar
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

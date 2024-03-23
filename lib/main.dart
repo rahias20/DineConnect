@@ -1,5 +1,6 @@
-import 'package:dine_connect/components/user_profile_content.dart';
+import 'package:dine_connect/components/event_content.dart';
 import 'package:dine_connect/firebase_options.dart';
+import 'package:dine_connect/models/event.dart';
 import 'package:dine_connect/pages/about_page.dart';
 import 'package:dine_connect/pages/account_page.dart';
 import 'package:dine_connect/pages/appearance_page.dart';
@@ -10,11 +11,9 @@ import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:dine_connect/pages/create_event_page2.dart';
 import 'package:dine_connect/pages/edit_profile_page1.dart';
 import 'package:dine_connect/pages/edit_profile_page2.dart';
-import 'package:dine_connect/components/event_content.dart';
 import 'package:dine_connect/pages/forgot_password_page.dart';
 import 'package:dine_connect/pages/help_and_support_page.dart';
 import 'package:dine_connect/pages/home_page.dart';
-import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/host_page.dart';
 import 'package:dine_connect/pages/host_profile_page.dart';
 import 'package:dine_connect/pages/join_page.dart';
@@ -24,11 +23,9 @@ import 'package:dine_connect/pages/welcome_page.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:dine_connect/services/authentication/login_or_register.dart';
 import 'package:dine_connect/themes/theme_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dine_connect/models/event.dart';
 
 import 'models/user_profile.dart';
 
@@ -44,11 +41,12 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // this widget is the root of the application
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AuthGate(),
+      debugShowCheckedModeBanner: false,
+      home: const AuthGate(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
         '/welcomePage': (context) => WelcomePage(onTap: () {}),
@@ -89,11 +87,10 @@ class MyApp extends StatelessWidget {
             onHostClicked: args['onHostClicked'] as VoidCallback,
           );
         },
-        '/chatPage': (context) {
+        '/chatsPage': (context) {
           final eventId = ModalRoute.of(context)!.settings.arguments as String;
           return ChatsPage(eventId: eventId);
         },
-
       },
     );
   }
