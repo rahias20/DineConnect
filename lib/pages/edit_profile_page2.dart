@@ -33,6 +33,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
   late TextEditingController _locationController;
   String image = '';
   String imageUrl = '';
+  String temUrl = '';
   List<String> hobbies = [];
 
   // fields empty check
@@ -83,7 +84,8 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
           _bioController.text = _userProfile?.bio ?? '';
           _lookingForController.text = _userProfile?.lookingFor ?? '';
           // _hobbyController.text = _userProfile?.hobbies.join(', ') ?? '';
-          image = _userProfile?.imageUrl ?? '';
+          imageUrl = _userProfile?.imageUrl ?? '';
+          temUrl = _userProfile?.imageUrl ?? '';
         });
       }
     } catch (e) {
@@ -99,6 +101,12 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     // Convert age input to integer and check if it's null (invalid input)
     int? age = int.tryParse(_ageController.text);
 
+    if (image.isEmpty) {
+      imageUrl = temUrl;
+    } else {
+      imageUrl = await _userProfileService.uploadImage(File(image)) ?? '';
+    }
+
     // Check each field and update the state if any are empty
     setState(() {
       _isHobbiesEmpty = _userProfile?.hobbies?.isEmpty ?? true;
@@ -106,11 +114,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     });
 
     // check if any validation failed
-    hasErrors =
-        _isHobbiesEmpty ||
-        _isImageEmpty;
+    hasErrors = _isHobbiesEmpty || _isImageEmpty;
 
-    if (hasErrors){
+    if (hasErrors) {
       if (_isImageEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
@@ -141,10 +147,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
   Future<void> selectAndUploadImage() async {
     final XFile? file = await _userProfileService.selectImage();
     if (file != null) {
-      setState(() async {
+      setState(() {
         image = file.path;
-        imageUrl = await _userProfileService.uploadImage(File(file!.path)) ?? '';
-
+        imageUrl = '';
       });
     }
   }
@@ -199,10 +204,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                 children: [
                   CircleAvatar(
                     radius: 64,
-                    backgroundImage: image.isNotEmpty
-                        ? FileImage(File(image))
-                        : const AssetImage('lib/images/profile_icon.png')
-                            as ImageProvider,
+                    backgroundImage: imageUrl.isNotEmpty
+                        ? NetworkImage(imageUrl)
+                        : FileImage(File(image)) as ImageProvider,
                     backgroundColor: Colors.white60,
                   ),
                   Positioned(
@@ -243,18 +247,18 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                 },
               ),
 
-                // city
-                SizedBox(height: screenHeight * 0.04),
-                MyTextFormField(
-                  labelText: 'City',
-                  controller: _locationController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter your bio';
-                    }
-                    return null;
-                  },
-                ),
+              // city
+              SizedBox(height: screenHeight * 0.04),
+              MyTextFormField(
+                labelText: 'City',
+                controller: _locationController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your bio';
+                  }
+                  return null;
+                },
+              ),
 
               SizedBox(height: screenHeight * 0.04),
               MyTextFormField(
@@ -291,8 +295,8 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
               Wrap(
                 spacing: 8.0, // Gap between adjacent chips
                 runSpacing: 4.0, // Gap between lines
-                children: List<Widget>.generate(_userProfile?.hobbies.length ?? 0,
-                    (int index) {
+                children: List<Widget>.generate(
+                    _userProfile?.hobbies.length ?? 0, (int index) {
                   return Chip(
                     label: Text(_userProfile!.hobbies[index]),
                     onDeleted: () {

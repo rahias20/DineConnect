@@ -110,14 +110,14 @@ class _HomePageState extends State<HomePage> {
         title: const Center(child: Text("DineConnect")),
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/chatsPage');
+            Navigator.pushNamed(context, '/chatsPage', arguments: 'jghghghg');
           },
           icon: const Icon(Icons.chat_bubble_outline),
         ),
         actions: [
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/editProfilePage1');
+              Navigator.pushNamed(context, '/editProfilePage1').then((_) => _fetchUserProfile());
             },
             child: CircleAvatar(
               backgroundImage: userProfile?.imageUrl != null
