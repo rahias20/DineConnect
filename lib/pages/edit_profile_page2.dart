@@ -31,6 +31,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
   late TextEditingController _lookingForController;
   late TextEditingController _hobbyController;
   late TextEditingController _locationController;
+  String image = '';
   String imageUrl = '';
   List<String> hobbies = [];
 
@@ -82,7 +83,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
           _bioController.text = _userProfile?.bio ?? '';
           _lookingForController.text = _userProfile?.lookingFor ?? '';
           // _hobbyController.text = _userProfile?.hobbies.join(', ') ?? '';
-          imageUrl = _userProfile?.imageUrl ?? '';
+          image = _userProfile?.imageUrl ?? '';
         });
       }
     } catch (e) {
@@ -140,11 +141,12 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
   Future<void> selectAndUploadImage() async {
     final XFile? file = await _userProfileService.selectImage();
     if (file != null) {
-      setState(() {
-        imageUrl = file.path;
+      setState(() async {
+        image = file.path;
+        imageUrl = await _userProfileService.uploadImage(File(file!.path)) ?? '';
+
       });
     }
-    await _userProfileService.uploadImage(File(file!.path));
   }
 
   // add hobby to the list
@@ -197,8 +199,8 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                 children: [
                   CircleAvatar(
                     radius: 64,
-                    backgroundImage: imageUrl.isNotEmpty
-                        ? FileImage(File(imageUrl))
+                    backgroundImage: image.isNotEmpty
+                        ? FileImage(File(image))
                         : const AssetImage('lib/images/profile_icon.png')
                             as ImageProvider,
                     backgroundColor: Colors.white60,

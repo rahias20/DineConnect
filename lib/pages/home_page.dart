@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
             },
             child: CircleAvatar(
               backgroundImage: userProfile?.imageUrl != null
-                  ? FileImage(File(userProfile!.imageUrl.toString()))
+                  ? NetworkImage(userProfile!.imageUrl.toString())
                   : const AssetImage('lib/images/profile_icon.png')
                       as ImageProvider,
               backgroundColor: Colors.white60,

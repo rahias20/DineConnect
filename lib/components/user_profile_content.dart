@@ -28,7 +28,8 @@ class _UserProfileContentState extends State<UserProfileContent> {
                     CircleAvatar(
                       radius: screenHeight * 0.125,
                       backgroundImage: widget.userProfile!.imageUrl!.isNotEmpty
-                          ? FileImage(File(widget.userProfile!.imageUrl.toString()))
+                          ? NetworkImage(
+                              widget.userProfile!.imageUrl.toString())
                           : const AssetImage('lib/images/profile_icon.png')
                               as ImageProvider,
                       backgroundColor: Colors.white60,
@@ -52,8 +53,8 @@ class _UserProfileContentState extends State<UserProfileContent> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
-                    _infoCard(
-                        "Bio", widget.userProfile!.bio, screenHeight, screenWidth),
+                    _infoCard("Bio", widget.userProfile!.bio, screenHeight,
+                        screenWidth),
                     _infoCard("Looking For", widget.userProfile!.lookingFor,
                         screenHeight, screenWidth),
                     _hobbiesWrap(

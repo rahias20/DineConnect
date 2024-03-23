@@ -34,6 +34,7 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   final TextEditingController _lookingForController = TextEditingController();
   final TextEditingController _hobbyController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  String image = '';
   String imageUrl = '';
   List<String> hobbies = [];
 
@@ -116,11 +117,12 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
   Future<void> selectAndUploadImage() async {
     final XFile? file = await _userProfileService.selectImage();
     if (file != null) {
-      setState(() {
-        imageUrl = file.path;
+      setState(() async {
+        image = file.path;
+        imageUrl = await _userProfileService.uploadImage(File(file!.path)) ?? '';
+
       });
     }
-    await _userProfileService.uploadImage(File(file!.path));
   }
 
   @override
@@ -145,8 +147,8 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                   children: [
                     CircleAvatar(
                       radius: 70,
-                      backgroundImage: imageUrl.isNotEmpty
-                          ? FileImage(File(imageUrl))
+                      backgroundImage: image.isNotEmpty
+                          ? FileImage(File(image))
                           : const AssetImage('lib/images/profile_icon.png')
                               as ImageProvider,
                       backgroundColor: Colors.white60,

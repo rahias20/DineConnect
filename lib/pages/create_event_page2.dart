@@ -122,7 +122,7 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
                       CircleAvatar(
                         radius: screenWidth * 0.05,
                         backgroundImage: imageUrl.isNotEmpty
-                            ? FileImage(File(imageUrl))
+                            ? NetworkImage(imageUrl)
                             : const AssetImage('lib/images/profile_icon.png')
                                 as ImageProvider,
                         backgroundColor: Colors.white60,
