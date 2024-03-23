@@ -1,21 +1,25 @@
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:dine_connect/models/event.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'navbar_button.dart';
 import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
+import 'navbar_button.dart';
 
 class EventContent extends StatefulWidget {
   final Event event;
   final String navbarButtonText;
   final VoidCallback navbarButtonPressed;
   final VoidCallback onHostClicked;
-  const EventContent({super.key, required this.event, required this.navbarButtonText, required this.navbarButtonPressed, required this.onHostClicked,});
+  const EventContent({
+    super.key,
+    required this.event,
+    required this.navbarButtonText,
+    required this.navbarButtonPressed,
+    required this.onHostClicked,
+  });
 
   @override
   State<EventContent> createState() => _EventContentState();
@@ -84,7 +88,7 @@ class _EventContentState extends State<EventContent> {
                       CircleAvatar(
                         radius: screenWidth * 0.05,
                         backgroundImage: imageUrl.isNotEmpty
-                            ? FileImage(File(imageUrl))
+                            ? NetworkImage(imageUrl)
                             : const AssetImage('lib/images/profile_icon.png')
                                 as ImageProvider,
                         backgroundColor: Colors.white60,
