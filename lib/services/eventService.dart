@@ -6,7 +6,20 @@ class EventService {
 
   // save event data in the database
   Future<void> saveEvent(Event event) async {
-    await _firestore.collection('events').doc(event.eventId).set(event.toMap());
+    DocumentReference eventRef =
+        _firestore.collection('events').doc(event.eventId);
+    DocumentReference userProfileRef =
+        _firestore.collection('userProfiles').doc(event.hostUserId);
+
+    await _firestore.runTransaction((transaction) async {
+      // Set the event data
+      transaction.set(eventRef, event.toMap());
+
+      // Append eventId to the user's list of joinedEventsIds
+      transaction.update(userProfileRef, {
+        'joinedEventsIds': FieldValue.arrayUnion([event.eventId])
+      });
+    });
   }
 
   // fetch event data from the database

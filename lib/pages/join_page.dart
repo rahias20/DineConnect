@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:dine_connect/models/event.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/user_profile.dart';
@@ -30,6 +30,7 @@ class _JoinPageState extends State<JoinPage> {
     _userProfileService = UserProfileService();
     _fetchJoinedEvents();
   }
+
   Future<UserProfile> _fetchUserProfile(String uid) async {
     try {
       UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
@@ -42,30 +43,34 @@ class _JoinPageState extends State<JoinPage> {
       throw Exception("Failed to fetch profile: $e");
     }
   }
-    Future<void> _fetchJoinedEvents() async {
+
+  Future<void> _fetchJoinedEvents() async {
     currentUserUid = _authService.getCurrentUser()?.uid;
     DateTime now = DateTime.now();
     if (currentUserUid != null) {
       try {
         // Assuming EventService has a method to fetch events a user has joined
-        List<Event> events = await _eventService.fetchJoinedEventsByUser(currentUserUid!);
+        List<Event> events =
+            await _eventService.fetchJoinedEventsByUser(currentUserUid!);
         setState(() {
-          _joinedUpcomingEvents = events.where((event) => event.eventDate.isAfter(now)).toList();
-          _joinedPastEvents = events.where((event) => event.eventDate.isBefore(now)).toList();
+          _joinedUpcomingEvents =
+              events.where((event) => event.eventDate.isAfter(now)).toList();
+          _joinedPastEvents =
+              events.where((event) => event.eventDate.isBefore(now)).toList();
         });
       } catch (e) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error fetching joined events: $e")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Error fetching joined events: $e")));
       }
     }
   }
 
-  Future<void> onHostProfileClicked(BuildContext context, String hostUserId, String eventId) async {
+  Future<void> onHostProfileClicked(
+      BuildContext context, String hostUserId, String eventId) async {
     UserProfile hostProfile = await _fetchUserProfile(hostUserId);
-    Navigator.pushNamed(context, '/hostProfilePage', arguments: {
-      'userProfile': hostProfile,
-      'eventId': eventId
-    });
+    Navigator.pushNamed(context, '/hostProfilePage',
+        arguments: {'userProfile': hostProfile, 'eventId': eventId});
   }
 
   Future<void> onChatPressed(String eventId) async {
@@ -74,10 +79,10 @@ class _JoinPageState extends State<JoinPage> {
       final event = await _eventService.fetchEvent(eventId);
       if (event != null && event.participantUserIds.contains(currentUserId)) {
         // push chats page
-        Navigator.pushNamed(context, '/chatPage');
+        Navigator.pushNamed(context, '/chatPage', arguments: eventId);
       } else {
         // user has not joined the event, show SnackBar
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: const Text("Please join the event to start chatting"),
           backgroundColor: Colors.red[500],
           duration: const Duration(seconds: 3),
@@ -90,11 +95,9 @@ class _JoinPageState extends State<JoinPage> {
         ),
       );
     }
-
   }
 
-
-@override
+  @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -123,7 +126,7 @@ class _JoinPageState extends State<JoinPage> {
     );
   }
 
-Widget _buildEventsList(
+  Widget _buildEventsList(
       List<Event> events, double screenHeight, bool isUpcoming) {
     return Padding(
       padding: EdgeInsets.only(top: screenHeight * 0.02),
@@ -170,7 +173,8 @@ Widget _buildEventsList(
 
                         if (confirmDelete) {
                           // Perform the leave operation
-                          await _eventService.removeParticipant(event.eventId, currentUserUid!);
+                          await _eventService.removeParticipant(
+                              event.eventId, currentUserUid!);
                           // Refresh the list
                           _fetchJoinedEvents();
                         }
@@ -184,9 +188,10 @@ Widget _buildEventsList(
                   'navbarButtonText': 'Chat',
                   'navbarButtonPressed': () => onChatPressed(event.eventId),
                   'onHostClicked': () => {
-                    _fetchUserProfile(event.hostUserId),
-                    onHostProfileClicked(context, event.hostUserId, event.eventId)
-                  }
+                        _fetchUserProfile(event.hostUserId),
+                        onHostProfileClicked(
+                            context, event.hostUserId, event.eventId)
+                      }
                 });
               },
             ),
