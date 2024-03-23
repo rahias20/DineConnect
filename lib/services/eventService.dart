@@ -51,7 +51,7 @@ class EventService {
     }
   }
 
-  // Remove participant from event
+  // remove participant from event
   Future<void> removeParticipant(String eventId, String userId) async {
     try {
       await _firestore.collection('events').doc(eventId).update({
@@ -97,8 +97,10 @@ class EventService {
       List<Event> events = [];
       for (var doc in querySnapshot.docs) {
         var event = Event.fromMap(doc.data() as Map<String, dynamic>);
-        if (!event.participantUserIds.contains(userId) &&
-            (event.participantUserIds.length +1 < event.numberOfParticipants)) {
+        if (event.hostUserId != userId &&
+            !event.participantUserIds.contains(userId) &&
+            (event.participantUserIds.length + 1 <
+                event.numberOfParticipants)) {
           events.add(event);
         }
       }
