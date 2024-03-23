@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dine_connect/components/my_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +8,6 @@ import '../components/my_list_field.dart';
 import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/user_profile_service.dart';
-import 'package:path/path.dart' as path;
 
 class EditProfilePage2 extends StatefulWidget {
   const EditProfilePage2({super.key});
@@ -133,7 +133,9 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
         lookingFor: _lookingForController.text,
         hobbies: _userProfile!.hobbies,
         imageUrl: imageUrl,
-        location: _locationController.text.trim());
+        location: _locationController.text.trim(),
+        userEmail: _authService.getCurrentUser()!.email.toString(),
+        joinedEventsIds: []);
 
     // save the user profile to the database
     await _userProfileService.updateUserProfile(userProfile);

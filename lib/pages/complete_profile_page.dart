@@ -1,17 +1,14 @@
-import 'dart:ffi';
 import 'dart:io';
+
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_text_form_field.dart';
+import 'package:dine_connect/models/user_profile.dart';
 import 'package:dine_connect/services/authentication/auth_gate.dart';
+import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
-import 'package:dine_connect/models/user_profile.dart';
-import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-
-import 'home_page.dart';
 
 class ProfileCompletePage extends StatefulWidget {
   const ProfileCompletePage({super.key});
@@ -82,11 +79,9 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       _isImageEmpty = imageUrl.isEmpty;
     });
 
-    hasErrors =
-        _isHobbiesEmpty ||
-        _isImageEmpty;
+    hasErrors = _isHobbiesEmpty || _isImageEmpty;
 
-    if (hasErrors){
+    if (hasErrors) {
       if (_isImageEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red.shade500,
@@ -95,14 +90,17 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
       return;
     }
     final userProfile = UserProfile(
-        userId: _authService.getCurrentUser()!.uid,
-        name: _nameController.text,
-        age: int.parse(_ageController.text),
-        bio: _bioController.text,
-        lookingFor: _lookingForController.text,
-        hobbies: hobbies,
-        imageUrl: imageUrl,
-        location: _locationController.text.trim());
+      userId: _authService.getCurrentUser()!.uid,
+      name: _nameController.text,
+      age: int.parse(_ageController.text),
+      bio: _bioController.text,
+      lookingFor: _lookingForController.text,
+      hobbies: hobbies,
+      imageUrl: imageUrl,
+      location: _locationController.text.trim(),
+      userEmail: _authService.getCurrentUser()!.email.toString(),
+      joinedEventsIds: [],
+    );
 
     // save the user profile to the database
     await _userProfileService.saveUserProfile(userProfile);
@@ -119,8 +117,8 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
     if (file != null) {
       setState(() async {
         image = file.path;
-        imageUrl = await _userProfileService.uploadImage(File(file!.path)) ?? '';
-
+        imageUrl =
+            await _userProfileService.uploadImage(File(file!.path)) ?? '';
       });
     }
   }
@@ -206,8 +204,6 @@ class _ProfileCompletePageState extends State<ProfileCompletePage> {
                     return null;
                   },
                 ),
-
-
 
                 // bio
                 SizedBox(height: screenHeight * 0.04),
