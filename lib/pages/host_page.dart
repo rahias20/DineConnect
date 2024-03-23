@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -48,8 +46,6 @@ class _HostPageState extends State<HostPage> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -81,7 +77,8 @@ class _HostPageState extends State<HostPage> {
                       height:
                           screenHeight * 0.02), // dynamic space before the list
                   Expanded(
-                      child: _buildEventsList(_upcomingEvents, screenHeight, true)),
+                      child: _buildEventsList(
+                          _upcomingEvents, screenHeight, true)),
                 ],
               ),
             ),
@@ -92,7 +89,9 @@ class _HostPageState extends State<HostPage> {
                   SizedBox(
                       height:
                           screenHeight * 0.02), // dynamic space before the list
-                  Expanded(child: _buildEventsList(_pastEvents, screenHeight, false)),
+                  Expanded(
+                      child:
+                          _buildEventsList(_pastEvents, screenHeight, false)),
                 ],
               ),
             ),
@@ -164,7 +163,9 @@ class _HostPageState extends State<HostPage> {
                 Navigator.pushNamed(context, '/eventContent', arguments: {
                   'event': event,
                   'navbarButtonText': 'Chat',
-                  'navbarButtonPressed': () => Navigator.pushNamed(context, '/chatPage'),
+                  'navbarButtonPressed': () => Navigator.pushNamed(
+                      context, '/chatsPage',
+                      arguments: event.eventId),
                   'onHostClicked': () => {}
                 });
               },
