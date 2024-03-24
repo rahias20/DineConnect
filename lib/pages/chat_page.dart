@@ -1,7 +1,9 @@
+import 'package:dine_connect/models/event.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
-import 'package:dine_connect/services/chat_service.dart';
+import 'package:dine_connect/services/eventService.dart';
 import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/user_profile.dart';
 
@@ -17,15 +19,17 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late final AuthService _authService;
   late final UserProfileService _userProfileService;
-  late final ChatService _chatService;
+  late final EventService _eventService;
   UserProfile? _userProfile;
+  late List<Event> events;
 
   @override
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
     _authService = AuthService();
-    _chatService = ChatService();
+    _eventService = EventService();
+    events = [];
     _fetchUserProfile();
   }
 
@@ -38,6 +42,7 @@ class _ChatPageState extends State<ChatPage> {
         if (profile != null) {
           setState(() {
             _userProfile = profile;
+            _fetchUserEvents();
           });
         }
       } catch (e) {
@@ -47,6 +52,23 @@ class _ChatPageState extends State<ChatPage> {
       }
     }
     return;
+  }
+
+  Future<void> _fetchUserEvents() async {
+    List<Event> fetchedEvents = [];
+    for (String eventId in _userProfile!.joinedEventsIds) {
+      Event? event = await _eventService.fetchEvent(eventId);
+      if (event != null) {
+        fetchedEvents.add(event);
+      }
+    }
+
+    fetchedEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+    if (mounted) {
+      setState(() {
+        events = fetchedEvents;
+      });
+    }
   }
 
   @override
@@ -61,14 +83,21 @@ class _ChatPageState extends State<ChatPage> {
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
-              itemCount: _userProfile!.joinedEventsIds.length,
+              itemCount: events.length,
               itemBuilder: (context, index) {
-                final eventId = _userProfile!.joinedEventsIds[index];
+                Event event = events[index];
                 return ListTile(
-                  title: Text('Event $eventId'),
+                  title: Text(
+                    event.description,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  subtitle: Text(
+                    DateFormat('EEE, MMM d yyyy h:mm a').format(
+                        event.eventDate), // use event.date here formatted
+                  ),
                   onTap: () {
                     Navigator.pushNamed(context, '/chatsPage',
-                        arguments: eventId);
+                        arguments: events[index].eventId);
                   },
                 );
               },
