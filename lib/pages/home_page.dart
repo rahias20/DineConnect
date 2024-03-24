@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             ) // show loading indicator
           : Column(
@@ -139,11 +139,11 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Welcome, ${userProfile?.name ?? 'Guest'}!',
-                    style:
-                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(height: 0),
+                const SizedBox(height: 0),
                 Expanded(
                   child: ListView.builder(
                     itemCount: _upcomingEvents.length,
@@ -254,16 +254,20 @@ class _EventCardState extends State<EventCard> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final ThemeData themeData = Theme.of(context);
+
     final formattedDate =
-        DateFormat('EEEE d, MMMM, yyyy').format(widget.event.eventDate);
+        DateFormat('EEE, d MMMM').format(widget.event.eventDate);
     final formattedTime = DateFormat('h:mm a').format(widget.event.eventDate);
     return Card(
-      child: ListTile(
-        leading: const Icon(Icons.event),
-        title: Text(widget.event.description),
-        subtitle:
-            Text('${widget.event.city}\n $formattedDate \n $formattedTime'),
-        isThreeLine: true,
+      elevation: 2.0,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
         onTap: () {
           // Navigate to event details page
           Navigator.pushNamed(context, '/eventContent', arguments: {
@@ -280,6 +284,46 @@ class _EventCardState extends State<EventCard> {
                 }
           });
         },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.event.description,
+                style: themeData.textTheme.titleLarge?.copyWith(
+                  color: themeData.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Hosted by ${widget.event.hostName}',
+                style: themeData.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(Icons.location_on,
+                      size: 16, color: themeData.primaryColor),
+                  const SizedBox(width: 4),
+                  Text(widget.event.city,
+                      style: themeData.textTheme.bodyMedium),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(Icons.calendar_today,
+                      size: 16, color: themeData.primaryColor),
+                  const SizedBox(width: 4),
+                  Text('$formattedDate at $formattedTime',
+                      style: themeData.textTheme.bodyMedium),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

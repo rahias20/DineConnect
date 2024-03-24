@@ -1,8 +1,7 @@
-
-
 class Event {
   final String eventId;
   final String hostUserId;
+  final String hostName;
   final String description;
   final DateTime eventDate;
   final String addressLine1;
@@ -15,6 +14,7 @@ class Event {
   Event({
     required this.eventId,
     required this.hostUserId,
+    required this.hostName,
     required this.description,
     required this.eventDate,
     required this.addressLine1,
@@ -30,6 +30,7 @@ class Event {
     return {
       'eventId': eventId,
       'ownerUserId': hostUserId,
+      'hostName': hostName,
       'description': description,
       'eventDate': eventDate.toIso8601String(),
       'addressLine1': addressLine1,
@@ -46,6 +47,7 @@ class Event {
     return Event(
       eventId: map['eventId'],
       hostUserId: map['ownerUserId'],
+      hostName: map['hostName'],
       description: map['description'],
       eventDate: DateTime.parse(map['eventDate']),
       addressLine1: map['addressLine1'],

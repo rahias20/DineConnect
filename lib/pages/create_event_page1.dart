@@ -1,5 +1,5 @@
-import 'package:dine_connect/components/my_text_form_field.dart';
-import 'package:dine_connect/components/my_textfield.dart';
+import 'package:dine_connect/models/user_profile.dart';
+import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -19,6 +19,8 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
   String eventId = const Uuid().v4();
+  late final UserProfile _userProfile;
+  late final UserProfileService _userProfileService;
 
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _addressLine1Controller = TextEditingController();
@@ -38,6 +40,13 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
     _townCityController.dispose();
     _postcodeController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _userProfileService = UserProfileService();
+    _fetchUserProfile();
   }
 
   // get formatted date
@@ -71,6 +80,26 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
     }
   }
 
+  Future<void> _fetchUserProfile() async {
+    String? uid = _authService.getCurrentUser()?.uid;
+    if (uid != null) {
+      try {
+        UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
+
+        if (profile != null) {
+          setState(() {
+            _userProfile = profile;
+          });
+        }
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+    return;
+  }
+
   // save event information in event model
   void _saveEvent() {
     // get logged in user's uid
@@ -78,11 +107,12 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
     newEvent = Event(
         eventId: eventId,
         hostUserId: uid,
+        hostName: _userProfile.name.split('/')[0],
         description: _descriptionController.text,
         eventDate: selectedDate,
         addressLine1: _addressLine1Controller.text,
         addressLine2: _addressLine2Controller.text,
-        city: _townCityController.text,
+        city: _townCityController.text.trim(),
         postcode: _postcodeController.text,
         numberOfParticipants: noOfPeople,
         participantUserIds: []);
@@ -123,7 +153,7 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
-                    } else if (value.length > 70){
+                    } else if (value.length > 70) {
                       return 'Description too long';
                     }
                     return null;
@@ -223,11 +253,12 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
                     labelText: 'Postcode',
                   ),
                   validator: (value) {
-                    String pattern = r'^[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][ABD-HJLNP-UW-Z]{2}$';
+                    String pattern =
+                        r'^[A-Z]{1,2}[0-9R][0-9A-Z]? ?[0-9][ABD-HJLNP-UW-Z]{2}$';
                     RegExp regExp = RegExp(pattern, caseSensitive: false);
                     if (value == null || value.isEmpty) {
                       return '';
-                    }else if (!regExp.hasMatch(value)){
+                    } else if (!regExp.hasMatch(value)) {
                       return 'Invalid Postcode';
                     }
                     return null;
