@@ -10,14 +10,14 @@ import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileCompletePage extends StatefulWidget {
-  const ProfileCompletePage({super.key});
+class CompleteProfilePage extends StatefulWidget {
+  const CompleteProfilePage({super.key});
 
   @override
-  State<ProfileCompletePage> createState() => _ProfileCompletePageState();
+  State<CompleteProfilePage> createState() => _CompleteProfilePageState();
 }
 
-class _ProfileCompletePageState extends State<ProfileCompletePage> {
+class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // get auth and userProfile service

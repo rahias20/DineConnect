@@ -4,7 +4,6 @@ import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
-import '../components/my_textfield.dart';
 
 class RegisterPage extends StatefulWidget {
   void Function()? onTap;
@@ -193,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
       await _auth.signUpWithEmailPassword(
           _emailController.text, _passwordController.text);
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const ProfileCompletePage()),
+          MaterialPageRoute(builder: (context) => const CompleteProfilePage()),
           (Route<dynamic> route) => false);
     } catch (e) {
       showDialog(
