@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:dine_connect/models/event.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +7,6 @@ import '../components/event_dialog.dart';
 import '../models/user_profile.dart';
 import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
-import 'package:dine_connect/models/event.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -110,14 +109,15 @@ class _HomePageState extends State<HomePage> {
         title: const Center(child: Text("DineConnect")),
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/chatsPage', arguments: 'jghghghg');
+            Navigator.pushNamed(context, '/chatPage', arguments: 'jghghghg');
           },
           icon: const Icon(Icons.chat_bubble_outline),
         ),
         actions: [
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/editProfilePage1').then((_) => _fetchUserProfile());
+              Navigator.pushNamed(context, '/editProfilePage1')
+                  .then((_) => _fetchUserProfile());
             },
             child: CircleAvatar(
               backgroundImage: userProfile?.imageUrl != null

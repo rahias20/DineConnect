@@ -6,6 +6,7 @@ import 'package:dine_connect/pages/account_page.dart';
 import 'package:dine_connect/pages/appearance_page.dart';
 import 'package:dine_connect/pages/change_email_page.dart';
 import 'package:dine_connect/pages/change_password_page.dart';
+import 'package:dine_connect/pages/chat_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
 import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:dine_connect/pages/create_event_page2.dart';
@@ -90,6 +91,10 @@ class MyApp extends StatelessWidget {
         '/chatsPage': (context) {
           final eventId = ModalRoute.of(context)!.settings.arguments as String;
           return ChatsPage(eventId: eventId);
+        },
+        '/chatPage': (context) {
+          final eventId = ModalRoute.of(context)!.settings.arguments as String;
+          return ChatPage(eventId: eventId);
         },
       },
     );

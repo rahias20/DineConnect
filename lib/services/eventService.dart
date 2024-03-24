@@ -55,24 +55,73 @@ class EventService {
 
   // ddd participant to event
   Future<void> addParticipant(String eventId, String userId) async {
-    try {
-      await _firestore.collection('events').doc(eventId).update({
-        'participantUserIds': FieldValue.arrayUnion([userId])
-      });
-    } catch (e) {
-      throw Exception("Error adding participant: $e");
-    }
+    DocumentReference eventRef = _firestore.collection('events').doc(eventId);
+    DocumentReference userProfileRef =
+        _firestore.collection('userProfiles').doc(userId);
+
+    await _firestore.runTransaction((transaction) async {
+      // First, perform the read operation
+      DocumentSnapshot eventSnapshot = await transaction.get(eventRef);
+      DocumentSnapshot userProfileSnapshot =
+          await transaction.get(userProfileRef);
+
+      // then, you can proceed with the write operations
+      if (eventSnapshot.exists) {
+        List<dynamic> participantUserIds =
+            List.from(eventSnapshot.get('participantUserIds') ?? []);
+        if (!participantUserIds.contains(userId)) {
+          transaction.update(eventRef, {
+            'participantUserIds': FieldValue.arrayUnion([userId])
+          });
+        }
+      }
+
+      if (userProfileSnapshot.exists) {
+        List<dynamic> joinedEventsIds =
+            List.from(userProfileSnapshot.get('joinedEventsIds') ?? []);
+        if (!joinedEventsIds.contains(eventId)) {
+          transaction.update(userProfileRef, {
+            'joinedEventsIds': FieldValue.arrayUnion([eventId])
+          });
+        }
+      } else {
+        // Handle the case where the user profile does not exist
+        // Perhaps you might want to create a new document or log an error
+      }
+    });
   }
 
   // remove participant from event
   Future<void> removeParticipant(String eventId, String userId) async {
-    try {
-      await _firestore.collection('events').doc(eventId).update({
-        'participantUserIds': FieldValue.arrayRemove([userId])
-      });
-    } catch (e) {
+    // references to the documents
+    DocumentReference eventRef = _firestore.collection('events').doc(eventId);
+    DocumentReference userProfileRef =
+        _firestore.collection('userProfiles').doc(userId);
+
+    await _firestore.runTransaction((transaction) async {
+      // perform the read operations first
+      DocumentSnapshot eventSnapshot = await transaction.get(eventRef);
+      DocumentSnapshot userProfileSnapshot =
+          await transaction.get(userProfileRef);
+
+      if (eventSnapshot.exists && userProfileSnapshot.exists) {
+        // Remove the userId from the event's participantUserIds array
+        List<dynamic> participants =
+            List.from(eventSnapshot.get('participantUserIds') ?? []);
+        participants.remove(userId);
+        transaction.update(eventRef, {'participantUserIds': participants});
+
+        // Remove the eventId from the user's joinedEventsIds array
+        List<dynamic> joinedEvents =
+            List.from(userProfileSnapshot.get('joinedEventsIds') ?? []);
+        joinedEvents.remove(eventId);
+        transaction.update(userProfileRef, {'joinedEventsIds': joinedEvents});
+      } else {
+        throw Exception("Event or UserProfile does not exist");
+      }
+    }).catchError((e) {
       throw Exception("Error removing participant: $e");
-    }
+    });
   }
 
   // fetch all events created by a specific user
