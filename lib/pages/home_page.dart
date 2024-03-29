@@ -106,7 +106,21 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: colorScheme.primary,
-        title: const Center(child: Text("DineConnect")),
+        title: Center(
+          child: Text(
+            "DineConnect",
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+                shadows: [
+                  Shadow(
+                      blurRadius: 10.0,
+                      color: Colors.black.withOpacity(0.4),
+                      offset: const Offset(2.0, 2.0))
+                ]),
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             Navigator.pushNamed(context, '/chatPage', arguments: 'jghghghg');
@@ -143,7 +157,28 @@ class _HomePageState extends State<HomePage> {
                         fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Text(
+                    'Discover nearby events for delightful dining experiences',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      // Choose a color that fits your app theme
+                      fontSize: 18.0, // Adjust the size as per your design
+                      fontStyle: FontStyle
+                          .italic, // You can also make it italic if you want
+                      shadows: [
+                        Shadow(
+                          blurRadius: 2.0,
+                          color: Colors.grey.withOpacity(0.5),
+                          offset: const Offset(1.0, 1.0),
+                        ),
+                      ], // Optional: text shadow
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
                 Expanded(
                   child: ListView.builder(
                     itemCount: _upcomingEvents.length,
