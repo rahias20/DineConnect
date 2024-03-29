@@ -327,7 +327,6 @@ class _EventCardState extends State<EventCard> {
               Text(
                 widget.event.description,
                 style: themeData.textTheme.titleLarge?.copyWith(
-                  color: themeData.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -339,8 +338,10 @@ class _EventCardState extends State<EventCard> {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  Icon(Icons.location_on,
-                      size: 16, color: themeData.primaryColor),
+                  const Icon(
+                    Icons.location_on_outlined,
+                    size: 16,
+                  ),
                   const SizedBox(width: 4),
                   Text(widget.event.city,
                       style: themeData.textTheme.bodyMedium),
@@ -349,8 +350,10 @@ class _EventCardState extends State<EventCard> {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  Icon(Icons.calendar_today,
-                      size: 16, color: themeData.primaryColor),
+                  const Icon(
+                    Icons.calendar_today_outlined,
+                    size: 16,
+                  ),
                   const SizedBox(width: 4),
                   Text('$formattedDate at $formattedTime',
                       style: themeData.textTheme.bodyMedium),
