@@ -1,12 +1,13 @@
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/user_profile.dart';
 import 'package:path/path.dart' as path;
+
+import '../models/report.dart';
+import '../models/user_profile.dart';
 
 class UserProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -38,11 +39,14 @@ class UserProfileService {
         .doc(userProfile.userId)
         .set(userProfile.toMap());
   }
-  
+
   // update user profile in the database
   Future<void> updateUserProfile(UserProfile userProfile) async {
-    try{
-      await _firestore.collection('userProfiles').doc(userProfile.userId).update(userProfile.toMap());
+    try {
+      await _firestore
+          .collection('userProfiles')
+          .doc(userProfile.userId)
+          .update(userProfile.toMap());
     } catch (e) {
       throw Exception("Error updating user profile: $e");
     }
@@ -81,6 +85,26 @@ class UserProfileService {
       return downloadUrl;
     } catch (e) {
       return null;
+    }
+  }
+
+  // method to report a user
+  Future<void> reportUser(String reportingUserId, String reportedUserId,
+      String reportReason) async {
+    try {
+      // create a report object with the current DateTime
+      final report = Report(
+        reportingUserId: reportingUserId,
+        reportedUserId: reportedUserId,
+        reportReason: reportReason,
+        reportTime:
+            DateTime.now(), // Use DateTime.now() to get the current time
+      );
+
+      // submit the report to a "reports" collection
+      await _firestore.collection('reports').add(report.toMap());
+    } catch (e) {
+      throw Exception("Error submitting report: $e");
     }
   }
 }

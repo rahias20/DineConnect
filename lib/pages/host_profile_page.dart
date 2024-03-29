@@ -1,6 +1,9 @@
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:dine_connect/services/eventService.dart';
+import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
+
+import '../components/navbar_button.dart';
 import '../components/user_profile_content.dart';
 import '../models/user_profile.dart';
 
@@ -16,9 +19,10 @@ class HostProfilePage extends StatefulWidget {
 
 class _HostProfilePageState extends State<HostProfilePage> {
   final EventService _eventService = EventService();
+  final UserProfileService _userProfileService = UserProfileService();
   bool _isLoading = false;
 
-  Future<void> onChatPressed() async {
+  Future<void> onReportPressed() async {
     setState(() {
       _isLoading = true; // show a loading indicator if necessary
     });
@@ -26,12 +30,61 @@ class _HostProfilePageState extends State<HostProfilePage> {
     try {
       final event = await _eventService.fetchEvent(widget.eventId);
       if (event != null && event.participantUserIds.contains(currentUserId)) {
-        // push chats page
-        Navigator.pushNamed(context, '/chatPage');
+        final TextEditingController reasonController = TextEditingController();
+        final AuthService _authService = AuthService();
+
+        if (!mounted) return;
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Report User'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: [
+                      Text(
+                          'Please enter the reason for reporting ${widget.userProfile.name}:'),
+                      TextField(
+                        decoration: const InputDecoration(
+                          hintText: "Reason for reporting",
+                        ),
+                        maxLines: 5,
+                        minLines: 1,
+                        controller: reasonController,
+                      )
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Cancel')),
+                  TextButton(
+                      onPressed: () async {
+                        String? reportingUserId =
+                            _authService.getCurrentUser()?.uid.toString();
+                        // logic to handle the  report submission call your service to send the report to backend
+                        await _userProfileService.reportUser(
+                            reportingUserId!,
+                            widget.userProfile.userId,
+                            reasonController.text.trim());
+                        Navigator.of(context).pop();
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text(
+                              "User Reported. We will take appropriate action."),
+                          backgroundColor: Colors.green[500],
+                          duration: const Duration(seconds: 3),
+                        ));
+                      },
+                      child: const Text('Report'))
+                ],
+              );
+            });
       } else {
         // user has not joined the event, show SnackBar
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-          content: const Text("Please join the event to start chatting"),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text("Event not joined!"),
           backgroundColor: Colors.red[500],
           duration: const Duration(seconds: 3),
         ));
@@ -47,7 +100,6 @@ class _HostProfilePageState extends State<HostProfilePage> {
         _isLoading = false;
       });
     }
-
   }
 
   @override
@@ -61,10 +113,10 @@ class _HostProfilePageState extends State<HostProfilePage> {
         backgroundColor: colorScheme.primary,
       ),
       body: UserProfileContent(userProfile: widget.userProfile),
-      // bottomNavigationBar: NavbarButton(
-      //   onPressed: onChatPressed,
-      //   buttonText: 'Chat',
-      // ),
+      bottomNavigationBar: NavbarButton(
+        onPressed: onReportPressed,
+        buttonText: 'Report',
+      ),
     );
   }
 }
