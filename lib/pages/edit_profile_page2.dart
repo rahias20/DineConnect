@@ -185,6 +185,10 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                 if (_formKey.currentState!.validate()) {
                   if (_userProfile!.hobbies.isNotEmpty) {
                     _saveProfile();
+                  } else {
+                    setState(() {
+                      _isHobbiesEmpty = true;
+                    });
                   }
                 }
               },
