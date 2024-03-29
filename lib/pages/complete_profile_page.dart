@@ -37,7 +37,6 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
 
   // fields empty check
   bool _isHobbiesEmpty = false;
-  bool _isLocationEmpty = false;
   bool _isImageEmpty = false;
 
   @override
@@ -256,7 +255,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                 ),
 
                 // conditionally display an error message if no hobbies
-                if (_isHobbiesEmpty)
+                if (hobbies.isEmpty)
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.all(0),
@@ -273,7 +272,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     text: 'Save Profile',
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        if (!_isHobbiesEmpty) {
+                        if (hobbies.isNotEmpty) {
                           _saveProfile();
                         }
                       }
