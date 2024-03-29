@@ -114,11 +114,10 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   Future<void> selectAndUploadImage() async {
     final XFile? file = await _userProfileService.selectImage();
     if (file != null) {
-      setState(() async {
+      setState(() {
         image = file.path;
-        imageUrl =
-            await _userProfileService.uploadImage(File(file!.path)) ?? '';
       });
+      imageUrl = await _userProfileService.uploadImage(File(file!.path)) ?? '';
     }
   }
 
