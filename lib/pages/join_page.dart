@@ -144,7 +144,7 @@ class _JoinPageState extends State<JoinPage> {
               ),
               trailing: isUpcoming
                   ? IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.close_outlined, color: Colors.red),
                       onPressed: () async {
                         // Confirm dialog before leaving
                         bool confirmDelete = await showDialog(
