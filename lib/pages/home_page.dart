@@ -83,12 +83,20 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _upcomingEvents =
               events.where((event) => event.eventDate.isAfter(now)).toList();
+          _isLoading = false;
         });
       } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
         if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }
+    } else {
+      setState(() {
+        _isLoading = false; // loading done
+      });
     }
   }
 
@@ -147,52 +155,63 @@ class _HomePageState extends State<HomePage> {
           ? const Center(
               child: CircularProgressIndicator(),
             ) // show loading indicator
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
+          : _upcomingEvents.isEmpty
+              ? const Center(
                   child: Text(
-                    'Welcome, ${userProfile?.name ?? 'Guest'}!',
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    'Discover nearby events for delightful dining experiences',
+                    'No events in your city at the moment. Check back later!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      // Choose a color that fits your app theme
-                      fontSize: 18.0, // Adjust the size as per your design
-                      fontStyle: FontStyle
-                          .italic, // You can also make it italic if you want
-                      shadows: [
-                        Shadow(
-                          blurRadius: 2.0,
-                          color: Colors.grey.withOpacity(0.5),
-                          offset: const Offset(1.0, 1.0),
-                        ),
-                      ], // Optional: text shadow
+                      color: Colors.grey,
+                      fontSize: 18.0,
                     ),
                   ),
+                )
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Welcome, ${userProfile?.name ?? 'Guest'}!',
+                        style: const TextStyle(
+                            fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: Text(
+                        'Discover nearby events for delightful dining experiences',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          // Choose a color that fits your app theme
+                          fontSize: 18.0, // Adjust the size as per your design
+                          fontStyle: FontStyle
+                              .italic, // You can also make it italic if you want
+                          shadows: [
+                            Shadow(
+                              blurRadius: 2.0,
+                              color: Colors.grey.withOpacity(0.5),
+                              offset: const Offset(1.0, 1.0),
+                            ),
+                          ], // Optional: text shadow
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: _upcomingEvents.length,
+                        itemBuilder: (context, index) {
+                          // Using a custom 'EventCard' widget to display each event.
+                          return EventCard(
+                            event: _upcomingEvents[index],
+                            onEventJoined: refreshEvents,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 5),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _upcomingEvents.length,
-                    itemBuilder: (context, index) {
-                      // Using a custom 'EventCard' widget to display each event.
-                      return EventCard(
-                        event: _upcomingEvents[index],
-                        onEventJoined: refreshEvents,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
