@@ -8,6 +8,7 @@ import 'package:dine_connect/pages/change_email_page.dart';
 import 'package:dine_connect/pages/change_password_page.dart';
 import 'package:dine_connect/pages/chat_page.dart';
 import 'package:dine_connect/pages/chats_page.dart';
+import 'package:dine_connect/pages/complete_profile_page.dart';
 import 'package:dine_connect/pages/create_event_page1.dart';
 import 'package:dine_connect/pages/create_event_page2.dart';
 import 'package:dine_connect/pages/edit_profile_page1.dart';
@@ -52,7 +53,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/welcomePage': (context) => WelcomePage(onTap: () {}),
         '/loginOrRegister': (context) => const LoginOrRegister(),
-        '/homepage': (context) => HomePage(),
+        '/completeProfilePage': (context) => const CompleteProfilePage(),
+        '/homepage': (context) => const HomePage(),
         '/editProfilePage1': (context) => const EditProfilePage1(),
         '/editProfilePage2': (context) => const EditProfilePage2(),
         '/forgotPasswordPage': (context) => const ForgotPasswordPage(),

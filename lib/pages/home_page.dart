@@ -1,4 +1,5 @@
 import 'package:dine_connect/models/event.dart';
+import 'package:dine_connect/pages/complete_profile_page.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -41,6 +42,14 @@ class _HomePageState extends State<HomePage> {
             userProfile = profile;
             _isLoading = false; // loading done
             _loadUpcomingEvents(uid);
+          });
+        }
+        bool? isProfileComplete = profile?.name.isNotEmpty;
+        if (profile == null || !isProfileComplete!) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const CompleteProfilePage(),
+            ));
           });
         }
       } catch (e) {
