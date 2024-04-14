@@ -74,6 +74,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final DateTime now = DateTime.now();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorScheme.primary,
@@ -86,14 +87,20 @@ class _ChatPageState extends State<ChatPage> {
               itemCount: events.length,
               itemBuilder: (context, index) {
                 Event event = events[index];
+                bool isPastEvent = event.eventDate.isBefore(now);
                 return ListTile(
                   title: Text(
                     event.description,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: isPastEvent ? Colors.grey : Colors.black87),
                   ),
                   subtitle: Text(
-                    DateFormat('EEE, MMM d yyyy h:mm a').format(
-                        event.eventDate), // use event.date here formatted
+                    DateFormat('EEE, MMM d yyyy h:mm a')
+                        .format(event.eventDate), // formatted event date
+                    style: TextStyle(
+                      color: isPastEvent ? Colors.grey : Colors.black54,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pushNamed(context, '/chatsPage',
