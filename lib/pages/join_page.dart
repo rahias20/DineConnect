@@ -111,8 +111,8 @@ class _JoinPageState extends State<JoinPage> {
           backgroundColor: colorScheme.secondary,
           bottom: const TabBar(
             tabs: [
-              Tab(text: 'Upcoming Joined Events'),
-              Tab(text: 'Past Joined Events'),
+              Tab(text: 'Upcoming Events'),
+              Tab(text: 'Past Events'),
             ],
           ),
         ),
