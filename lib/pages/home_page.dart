@@ -178,7 +178,8 @@ class _HomePageState extends State<HomePage> {
               : Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.only(
+                          right: 16.0, left: 16.0, top: 5.0),
                       child: Text(
                         'Welcome, ${userProfile?.name ?? 'Guest'}!',
                         style: const TextStyle(
@@ -187,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+                          horizontal: 16.0, vertical: 2.0),
                       child: Text(
                         'Discover nearby events for delightful dining experiences',
                         textAlign: TextAlign.center,
