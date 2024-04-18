@@ -122,7 +122,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text(
                     'Password must be at least 8 characters long',
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.black87,
                       fontSize: 12,
                     ),
                   ),
