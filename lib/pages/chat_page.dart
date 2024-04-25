@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../models/user_profile.dart';
 
+// Widget to manage the state of chat interactions for specific events
 class ChatPage extends StatefulWidget {
   final String eventId;
 
@@ -17,6 +18,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  // Service instances for handling authentication, user profiles, and events
   late final AuthService _authService;
   late final UserProfileService _userProfileService;
   late final EventService _eventService;
@@ -30,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
     _authService = AuthService();
     _eventService = EventService();
     events = [];
-    _fetchUserProfile();
+    _fetchUserProfile(); // Start fetching user profile on init
   }
 
   Future<void> _fetchUserProfile() async {
@@ -42,7 +44,7 @@ class _ChatPageState extends State<ChatPage> {
         if (profile != null) {
           setState(() {
             _userProfile = profile;
-            _fetchUserEvents();
+            _fetchUserEvents(); // Fetch events after fetching profile.
           });
         }
       } catch (e) {
@@ -63,6 +65,7 @@ class _ChatPageState extends State<ChatPage> {
       }
     }
 
+    // Sorts events by date.
     fetchedEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
     if (mounted) {
       setState(() {
@@ -102,6 +105,7 @@ class _ChatPageState extends State<ChatPage> {
                       color: isPastEvent ? Colors.grey : Colors.black54,
                     ),
                   ),
+                  // Navigate to the event chat page on tap.
                   onTap: () {
                     Navigator.pushNamed(context, '/chatsPage',
                         arguments: events[index].eventId);

@@ -9,6 +9,7 @@ import '../models/user_profile.dart';
 import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
 
+// Home page widget, displays upcoming events
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -82,6 +83,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Method to get upcoming events in the user's city
   Future<void> _loadUpcomingEvents(String uid) async {
     String? uid = _authService.getCurrentUser()?.uid;
     DateTime now = DateTime.now();
@@ -109,6 +111,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Refresh events list on home page
   void refreshEvents() async {
     await _loadUpcomingEvents(_authService.getCurrentUser()?.uid ?? '');
   }
@@ -245,6 +248,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+//
 class EventCard extends StatefulWidget {
   final Event event;
   final VoidCallback onEventJoined;

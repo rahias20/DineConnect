@@ -10,6 +10,7 @@ import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+// Widget for completing a user profile
 class CompleteProfilePage extends StatefulWidget {
   const CompleteProfilePage({super.key});
 
@@ -24,7 +25,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final AuthService _authService = AuthService();
   late UserProfileService _userProfileService;
 
-  // controllers
+  // text controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
@@ -35,12 +36,13 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   String imageUrl = '';
   List<String> hobbies = [];
 
-  // fields empty check
+  // Flags to track if hobbies or image fields are empty
   bool _isHobbiesEmpty = false;
   bool _isImageEmpty = false;
 
   @override
   void dispose() {
+    // Dispose of controllers when the widget is removed from the widget tree
     _nameController.dispose();
     _ageController.dispose();
     _bioController.dispose();
@@ -56,7 +58,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     _userProfileService = UserProfileService();
   }
 
-  // add hobby to the list
+  // Adds a hobby to the list if it's not already included
   void _addHobby(String hobby) {
     if (hobby.isNotEmpty && !hobbies.contains(hobby)) {
       setState(() {
@@ -272,7 +274,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
                         if (hobbies.isNotEmpty) {
-                          _saveProfile();
+                          _saveProfile(); // Save profile information
                         }
                       }
                     }),

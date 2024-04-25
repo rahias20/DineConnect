@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Custom TextField widget for consistent styling and functionality across the app.
 class MyTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
@@ -17,6 +18,7 @@ class MyTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Padding for uniform spacing around the text field
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: TextField(

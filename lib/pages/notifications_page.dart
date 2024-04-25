@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Static notifications page for future implementation
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
 
@@ -14,9 +15,7 @@ class NotificationsPage extends StatelessWidget {
         elevation: 0,
       ),
       body: const Center(
-        child: Text(
-            'Notifications Page'
-        ),
+        child: Text('Notifications Page'),
       ),
     );
   }

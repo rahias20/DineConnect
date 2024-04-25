@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 
+// A StatelessWidget for creating a reusable and customizable text form field
 class MyTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
@@ -12,17 +11,17 @@ class MyTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final IconData? prefixIcon;
 
-  const MyTextFormField(
-      {super.key,
-      required this.controller,
-      required this.labelText,
-      this.maxLines = 1,
-      this.obscureText = false,
-      this.keyboardType = TextInputType.text,
-      this.validator,
-  this.readOnly = false,
-        this.prefixIcon,
-      });
+  const MyTextFormField({
+    super.key,
+    required this.controller,
+    required this.labelText,
+    this.maxLines = 1,
+    this.obscureText = false,
+    this.keyboardType = TextInputType.text,
+    this.validator,
+    this.readOnly = false,
+    this.prefixIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +45,13 @@ class MyTextFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: theme.colorScheme.primary, width: 2.0),
+            borderSide:
+                BorderSide(color: theme.colorScheme.primary, width: 2.0),
             borderRadius: BorderRadius.circular(8.0),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: theme.colorScheme.secondary, width: 2.5),
+            borderSide:
+                BorderSide(color: theme.colorScheme.secondary, width: 2.5),
             borderRadius: BorderRadius.circular(8.0),
           ),
           errorBorder: OutlineInputBorder(
@@ -61,10 +62,12 @@ class MyTextFormField extends StatelessWidget {
             borderSide: BorderSide(color: theme.colorScheme.error, width: 2.5),
             borderRadius: BorderRadius.circular(8.0),
           ),
+          // Styling for the label text
           labelStyle: TextStyle(
             color: theme.colorScheme.onSurface,
             fontSize: 16.0,
           ),
+          // Styling for the error message text
           errorStyle: TextStyle(
             color: theme.colorScheme.error,
             fontSize: 14.0,

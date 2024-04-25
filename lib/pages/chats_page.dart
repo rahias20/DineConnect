@@ -30,6 +30,7 @@ class _ChatsPageState extends State<ChatsPage> {
     _fetchUserProfile();
   }
 
+  // Fetches user profile to be used in chat messages.
   Future<void> _fetchUserProfile() async {
     String? uid = _authService.getCurrentUser()?.uid;
     if (uid != null) {
@@ -50,7 +51,7 @@ class _ChatsPageState extends State<ChatsPage> {
     return;
   }
 
-  // send message
+  // Function to handle sending messages
   void sendMessage(String eventId) async {
     // if there is something inside the textfield
     if (_messageController.text.isNotEmpty) {
@@ -85,7 +86,7 @@ class _ChatsPageState extends State<ChatsPage> {
     );
   }
 
-  // build message list
+  // Builds a list view of messages using a StreamBuilder
   Widget _buildMessageList() {
     String senderID = _authService.getCurrentUser()!.uid;
     return StreamBuilder(
@@ -108,7 +109,7 @@ class _ChatsPageState extends State<ChatsPage> {
         });
   }
 
-  // build message item
+  // Constructs a chat bubble for each message.
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
@@ -134,7 +135,7 @@ class _ChatsPageState extends State<ChatsPage> {
     );
   }
 
-  // build message input
+  // Widget for user input in chat.
   Widget _buildUserInput() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0, right: 7),

@@ -3,6 +3,7 @@ import 'package:dine_connect/components/my_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// Widget to handle password reset functionality
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
@@ -19,12 +20,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     super.dispose();
   }
 
+  // Asynchronous function to send password reset email
   Future _passwordReset() async {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
 
-      if (!mounted) return;
+      if (!mounted) return; // Check if the widget is still in the tree
+
+      // Clear the text field and show a dialog on successful email submission
       _emailController.clear();
       showDialog(
           context: context,

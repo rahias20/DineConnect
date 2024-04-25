@@ -1,6 +1,7 @@
 import 'package:dine_connect/models/user_profile.dart';
 import 'package:flutter/material.dart';
 
+// Stateful widget to display detailed user profile content
 class UserProfileContent extends StatefulWidget {
   final UserProfile userProfile;
   const UserProfileContent({super.key, required this.userProfile});
@@ -16,6 +17,7 @@ class _UserProfileContentState extends State<UserProfileContent> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    // Centering profile content or showing a loading spinner if data is not available
     return Center(
       child: widget.userProfile == null
           ? const Center(child: CircularProgressIndicator())
@@ -66,6 +68,7 @@ class _UserProfileContentState extends State<UserProfileContent> {
     );
   }
 
+  // Function to create reusable card for displaying information
   Widget _infoCard(
       String title, String content, double screenHeight, double screenWidth) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -97,6 +100,7 @@ class _UserProfileContentState extends State<UserProfileContent> {
     );
   }
 
+  // Function to display hobbies using wrap widget
   Widget _hobbiesWrap(
       List<String> hobbies, double screenHeight, double screenWidth) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

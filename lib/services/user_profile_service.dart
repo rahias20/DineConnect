@@ -15,7 +15,7 @@ class UserProfileService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
 
-  // fetch user profile data from the database
+  // Fetch user profile data from the database
   Future<UserProfile?> fetchUserProfile(String userId) async {
     try {
       DocumentSnapshot userProfileSnapshot =
@@ -31,7 +31,7 @@ class UserProfileService {
     return null;
   }
 
-  // save user profile in the database
+  // Save user profile in the database
   Future<void> saveUserProfile(UserProfile userProfile) async {
     // save the user profile to the database
     await _firestore
@@ -40,7 +40,7 @@ class UserProfileService {
         .set(userProfile.toMap());
   }
 
-  // update user profile in the database
+  // Update user profile in the database
   Future<void> updateUserProfile(UserProfile userProfile) async {
     try {
       await _firestore
@@ -52,12 +52,12 @@ class UserProfileService {
     }
   }
 
-  // delete the user profile
+  // Delete the user profile
   Future<void> deleteUserProfile(String userId) async {
     await _firestore.collection('userProfiles').doc(userId).delete();
   }
 
-  // select profile picture
+  // Select profile picture
   Future<XFile?> selectImage() async {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -70,6 +70,7 @@ class UserProfileService {
     return null;
   }
 
+  // Uploads an image file to Firebase Storage and returns the download URL
   Future<String?> uploadImage(File image) async {
     try {
       File file = File(image.path);
@@ -88,7 +89,7 @@ class UserProfileService {
     }
   }
 
-  // method to report a user
+  // Method to report a user
   Future<void> reportUser(String reportingUserId, String reportedUserId,
       String reportReason) async {
     try {

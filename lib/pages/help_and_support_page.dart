@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Stateless widget for Help and Support page
 class HelpAndSupportPage extends StatelessWidget {
   const HelpAndSupportPage({super.key});
 
@@ -45,7 +46,7 @@ class HelpAndSupportPage extends StatelessWidget {
             ),
             ExpansionTile(
               title: Text('How do I report a user?'),
-              children:  <Widget>[
+              children: <Widget>[
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(

@@ -20,18 +20,24 @@ class AppearancePage extends StatelessWidget {
       ),
       body: Container(
         decoration: BoxDecoration(
-            color: colorScheme.secondary,
-            borderRadius: BorderRadius.circular(12)),
+          color: colorScheme.secondary,
+          borderRadius:
+              BorderRadius.circular(12), // Rounded corners for the container
+        ),
         margin: const EdgeInsets.all(20),
         padding: const EdgeInsets.all(16),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment:
+              MainAxisAlignment.spaceBetween, // Space out child widgets equally
           children: [
             const Text('Dark Mode'),
             CupertinoSwitch(
-                value: Provider.of<ThemeProvider>(context, listen: false)
-                    .isDarkMode,
-                onChanged: (value) => Provider.of<ThemeProvider>(context, listen: false).toggleTheme()),
+              value: Provider.of<ThemeProvider>(context, listen: false)
+                  .isDarkMode, // Get the current theme state
+              onChanged: (value) =>
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleTheme(), // Toggle theme on change
+            ),
           ],
         ),
       ),

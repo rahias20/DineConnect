@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// A custom button widget designed for use in bottom nav bars
 class NavbarButton extends StatelessWidget {
   final void Function() onPressed;
   final String buttonText;
@@ -15,6 +16,7 @@ class NavbarButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Padding(
+      // Apply horizontal and vertical padding scaled based on the screen width
       padding:
           EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: 20),
       child: SizedBox(
@@ -30,7 +32,7 @@ class NavbarButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12),
             textStyle: TextStyle(fontSize: screenWidth * 0.05),
           ),
-          child: Text(buttonText),
+          child: Text(buttonText), // Button text
         ),
       ),
     );

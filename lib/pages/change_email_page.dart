@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
 
+// Widget for handling email change
 class ChangeEmailPage extends StatefulWidget {
   const ChangeEmailPage({super.key});
 
@@ -15,6 +16,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Function to reauthenticate and update the user's email.
   Future<void> _reauthenticateAndChangeEmail() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -32,6 +34,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
         _emailController.clear();
         _passwordController.clear();
+
+        // Show a dialog indicating the email update process
         showDialog(
             context: context,
             builder: (context) {
@@ -58,6 +62,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   @override
   void dispose() {
+    // Dispose controllers when the widget is removed from the tree
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -67,6 +72,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    // Regular expression for validating email.
     const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
         r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
         r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
@@ -93,7 +99,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'New Email'),
+                decoration: const InputDecoration(labelText: 'New Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter an email';
@@ -110,9 +116,11 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                 controller: _passwordController,
                 decoration: const InputDecoration(labelText: 'Password'),
                 validator: (value) {
-                  return value!.isEmpty ? 'Please enter your password' : null;
+                  return value!.isEmpty
+                      ? 'Please enter your password'
+                      : null; // Validates password is not empty
                 },
-                obscureText: true,
+                obscureText: true, // Hides the password input
               ),
               const SizedBox(height: 40),
               MyButton(

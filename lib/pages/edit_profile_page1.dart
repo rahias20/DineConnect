@@ -5,6 +5,7 @@ import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/user_profile_service.dart';
 
+// Widget for displaying user profile data with edit button
 class EditProfilePage1 extends StatefulWidget {
   const EditProfilePage1({super.key});
 
@@ -25,6 +26,7 @@ class _EditProfilePage1State extends State<EditProfilePage1> {
     _fetchUserProfile();
   }
 
+  // Function to navigate to the second edit profile page and reload the profile after
   void _editProfile(BuildContext context) {
     Navigator.pushNamed(context, '/editProfilePage2')
         .then((_) => reloadUserProfile());
@@ -38,8 +40,8 @@ class _EditProfilePage1State extends State<EditProfilePage1> {
 
         if (profile != null) {
           setState(() {
-            _userProfile = profile;
-            _isLoading = false; // loading done
+            _userProfile = profile; // Update the user profile state
+            _isLoading = false; // Set loading to false once the data is fetched
           });
         }
       } catch (e) {
@@ -54,6 +56,7 @@ class _EditProfilePage1State extends State<EditProfilePage1> {
     return;
   }
 
+  // Reload user profile
   void reloadUserProfile() async {
     await _fetchUserProfile();
   }

@@ -8,6 +8,7 @@ import '../components/my_text_form_field2.dart';
 import '../models/event.dart';
 import '../services/authentication/auth_service.dart';
 
+// Stateful widget for creating an event, takes user input for event details
 class CreateEventPage1 extends StatefulWidget {
   const CreateEventPage1({super.key});
 
@@ -22,15 +23,16 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
   late final UserProfile _userProfile;
   late final UserProfileService _userProfileService;
 
+  // Controllers for text fields
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _addressLine1Controller = TextEditingController();
   final TextEditingController _addressLine2Controller = TextEditingController();
   final TextEditingController _townCityController = TextEditingController();
   final TextEditingController _postcodeController = TextEditingController();
 
-  late Event newEvent;
-  int noOfPeople = 2;
-  DateTime selectedDate = DateTime.now();
+  late Event newEvent; // Event data model
+  int noOfPeople = 2; // Initial no of participants
+  DateTime selectedDate = DateTime.now(); // Default event date and time
 
   @override
   void dispose() {
@@ -46,7 +48,7 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
-    _fetchUserProfile();
+    _fetchUserProfile(); // Fetch user profile at start
   }
 
   // get formatted date
@@ -54,6 +56,7 @@ class _CreateEventPage1State extends State<CreateEventPage1> {
     return DateFormat('dd-MM-yyyy - h:mm a').format(selectedDate);
   }
 
+  // Display date and time pickers
   Future<void> _selectDateTime(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,

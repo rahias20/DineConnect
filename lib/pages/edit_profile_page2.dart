@@ -9,6 +9,7 @@ import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/user_profile_service.dart';
 
+// Widget for managing editing of user profile
 class EditProfilePage2 extends StatefulWidget {
   const EditProfilePage2({super.key});
 
@@ -24,7 +25,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
   UserProfile? _userProfile;
   late UserProfileService _userProfileService;
 
-  // TextEditingControllers
+  // Controllers for form fields
   late TextEditingController _nameController;
   late TextEditingController _ageController;
   late TextEditingController _bioController;
@@ -45,7 +46,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     super.initState();
     _userProfileService = UserProfileService();
 
-    // initialize the controllers
+    // initialize the controllers with existing user data
     _nameController = TextEditingController();
     _ageController = TextEditingController();
     _bioController = TextEditingController();
@@ -95,7 +96,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     }
   }
 
-  // save user profile to database
+  // Save updated user profile to database
   Future<void> _saveProfile() async {
     bool hasErrors = false;
     // Convert age input to integer and check if it's null (invalid input)
@@ -145,7 +146,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
     Navigator.pop(context);
   }
 
-  // select profile picture
+  // select a new profile picture
   Future<void> selectAndUploadImage() async {
     final XFile? file = await _userProfileService.selectImage();
     if (file != null) {
@@ -192,6 +193,7 @@ class _EditProfilePage2State extends State<EditProfilePage2> {
                   }
                 }
               },
+              // Save button with gesture detector
               child: const Text(
                 "Save",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),

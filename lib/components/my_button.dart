@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
+  final String text; // Button text
+  final VoidCallback onTap; // Function triggered when button pressed
 
   const MyButton({super.key, required this.text, required this.onTap});
 
@@ -17,7 +17,8 @@ class MyButton extends StatelessWidget {
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           elevation: 2,
-          backgroundColor: colorScheme.secondary, // primary is the background color
+          backgroundColor:
+              colorScheme.secondary, // primary is the background color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

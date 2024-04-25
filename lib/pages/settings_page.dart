@@ -1,10 +1,10 @@
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 import '../components/navbar_button.dart';
 import '../services/authentication/auth_gate.dart';
 
+// Settings page widget
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -13,9 +13,10 @@ class SettingsPage extends StatelessWidget {
     AuthService authService = AuthService();
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme =
+        Theme.of(context).colorScheme; // Access theme for consistent styling
 
-    // list of settings options
+    // list of settings options to display with corresponding icon
     final List<Map<String, dynamic>> settingsOptions = [
       {
         'icon': Icons.person_outlined,
@@ -49,6 +50,7 @@ class SettingsPage extends StatelessWidget {
       },
     ];
 
+    // Function to sign out the current user and navigate to the authentication gate.
     void signOutUser() {
       authService.signUserOut();
       Navigator.of(context).pushAndRemoveUntil(
@@ -64,12 +66,14 @@ class SettingsPage extends StatelessWidget {
         foregroundColor: Colors.grey,
         elevation: 0,
       ),
+      // Bottom navigation bar with a sign out button
       bottomNavigationBar: NavbarButton(
         onPressed: signOutUser,
         buttonText: 'Sign Out',
       ),
+      // Body of the page using a ListView to list all settings options.
       body: ListView.separated(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         itemCount: settingsOptions.length,
         itemBuilder: (BuildContext context, int index) {
           var item = settingsOptions[index];
@@ -82,15 +86,14 @@ class SettingsPage extends StatelessWidget {
                     TextStyle(color: colorScheme.onSurface.withOpacity(0.6))),
             onTap: () {
               // navigation or functionality for each option
-              if(item['action'] != null){
+              if (item['action'] != null) {
                 item['action']();
               }
-
             },
           );
         },
         separatorBuilder: (BuildContext context, int index) =>
-            Divider(thickness: 0),
+            const Divider(thickness: 0),
       ),
     );
   }

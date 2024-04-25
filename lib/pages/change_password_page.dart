@@ -2,6 +2,7 @@ import 'package:dine_connect/components/my_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+// Widget to manage password change in the app
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
 
@@ -10,7 +11,7 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>(); // Key for form validation
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -26,6 +27,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   void _changePassword() async {
+    // Validate before proceeding
     if (_formKey.currentState!.validate()) {
       try {
         User? user = FirebaseAuth.instance.currentUser;
@@ -44,6 +46,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         _oldPasswordController.clear();
         _newPasswordController.clear();
 
+        // Show success dialog
         _showEventCreatedDialogAndNavigate();
       } catch (error) {
         setState(() {
@@ -69,6 +72,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         );
       },
     );
+    // Auto-close the dialog after 2 seconds and navigate back
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pop();
       Navigator.pop(context);
@@ -113,6 +117,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   controller: _newPasswordController,
                   obscureText: true,
                   decoration: const InputDecoration(labelText: 'New Password'),
+                  // Ensure new password is at least 8 characters long.
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a new password';
@@ -122,13 +127,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 5),
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: true,
                   decoration:
                       const InputDecoration(labelText: 'Confirm Password'),
+                  // Check if confirmed password matches the new password.
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please confirm your password';

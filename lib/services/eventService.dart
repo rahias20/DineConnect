@@ -4,7 +4,7 @@ import 'package:dine_connect/models/event.dart';
 class EventService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // save event data in the database
+  // Save event data in the database
   Future<void> saveEvent(Event event) async {
     DocumentReference eventRef =
         _firestore.collection('events').doc(event.eventId);
@@ -36,7 +36,7 @@ class EventService {
     return null;
   }
 
-  // update event data in the database
+  // Update event data in the database
   Future<void> updateEvent(Event event) async {
     try {
       await _firestore
@@ -48,12 +48,12 @@ class EventService {
     }
   }
 
-  // delete event from the database
+  // Delete event from the database
   Future<void> deleteEvent(String eventId) async {
     await _firestore.collection('events').doc(eventId).delete();
   }
 
-  // ddd participant to event
+  // Add participant to event
   Future<void> addParticipant(String eventId, String userId) async {
     DocumentReference eventRef = _firestore.collection('events').doc(eventId);
     DocumentReference userProfileRef =
@@ -91,7 +91,7 @@ class EventService {
     });
   }
 
-  // remove participant from event
+  // Remove participant from event
   Future<void> removeParticipant(String eventId, String userId) async {
     // references to the documents
     DocumentReference eventRef = _firestore.collection('events').doc(eventId);
@@ -124,7 +124,7 @@ class EventService {
     });
   }
 
-  // fetch all events created by a specific user
+  // Fetch all events created by a specific user
   Future<List<Event>> fetchEventsCreatedByUser(String userId) async {
     try {
       QuerySnapshot querySnapshot = await _firestore
@@ -143,7 +143,7 @@ class EventService {
     }
   }
 
-  // fetch events in the specified city with open slots for participants
+  // Fetch events in the specified city with open slots for participants
   Future<List<Event>> fetchEventsInCity(String city, String userId) async {
     try {
       final now = DateTime.now();
@@ -155,7 +155,7 @@ class EventService {
           .orderBy('eventDate')
           .get();
 
-      // filter out events that the user has already joined
+      // Filter out events that the user has already joined
       List<Event> events = [];
       for (var doc in querySnapshot.docs) {
         var event = Event.fromMap(doc.data() as Map<String, dynamic>);
@@ -173,7 +173,7 @@ class EventService {
     }
   }
 
-  // fetch events that a specific user has joined
+  // Fetch events that a specific user has joined
   Future<List<Event>> fetchJoinedEventsByUser(String userId) async {
     try {
       // Assuming your events collection has a 'participantUserIds' field which is an array of user IDs

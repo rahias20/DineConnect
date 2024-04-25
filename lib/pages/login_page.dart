@@ -1,10 +1,10 @@
 import 'package:dine_connect/components/my_text_form_field.dart';
-import 'package:dine_connect/components/my_textfield.dart';
 import 'package:dine_connect/services/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
 
+// Stateful widget to manage login form.
 class LoginPage extends StatefulWidget {
   void Function()? onTap;
 
@@ -17,9 +17,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  // Controllers for text fields to handle user input.
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Dispose controllers when widget is removed to prevent memory leaks.
   @override
   void dispose() {
     _emailController.dispose();
@@ -29,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Email validation pattern
     const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
         r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
         r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
@@ -175,12 +178,14 @@ class _LoginPageState extends State<LoginPage> {
 
   // login
   void login(BuildContext context) async {
-    // get auth service
+    // Get auth service
     final authService = AuthService();
     try {
+      // Attempt to sig in with email and password
       await authService.signInWithEmailPassword(
           _emailController.text, _passwordController.text);
     } catch (e) {
+      // Display error if login fails
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

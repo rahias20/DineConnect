@@ -7,6 +7,7 @@ import '../services/authentication/auth_service.dart';
 import '../services/eventService.dart';
 import '../services/user_profile_service.dart';
 
+// Page for displaying upcoming and past joined events
 class JoinPage extends StatefulWidget {
   const JoinPage({super.key});
 
@@ -15,6 +16,7 @@ class JoinPage extends StatefulWidget {
 }
 
 class _JoinPageState extends State<JoinPage> {
+  // Service initialization for handling events, authentication, and user profiles
   late EventService _eventService;
   late AuthService _authService;
   late UserProfileService _userProfileService;
@@ -24,6 +26,7 @@ class _JoinPageState extends State<JoinPage> {
 
   @override
   void initState() {
+    // Service instances are created when the widget is inserted into the tree
     super.initState();
     _eventService = EventService();
     _authService = AuthService();
@@ -44,6 +47,7 @@ class _JoinPageState extends State<JoinPage> {
     }
   }
 
+  // Fetches events joined by the current user
   Future<void> _fetchJoinedEvents() async {
     currentUserUid = _authService.getCurrentUser()?.uid;
     DateTime now = DateTime.now();
@@ -66,6 +70,7 @@ class _JoinPageState extends State<JoinPage> {
     }
   }
 
+  // Handles user's interaction to navigate to the host profile page
   Future<void> onHostProfileClicked(
       BuildContext context, String hostUserId, String eventId) async {
     UserProfile hostProfile = await _fetchUserProfile(hostUserId);
@@ -73,6 +78,7 @@ class _JoinPageState extends State<JoinPage> {
         arguments: {'userProfile': hostProfile, 'eventId': eventId});
   }
 
+  // Triggers when the chat icon is pressed, navigating to the chat page
   Future<void> onChatPressed(String eventId) async {
     final String currentUserId = AuthService().getCurrentUser()?.uid ?? '';
     try {
@@ -126,6 +132,7 @@ class _JoinPageState extends State<JoinPage> {
     );
   }
 
+  // Builds a list of event cards for the specified event list
   Widget _buildEventsList(
       List<Event> events, double screenHeight, bool isUpcoming) {
     return Padding(

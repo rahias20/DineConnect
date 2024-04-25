@@ -1,18 +1,19 @@
-import 'package:dine_connect/services/authentication/auth_gate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+// Stateless widget builds the account settings page
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 
+  // Method to show a dialog for confirming account deletion.
   void _showDeleteAccountDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Delete Account"),
-          content: const Text("Are you sure you want to permanently delete your account? This action cannot be undone."),
+          content: const Text(
+              "Are you sure you want to permanently delete your account? This action cannot be undone."),
           actions: <Widget>[
             TextButton(
               child: const Text("Cancel"),
@@ -29,10 +30,14 @@ class AccountPage extends StatelessWidget {
 
                   Navigator.of(context).pop(); // Close the dialog
                   // Optionally, redirect the user to the welcome screen
-                  Navigator.pushNamedAndRemoveUntil(context, '/welcomePage', (route) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/welcomePage', (route) => false);
                 } catch (e) {
                   Navigator.of(context).pop(); // Close the dialog
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to delete account: $e"), duration: Duration(seconds: 15),));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Failed to delete account: $e"),
+                    duration: Duration(seconds: 15),
+                  ));
                 }
               },
             ),
@@ -95,7 +100,6 @@ class AccountPage extends StatelessWidget {
             subtitle: const Text('Permanently delete your account'),
             onTap: () => _showDeleteAccountDialog(context),
           ),
-
         ],
       ),
     );

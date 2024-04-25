@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../pages/login_page.dart';
 import '../../pages/register_page.dart';
 
+// Declaring a StatefulWidget to manage dynamic content based on user interaction.
 class LoginOrRegister extends StatefulWidget {
   const LoginOrRegister({super.key});
 
@@ -11,12 +12,12 @@ class LoginOrRegister extends StatefulWidget {
 }
 
 class _LoginOrRegisterState extends State<LoginOrRegister> {
-
-  // initially show login page
+  // Boolean variable to determine which page to show: login or register.
+  // Initially set to true to show the login page first.
   bool showLoginPage = true;
 
-  // toggle between login and register page
-  void togglePages(){
+  // Function to toggle the boolean state, which in turn toggles the displayed page.
+  void togglePages() {
     setState(() {
       showLoginPage = !showLoginPage;
     });
@@ -24,10 +25,17 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage){
-      return LoginPage(onTap: togglePages,);
-    }else{
-      return RegisterPage(onTap: togglePages,);
+    // Conditionally return a page based on the value of `showLoginPage`.
+    if (showLoginPage) {
+      // Show login page and provide method to toggle.
+      return LoginPage(
+        onTap: togglePages,
+      );
+    } else {
+      // Show register page and provide method to toggle.
+      return RegisterPage(
+        onTap: togglePages,
+      );
     }
   }
 }

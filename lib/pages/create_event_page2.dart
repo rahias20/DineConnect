@@ -1,17 +1,16 @@
-import 'dart:io';
 import 'package:dine_connect/components/navbar_button.dart';
+import 'package:dine_connect/models/event.dart';
 import 'package:dine_connect/services/eventService.dart';
 import 'package:flutter/material.dart';
-import 'package:dine_connect/models/event.dart';
 import 'package:intl/intl.dart';
 
 import '../models/user_profile.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/user_profile_service.dart';
-import 'package:path/path.dart' as path;
 
+// Widget displays event details entered by user to view and create or edit the details
 class CreateEventPage2 extends StatefulWidget {
-  final Event event;
+  final Event event; // Event object passed to this page
 
   const CreateEventPage2({super.key, required this.event});
 
@@ -24,7 +23,7 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
   late UserProfileService _userProfileService;
   final AuthService _authService = AuthService();
   final EventService _eventService = EventService();
-  String imageUrl = '';
+  String imageUrl = ''; // URL for the user's profile image
 
   @override
   void initState() {
@@ -50,6 +49,7 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
     }
   }
 
+  // Handles the event creation logic
   Future<void> _createEvent() async {
     try {
       await _eventService.saveEvent(widget.event);
@@ -63,6 +63,7 @@ class _CreateEventPage2State extends State<CreateEventPage2> {
     }
   }
 
+  // Displays a dialog upon the creation of an event and navigates back to the homepage
   void _showEventCreatedDialogAndNavigate() {
     showDialog(
       context: context,

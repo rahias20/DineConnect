@@ -5,6 +5,7 @@ import '../models/event.dart';
 import '../services/authentication/auth_service.dart';
 import '../services/eventService.dart';
 
+// Widget for managing hosted events, past and upcoming
 class HostPage extends StatefulWidget {
   const HostPage({super.key});
 
@@ -26,6 +27,7 @@ class _HostPageState extends State<HostPage> {
     _fetchCreatedEvents();
   }
 
+  // Fetch events created by current user
   Future<void> _fetchCreatedEvents() async {
     String? uid = _authService.getCurrentUser()?.uid;
     DateTime now = DateTime.now();
@@ -33,8 +35,10 @@ class _HostPageState extends State<HostPage> {
       try {
         List<Event> events = await _eventService.fetchEventsCreatedByUser(uid);
         setState(() {
+          // upcoming events list
           _upcomingEvents =
               events.where((event) => event.eventDate.isAfter(now)).toList();
+          // past events list
           _pastEvents =
               events.where((event) => event.eventDate.isBefore(now)).toList();
         });
@@ -52,6 +56,7 @@ class _HostPageState extends State<HostPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    // The UI includes a tab controller for switching between upcoming and past events
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -69,6 +74,7 @@ class _HostPageState extends State<HostPage> {
         ),
         body: TabBarView(
           children: [
+            // Each tab has a list of events displayed in a Card.
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
               child: Column(
@@ -105,6 +111,7 @@ class _HostPageState extends State<HostPage> {
     );
   }
 
+  // Helper function to build each tab view with events
   Widget _buildEventsList(
       List<Event> events, double screenHeight, bool isUpcoming) {
     return Padding(

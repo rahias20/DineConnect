@@ -9,10 +9,13 @@ import '../services/user_profile_service.dart';
 import 'navbar_button.dart';
 
 class EventContent extends StatefulWidget {
-  final Event event;
-  final String navbarButtonText;
-  final VoidCallback navbarButtonPressed;
-  final VoidCallback onHostClicked;
+  final Event event; // Event object containing event details
+  final String navbarButtonText; // Text to display on the navigation bar button
+  final VoidCallback
+      navbarButtonPressed; // Function to execute when the navbar button is pressed
+  final VoidCallback
+      onHostClicked; // Function to execute when the host name is pressed
+
   const EventContent({
     super.key,
     required this.event,
@@ -26,24 +29,27 @@ class EventContent extends StatefulWidget {
 }
 
 class _EventContentState extends State<EventContent> {
-  UserProfile? _userProfile;
-  late UserProfileService _userProfileService;
-  final AuthService _authService = AuthService();
-  final EventService _eventService = EventService();
-  String imageUrl = '';
+  UserProfile? _userProfile; // UserProfile object to hold the host's profile
+  late UserProfileService _userProfileService; // UserProfileService instance
+  final AuthService _authService =
+      AuthService(); // AuthService instance for authentication-related methods
+  final EventService _eventService =
+      EventService(); // EventService instance for event-related methods
+  String imageUrl = ''; // String to store the URL of the user's profile image
   // list to store participant profiles
-  List<UserProfile> _participantsProfiles = [];
+  List<UserProfile> _participantsProfiles =
+      []; // List to hold profiles of event participants
 
   @override
   void initState() {
     super.initState();
     _userProfileService = UserProfileService();
-    _fetchUserProfile();
-    _fetchParticipantsProfiles();
+    _fetchUserProfile(); // Fetch the profile of the event's host
+    _fetchParticipantsProfiles(); // Fetch the profiles of all event participants
   }
 
   Future<void> _fetchUserProfile() async {
-    String? uid = widget.event.hostUserId;
+    String? uid = widget.event.hostUserId; // Host user ID from the event object
     try {
       UserProfile? profile = await _userProfileService.fetchUserProfile(uid);
       if (profile != null) {
@@ -77,8 +83,9 @@ class _EventContentState extends State<EventContent> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    // use MediaQuery to get the screen size for responsive padding
+    final ColorScheme colorScheme =
+        Theme.of(context).colorScheme; // Access theme data
+    // use MediaQuery to get the screen size for responsive sizing
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
@@ -87,7 +94,9 @@ class _EventContentState extends State<EventContent> {
         backgroundColor: colorScheme.primary,
       ),
       body: _userProfile == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child:
+                  CircularProgressIndicator()) // Show loading indicator while profile fetching
           : SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(screenWidth / 7),
@@ -168,12 +177,14 @@ class _EventContentState extends State<EventContent> {
                             height: 50,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: _participantsProfiles.length,
+                              itemCount: _participantsProfiles
+                                  .length, // Number of participant profiles
                               itemBuilder: (context, index) {
                                 UserProfile participant =
                                     _participantsProfiles[index];
                                 return GestureDetector(
                                   onTap: () {
+                                    // Navigate to the profile page of the participant
                                     Navigator.pushNamed(
                                         context, '/hostProfilePage',
                                         arguments: {
@@ -217,8 +228,8 @@ class _EventContentState extends State<EventContent> {
               ),
             ),
       bottomNavigationBar: NavbarButton(
-        onPressed: widget.navbarButtonPressed,
-        buttonText: widget.navbarButtonText,
+        onPressed: widget.navbarButtonPressed, // Action for the navbar button
+        buttonText: widget.navbarButtonText, // Text for the navbar button
       ),
     );
   }

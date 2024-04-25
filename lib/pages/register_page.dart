@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
 
+// Stateful widget to handle registration page and redirect to profile page
 class RegisterPage extends StatefulWidget {
   void Function()? onTap;
 
@@ -17,7 +18,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // controllers
+  // Text controllers to control input fields
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -33,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Regular expression pattern for email validation.
     const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
         r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
         r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
@@ -42,6 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
     final regex = RegExp(pattern);
 
+    // Accessing device's screen height and theme colour scheme.
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -71,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  // welcome back message
+                  // Header text encouraging user to create an account.
                   SizedBox(height: screenHeight * 0.03),
                   Text(
                     "Let's create an account for you",
@@ -79,8 +82,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 20),
                   ),
-                  // email text field
 
+                  // Email input field
                   SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("emailField"),
@@ -99,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
 
-                  // password text field
+                  // Password input field
                   SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("passwordField"),
@@ -127,7 +130,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  // confirm password field
+                  // Confirm password input field
                   SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("confirmPasswordField"),
@@ -145,7 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
 
-                  // register button
+                  // Button to submit registration
                   SizedBox(height: screenHeight * 0.03),
                   MyButton(
                     text: "Register",
@@ -156,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
 
-                  // login
+                  // Link to switch to login if already a member.
                   SizedBox(height: screenHeight * 0.03),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -184,13 +187,15 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  // register
+  // Function to handle registration logic using AuthService.
   void register(context) async {
     // get auth service
     final _auth = AuthService();
     try {
       await _auth.signUpWithEmailPassword(
           _emailController.text, _passwordController.text);
+
+      // Navigate to CompleteProfilePage after successful registration.
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const CompleteProfilePage()),
           (Route<dynamic> route) => false);

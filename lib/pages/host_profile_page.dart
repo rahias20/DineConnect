@@ -7,6 +7,7 @@ import '../components/navbar_button.dart';
 import '../components/user_profile_content.dart';
 import '../models/user_profile.dart';
 
+// Widget to display the profile of the event host
 class HostProfilePage extends StatefulWidget {
   final String eventId;
   final UserProfile userProfile;
@@ -22,6 +23,7 @@ class _HostProfilePageState extends State<HostProfilePage> {
   final UserProfileService _userProfileService = UserProfileService();
   bool _isLoading = false;
 
+  // Function to handle user report action
   Future<void> onReportPressed() async {
     setState(() {
       _isLoading = true; // show a loading indicator if necessary
@@ -34,6 +36,7 @@ class _HostProfilePageState extends State<HostProfilePage> {
         final AuthService _authService = AuthService();
 
         if (!mounted) return;
+        // Display an alert dialog for the user to input their report reason
         showDialog(
             context: context,
             builder: (BuildContext context) {
