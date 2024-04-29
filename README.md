@@ -21,7 +21,7 @@ DineConnect is a mobile application designed to connect individuals through dini
 ```
 git clone https://github.com/rahias20/DineConnect.git
 
-cd dineconnect
+cd DineConnect
 ```
 
 2. Install dependencies:
