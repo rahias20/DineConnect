@@ -39,8 +39,11 @@ flutter pub get
 ```
 
 3. Run the application:
-- To run the app in Android Studio or Visual Studio Code, use the built-in emulators or connect a physical device via USB.
+```
+ - To run the app in Android Studio or Visual Studio Code, use the built-in emulators or connect a physical device via USB.
 - Start the app by selecting ‘Run > Start Debugging’ in Visual Studio Code or clicking the 'Run' icon in Android Studio.
+
+```
 
 ## Usage
 To use DineConnect, build and run the application using your preferred IDE. Use the account provided, and start exploring dining events or create your own.
