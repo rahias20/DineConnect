@@ -68,7 +68,7 @@ DineConnect can be installed by downloading the APK file directly onto your Andr
 2. Download the APK:
 
 - Open your web browser on your Android device.
-- Navigate to the GitHub repository and download the APK file.
+- Navigate to the GitHub repository and go inside build folder and download the APK file.
 
 3. Install the APK:
 - Once the APK is downloaded, open your file manager and navigate to the Downloads folder, or the designated download location.
