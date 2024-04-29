@@ -54,7 +54,7 @@ This command will automatically find and run any files in your project that end 
 
 
 ## Downloading and Installing DineConnect APK
-DineConnect can be installed by downloading the APK file directly onto your Android device. Follow these steps to download and install:
+DineConnect can be installed by downloading the APK file directly onto your Android device. The apk file is located in the build folder. Follow these steps to download and install:
 
 ### Steps to Install
 1. Enable Installation from Unknown Sources:
