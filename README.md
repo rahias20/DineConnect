@@ -99,7 +99,7 @@ DineConnect can be installed by downloading the APK file directly onto your Andr
 - Restart your device and try the installation process again.
 - Make sure you are downloading the correct APK file
 
-#### 2. Clearing Cache and Data
+#### 2. Clearing Cache and Data:
 If DineConnect is not performing as expected, clearing the app's cache and data may help. Here's how:
 - Open Settings on your device.
 - Go to Apps or Application Manager.
