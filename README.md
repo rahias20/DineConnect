@@ -16,6 +16,15 @@ DineConnect is a mobile application designed to connect individuals through dini
 - Android Studio or VS Code
 - An active Firebase account
 
+### IDE Setup
+#### Visual Studio Code Setup:
+      -	Open Visual Studio Code and install the Flutter and Dart extensions.
+      -	Open the cloned DineConnect folder in Visual Studio Code.
+#### Android Studio Setup:
+      -	Open Android Studio and ensure the Flutter and Dart plugins are installed.
+      - Open the DineConnect project by selecting 'Open an Existing Project' and navigating to the cloned directory.
+      
+
 ## Installation
 1. Clone the repository:
 ```
