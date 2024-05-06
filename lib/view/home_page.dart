@@ -1,13 +1,13 @@
+import 'package:dine_connect/controller/authentication/auth_service.dart';
 import 'package:dine_connect/models/event.dart';
-import 'package:dine_connect/pages/complete_profile_page.dart';
-import 'package:dine_connect/services/authentication/auth_service.dart';
+import 'package:dine_connect/view/complete_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../components/event_dialog.dart';
+import '../controller/eventService.dart';
+import '../controller/user_profile_service.dart';
 import '../models/user_profile.dart';
-import '../services/eventService.dart';
-import '../services/user_profile_service.dart';
 
 // Home page widget, displays upcoming events
 class HomePage extends StatefulWidget {

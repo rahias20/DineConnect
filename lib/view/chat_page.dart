@@ -1,7 +1,7 @@
+import 'package:dine_connect/controller/authentication/auth_service.dart';
+import 'package:dine_connect/controller/eventService.dart';
+import 'package:dine_connect/controller/user_profile_service.dart';
 import 'package:dine_connect/models/event.dart';
-import 'package:dine_connect/services/authentication/auth_service.dart';
-import 'package:dine_connect/services/eventService.dart';
-import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

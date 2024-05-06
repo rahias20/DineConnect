@@ -1,8 +1,7 @@
-import 'package:dine_connect/services/authentication/welcome_or_login_or_register.dart';
+import 'package:dine_connect/controller/authentication/welcome_or_login_or_register.dart';
+import 'package:dine_connect/view/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../../pages/home_page.dart';
 
 // Widget that acts as an authentication gate, deciding the initial
 // route based on the user's authentication status

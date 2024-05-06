@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../pages/login_page.dart';
-import '../../pages/register_page.dart';
+import '../../view/login_page.dart';
+import '../../view/register_page.dart';
 
 // Declaring a StatefulWidget to manage dynamic content based on user interaction.
 class LoginOrRegister extends StatefulWidget {

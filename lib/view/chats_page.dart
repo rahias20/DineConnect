@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dine_connect/controller/authentication/auth_service.dart';
+import 'package:dine_connect/controller/chat_service.dart';
+import 'package:dine_connect/controller/user_profile_service.dart';
 import 'package:dine_connect/models/user_profile.dart';
-import 'package:dine_connect/services/authentication/auth_service.dart';
-import 'package:dine_connect/services/chat_service.dart';
-import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/chat_bubble.dart';

@@ -1,8 +1,8 @@
-import 'package:dine_connect/services/authentication/auth_service.dart';
+import 'package:dine_connect/controller/authentication/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../components/navbar_button.dart';
-import '../services/authentication/auth_gate.dart';
+import '../controller/authentication/auth_gate.dart';
 
 // Settings page widget
 class SettingsPage extends StatelessWidget {

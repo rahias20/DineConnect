@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:dine_connect/components/my_button.dart';
 import 'package:dine_connect/components/my_list_field.dart';
 import 'package:dine_connect/components/my_text_form_field.dart';
+import 'package:dine_connect/controller/authentication/auth_gate.dart';
+import 'package:dine_connect/controller/authentication/auth_service.dart';
+import 'package:dine_connect/controller/user_profile_service.dart';
 import 'package:dine_connect/models/user_profile.dart';
-import 'package:dine_connect/services/authentication/auth_gate.dart';
-import 'package:dine_connect/services/authentication/auth_service.dart';
-import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 

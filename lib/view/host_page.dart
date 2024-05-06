@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../controller/authentication/auth_service.dart';
+import '../controller/eventService.dart';
 import '../models/event.dart';
-import '../services/authentication/auth_service.dart';
-import '../services/eventService.dart';
 
 // Widget for managing hosted events, past and upcoming
 class HostPage extends StatefulWidget {

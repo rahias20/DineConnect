@@ -1,9 +1,9 @@
 import 'package:dine_connect/components/user_profile_content.dart';
 import 'package:flutter/material.dart';
 
+import '../controller/authentication/auth_service.dart';
+import '../controller/user_profile_service.dart';
 import '../models/user_profile.dart';
-import '../services/authentication/auth_service.dart';
-import '../services/user_profile_service.dart';
 
 // Widget for displaying user profile data with edit button
 class EditProfilePage1 extends StatefulWidget {

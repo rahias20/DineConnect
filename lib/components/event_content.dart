@@ -2,10 +2,10 @@ import 'package:dine_connect/models/event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../controller/authentication/auth_service.dart';
+import '../controller/eventService.dart';
+import '../controller/user_profile_service.dart';
 import '../models/user_profile.dart';
-import '../services/authentication/auth_service.dart';
-import '../services/eventService.dart';
-import '../services/user_profile_service.dart';
 import 'navbar_button.dart';
 
 class EventContent extends StatefulWidget {

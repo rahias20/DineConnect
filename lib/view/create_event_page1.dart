@@ -1,12 +1,12 @@
+import 'package:dine_connect/controller/user_profile_service.dart';
 import 'package:dine_connect/models/user_profile.dart';
-import 'package:dine_connect/services/user_profile_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import '../components/my_text_form_field2.dart';
+import '../controller/authentication/auth_service.dart';
 import '../models/event.dart';
-import '../services/authentication/auth_service.dart';
 
 // Stateful widget for creating an event, takes user input for event details
 class CreateEventPage1 extends StatefulWidget {

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../components/my_list_field.dart';
+import '../controller/authentication/auth_service.dart';
+import '../controller/user_profile_service.dart';
 import '../models/user_profile.dart';
-import '../services/authentication/auth_service.dart';
-import '../services/user_profile_service.dart';
 
 // Widget for managing editing of user profile
 class EditProfilePage2 extends StatefulWidget {

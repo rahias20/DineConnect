@@ -1,37 +1,40 @@
 import 'package:dine_connect/components/my_text_form_field.dart';
-import 'package:dine_connect/services/authentication/auth_service.dart';
+import 'package:dine_connect/controller/authentication/auth_service.dart';
+import 'package:dine_connect/view/complete_profile_page.dart';
 import 'package:flutter/material.dart';
 
 import '../components/my_button.dart';
 
-// Stateful widget to manage login form.
-class LoginPage extends StatefulWidget {
+// Stateful widget to handle registration page and redirect to profile page
+class RegisterPage extends StatefulWidget {
   void Function()? onTap;
 
-  LoginPage({super.key, required this.onTap});
+  RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Controllers for text fields to handle user input.
+  // Text controllers to control input fields
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  // Dispose controllers when widget is removed to prevent memory leaks.
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Email validation pattern
+    // Regular expression pattern for email validation.
     const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
         r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
         r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
@@ -41,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
     final regex = RegExp(pattern);
 
+    // Accessing device's screen height and theme colour scheme.
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -55,13 +59,13 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: screenHeight * 0.03),
                   // logo
+                  SizedBox(height: screenHeight * 0.02),
                   const SizedBox(
-                    width: 900,
+                    width: 500,
                     child: AspectRatio(
                       aspectRatio:
-                          2.5, // This is the aspect ratio of the container, change it as needed
+                          3, // This is the aspect ratio of the container, change it as needed
                       child: Image(
                         image: AssetImage('lib/images/logo.png'),
                         fit: BoxFit
@@ -70,27 +74,22 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
 
-                  // welcome back message
-                  SizedBox(height: screenHeight * 0.04),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      "Sign in to your account",
-                      style: TextStyle(
+                  // Header text encouraging user to create an account.
+                  SizedBox(height: screenHeight * 0.03),
+                  Text(
+                    "Let's create an account for you",
+                    style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                        fontSize: 20),
                   ),
 
-                  // email text field
-                  SizedBox(height: screenHeight * 0.03),
+                  // Email input field
+                  SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
-                    key: const Key('emailField'),
+                    key: const Key("emailField"),
+                    labelText: 'Email',
                     obscureText: false,
                     controller: _emailController,
-                    labelText: 'Email',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter an email';
@@ -103,63 +102,75 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
 
-                  // password text field
-                  SizedBox(height: screenHeight * 0.03),
+                  // Password input field
+                  SizedBox(height: screenHeight * 0.035),
                   MyTextFormField(
                     key: const Key("passwordField"),
+                    labelText: 'Password',
                     obscureText: true,
                     controller: _passwordController,
-                    labelText: 'Password',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a password';
                       }
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters long';
+                      }
+                      return null;
                     },
                   ),
 
-                  // forgot password
-                  SizedBox(height: screenHeight * 0.01),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                              context, '/forgotPasswordPage'),
-                          child: Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary),
-                          ),
-                        ),
-                      ],
+                  // password requirements message
+                  SizedBox(height: screenHeight * 0.02),
+                  const Text(
+                    'Password must be at least 8 characters long',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 12,
                     ),
                   ),
 
-                  // login button
+                  // Confirm password input field
+                  SizedBox(height: screenHeight * 0.035),
+                  MyTextFormField(
+                    key: const Key("confirmPasswordField"),
+                    labelText: 'Confirm Password',
+                    obscureText: true,
+                    controller: _confirmPasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  // Button to submit registration
                   SizedBox(height: screenHeight * 0.03),
                   MyButton(
-                      text: "Login",
-                      onTap: () {
-                        if (_formKey.currentState!.validate()) {
-                          login(context);
-                        }
-                      }),
+                    text: "Register",
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        register(context);
+                      }
+                    },
+                  ),
 
-                  // register now
+                  // Link to switch to login if already a member.
                   SizedBox(height: screenHeight * 0.03),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Not a member? ",
+                      Text("Already a member? ",
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.primary)),
                       GestureDetector(
                         onTap: widget.onTap,
                         child: Text(
-                          "Register now",
+                          "Login now",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary),
@@ -176,16 +187,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // login
-  void login(BuildContext context) async {
-    // Get auth service
-    final authService = AuthService();
+  // Function to handle registration logic using AuthService.
+  void register(context) async {
+    // get auth service
+    final _auth = AuthService();
     try {
-      // Attempt to sig in with email and password
-      await authService.signInWithEmailPassword(
+      await _auth.signUpWithEmailPassword(
           _emailController.text, _passwordController.text);
+
+      // Navigate to CompleteProfilePage after successful registration.
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const CompleteProfilePage()),
+          (Route<dynamic> route) => false);
     } catch (e) {
-      // Display error if login fails
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
