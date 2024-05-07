@@ -1,4 +1,8 @@
 # DineConnect App
+## Github Link
+https://github.com/rahias20/DineConnect.git
+
+
 
 ## Introduction
 DineConnect is a mobile application designed to connect individuals through dining experiences. Built with Flutter and utilizing Firebase as its backend, the app allows users to host and join dining events, chat with other participants, and manage their event schedules.
